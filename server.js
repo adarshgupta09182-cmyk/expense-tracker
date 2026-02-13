@@ -159,13 +159,9 @@ app.post('/api/auth/register', [
     users.push(user);
     fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 
-    const token = generateToken(user.id);
-
     res.status(201).json({
       success: true,
-      message: 'Registration successful',
-      token,
-      user: { id: user.id, name: user.name, email: user.email, role: user.role }
+      message: 'Registration successful. Please login with your credentials.'
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

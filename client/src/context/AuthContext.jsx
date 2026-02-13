@@ -61,12 +61,7 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       const response = await axios.post('/auth/register', { name, email, password });
-      const { token, user } = response.data;
-      
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-      
-      setUser(user);
+      // Don't store token or user data - just return success
       return response.data;
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Registration failed';

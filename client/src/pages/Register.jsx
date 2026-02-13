@@ -71,7 +71,7 @@ const Register = () => {
 
     try {
       await register(formData.name, formData.email, formData.password);
-      navigate('/dashboard');
+      navigate('/login');
     } catch (err) {
       // Error is handled by AuthContext
     } finally {
