@@ -91,6 +91,17 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+// Request logging middleware
+app.use((req, res, next) => {
+  logger.info('Incoming request', { 
+    method: req.method, 
+    path: req.path,
+    url: req.originalUrl,
+    headers: req.headers
+  });
+  next();
+});
+
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
