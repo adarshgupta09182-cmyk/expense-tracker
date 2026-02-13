@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { containerVariants, listItemVariants } from '../utils/animations';
+import AnimatedCard from './AnimatedCard';
 import './SummaryCards.css';
 
 const SummaryCards = ({ expenses }) => {
@@ -38,21 +39,27 @@ const SummaryCards = ({ expenses }) => {
       initial="initial"
       animate="animate"
     >
-      <motion.div className="summary-card" variants={listItemVariants}>
-        <h3>Total Expenses</h3>
-        <p className="amount">₹{summaryData.totalExpenses.toFixed(2)}</p>
-        <span className="count">{summaryData.expensesCount} transactions</span>
-      </motion.div>
-      <motion.div className="summary-card" variants={listItemVariants}>
-        <h3>This Month</h3>
-        <p className="amount">₹{summaryData.monthlyTotal.toFixed(2)}</p>
-        <span className="count">{summaryData.thisMonthCount} transactions</span>
-      </motion.div>
-      <motion.div className="summary-card" variants={listItemVariants}>
-        <h3>Top Category</h3>
-        <p className="category">{summaryData.topCategory?.[0] || 'N/A'}</p>
-        <span className="count">₹{summaryData.topCategory?.[1]?.toFixed(2) || '0.00'}</span>
-      </motion.div>
+      <AnimatedCard className="summary-card">
+        <motion.div variants={listItemVariants}>
+          <h3>Total Expenses</h3>
+          <p className="amount">₹{summaryData.totalExpenses.toFixed(2)}</p>
+          <span className="count">{summaryData.expensesCount} transactions</span>
+        </motion.div>
+      </AnimatedCard>
+      <AnimatedCard className="summary-card">
+        <motion.div variants={listItemVariants}>
+          <h3>This Month</h3>
+          <p className="amount">₹{summaryData.monthlyTotal.toFixed(2)}</p>
+          <span className="count">{summaryData.thisMonthCount} transactions</span>
+        </motion.div>
+      </AnimatedCard>
+      <AnimatedCard className="summary-card">
+        <motion.div variants={listItemVariants}>
+          <h3>Top Category</h3>
+          <p className="category">{summaryData.topCategory?.[0] || 'N/A'}</p>
+          <span className="count">₹{summaryData.topCategory?.[1]?.toFixed(2) || '0.00'}</span>
+        </motion.div>
+      </AnimatedCard>
     </motion.div>
   );
 };
