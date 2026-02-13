@@ -52,37 +52,40 @@ export const buttonVariants = {
   }
 };
 
-// List item animations
+// List item animations with smooth enter/exit
 export const listItemVariants = {
   initial: {
     opacity: 0,
-    x: -20
+    x: -30,
+    scale: 0.95
   },
   animate: {
     opacity: 1,
     x: 0,
+    scale: 1,
     transition: {
-      duration: 0.3,
+      duration: 0.4,
       ease: 'easeOut'
     }
   },
   exit: {
     opacity: 0,
-    x: 20,
+    x: 30,
+    scale: 0.95,
     transition: {
-      duration: 0.2,
+      duration: 0.3,
       ease: 'easeIn'
     }
   }
 };
 
-// Container animations (stagger children)
-export const containerVariants = {
+// Container animations with stagger for list items
+export const listContainerVariants = {
   initial: { opacity: 0 },
   animate: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.05,
       delayChildren: 0.1
     }
   }

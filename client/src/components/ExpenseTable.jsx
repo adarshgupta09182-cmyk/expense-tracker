@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { listItemVariants, containerVariants } from '../utils/animations';
+import { listItemVariants, listContainerVariants } from '../utils/animations';
 import './ExpenseTable.css';
 
 const ExpenseTable = ({ expenses, onEdit, onDelete, currentPage, totalPages, onPageChange, totalItems }) => {
@@ -49,33 +49,39 @@ const ExpenseTable = ({ expenses, onEdit, onDelete, currentPage, totalPages, onP
                   <td colSpan="5" className="no-data">No expenses found</td>
                 </tr>
               ) : (
-                expenses.map((expense) => (
-                  <motion.tr
-                    key={expense._id}
-                    variants={listItemVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                    layout
-                  >
-                    <td>{new Date(expense.date).toLocaleDateString()}</td>
-                    <td className="description-cell">{expense.description}</td>
-                    <td>
-                      <span className={`category-badge ${expense.category.toLowerCase()}`}>
-                        {expense.category}
-                      </span>
-                    </td>
-                    <td className="amount">₹{expense.amount.toFixed(2)}</td>
-                    <td className="actions">
-                      <button onClick={() => onEdit(expense)} className="btn-edit">
-                        Edit
-                      </button>
-                      <button onClick={() => onDelete(expense._id)} className="btn-delete">
-                        Delete
-                      </button>
-                    </td>
-                  </motion.tr>
-                ))
+                <motion.tbody
+                  variants={listContainerVariants}
+                  initial="initial"
+                  animate="animate"
+                >
+                  {expenses.map((expense) => (
+                    <motion.tr
+                      key={expense._id}
+                      variants={listItemVariants}
+                      initial="initial"
+                      animate="animate"
+                      exit="exit"
+                      layout
+                    >
+                      <td>{new Date(expense.date).toLocaleDateString()}</td>
+                      <td className="description-cell">{expense.description}</td>
+                      <td>
+                        <span className={`category-badge ${expense.category.toLowerCase()}`}>
+                          {expense.category}
+                        </span>
+                      </td>
+                      <td className="amount">₹{expense.amount.toFixed(2)}</td>
+                      <td className="actions">
+                        <button onClick={() => onEdit(expense)} className="btn-edit">
+                          Edit
+                        </button>
+                        <button onClick={() => onDelete(expense._id)} className="btn-delete">
+                          Delete
+                        </button>
+                      </td>
+                    </motion.tr>
+                  ))}
+                </motion.tbody>
               )}
             </AnimatePresence>
           </tbody>
