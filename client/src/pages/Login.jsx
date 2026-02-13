@@ -74,7 +74,11 @@ const Login = () => {
         [name]: ''
       }));
     }
-  }, [errors]);
+    // Clear auth error when user starts typing
+    if (clearError) {
+      clearError();
+    }
+  }, [errors, clearError]);
 
   const isFormValid = useMemo(() => {
     return formData.email && formData.password && !loading;
