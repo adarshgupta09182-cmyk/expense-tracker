@@ -1,0 +1,4 @@
+node_modules/
+expenses.json
+users.json
+.env

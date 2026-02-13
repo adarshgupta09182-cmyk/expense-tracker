@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Expense Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>💰 Admin Dashboard</h1>
+      <div class="user-info">
+        <span id="userName"></span>
+        <button onclick="logout()" class="logout-btn">Logout</button>
+      </div>
+    </div>
+    
+    <div class="summary">
+      <div class="summary-card">
+        <h3>Total Users</h3>
+        <p id="totalUsers">0</p>
+      </div>
+      <div class="summary-card">
+        <h3>All Expenses</h3>
+        <p id="totalExpenses">$0.00</p>
+      </div>
+    </div>
+
+    <h2>All Users</h2>
+    <div id="userList"></div>
+
+    <h2>All Expenses</h2>
+    <div id="expenseList"></div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
