@@ -53,8 +53,10 @@ app.use('/api/', limiter);
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
-// Static files
-app.use(express.static('public'));
+// Static files - only serve in development
+if (process.env.NODE_ENV !== 'production') {
+  app.use(express.static('public'));
+}
 
 // Initialize data files
 if (!fs.existsSync(DATA_FILE)) {
