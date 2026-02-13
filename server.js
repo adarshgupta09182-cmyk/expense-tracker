@@ -471,24 +471,6 @@ app.delete('/api/expenses/:id', [authenticate, param('id').notEmpty(), validate]
   }
 });
 
-// Admin routes
-app.get('/api/admin/dashboard', authenticate, authorize('admin'), (req, res) => {
-  try {
-    const users = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
-    const expenses = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
-
-    res.json({
-      success: true,
-      data: {
-        users: users.map(u => ({ id: u.id, name: u.name, email: u.email, role: u.role })),
-        expenses
-      }
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-});
-
 // Budget routes
 app.get('/api/budget', authenticate, (req, res) => {
   try {
