@@ -90,15 +90,3 @@ export const listContainerVariants = {
     }
   }
 };
-
-// Loading skeleton animation
-export const skeletonVariants = {
-  animate: {
-    backgroundPosition: ['0% 0%', '100% 0%'],
-    transition: {
-      duration: 1.5,
-      repeat: Infinity,
-      ease: 'linear'
-    }
-  }
-};
