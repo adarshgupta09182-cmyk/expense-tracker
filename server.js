@@ -256,7 +256,7 @@ app.post('/api/auth/login', [
     
     if (!user) {
       logger.warn('Login failed: user not found', { email });
-      return res.status(401).json({ success: false, message: 'Invalid credentials' });
+      return res.status(401).json({ success: false, message: 'There is no user with this email' });
     }
 
     logger.info('User found, comparing password', { email, userId: user.id });
@@ -266,7 +266,7 @@ app.post('/api/auth/login', [
     
     if (!isPasswordValid) {
       logger.warn('Login failed: invalid password', { email });
-      return res.status(401).json({ success: false, message: 'Invalid credentials' });
+      return res.status(401).json({ success: false, message: 'Invalid username or password' });
     }
 
     logger.info('Password valid, generating token', { email, userId: user.id });
