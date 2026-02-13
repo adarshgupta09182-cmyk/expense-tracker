@@ -93,9 +93,18 @@ const Login = () => {
         <h1>💰 Expense Tracker</h1>
         <h2>Login</h2>
         
-        {/* Debug Info */}
-        <div style={{ fontSize: '12px', color: '#666', marginBottom: '10px', padding: '8px', backgroundColor: '#f0f0f0', borderRadius: '4px' }}>
-          <strong>Debug:</strong> API URL: {apiUrl}
+        {/* Debug Info - More Visible */}
+        <div style={{ 
+          fontSize: '13px', 
+          color: '#fff', 
+          marginBottom: '15px', 
+          padding: '12px', 
+          backgroundColor: '#e74c3c', 
+          borderRadius: '4px',
+          border: '2px solid #c0392b',
+          fontWeight: 'bold'
+        }}>
+          🔧 API URL: <br/>{apiUrl}
         </div>
         
         {authError && (
