@@ -49,6 +49,16 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
+// Health check (before rate limiter)
+app.get('/health', (req, res) => {
+  res.json({
+    success: true,
+    status: 'ok',
+    message: 'Server is running (JSON file storage)',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Body parser
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
@@ -120,16 +130,6 @@ const generateToken = (id) => {
     expiresIn: process.env.JWT_EXPIRE || '7d'
   });
 };
-
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({
-    success: true,
-    status: 'ok',
-    message: 'Server is running (JSON file storage)',
-    timestamp: new Date().toISOString()
-  });
-});
 
 // Auth routes
 app.post('/api/auth/register', [
