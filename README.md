@@ -1,18 +1,32 @@
 # 💰 Expense Tracker
 
-A comprehensive full-stack expense tracking application with budget management, data visualization, and CSV export functionality.
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green?logo=node.js)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/React-18.2-blue?logo=react)](https://react.dev/)
+[![Express.js](https://img.shields.io/badge/Express.js-4.18-black?logo=express)](https://expressjs.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
+[![Status](https://img.shields.io/badge/Status-Active-brightgreen)](https://github.com/adarshgupta09182/expense-tracker)
+[![Deployed](https://img.shields.io/badge/Deployed-Railway%20%26%20Netlify-blue)](https://sensational-croissant-62fb1f.netlify.app)
 
-## 🌟 Features
+A comprehensive full-stack expense tracking application with budget management, data visualization, dark mode, and advanced analytics.
+
+## ✨ Features
 
 ### Core Features
 - ✅ **User Authentication** - Secure JWT-based authentication with bcrypt password hashing
-- ✅ **Expense Management** - Create, read, update, and delete expenses
+- ✅ **Expense Management** - Create, read, update, and delete expenses with real-time updates
 - ✅ **Budget Tracking** - Set monthly budgets with customizable warning thresholds
 - ✅ **Data Visualization** - Interactive charts using Chart.js (Bar & Pie charts)
 - ✅ **Advanced Filtering** - Filter by category, date range, and search description
 - ✅ **CSV Export** - Export expenses with multiple format options
 - ✅ **Monthly Summary** - Aggregated expense data by month and category
 - ✅ **Responsive Design** - Works seamlessly on desktop, tablet, and mobile
+
+### Premium Features
+- 🌙 **Dark Mode** - Full dark theme support with system preference detection
+- 📊 **Statistics Insights** - Advanced analytics including spending trends, daily averages, and projections
+- ✨ **Smooth Animations** - Meaningful transitions and loading states
+- 📱 **Mobile Optimized** - Enhanced responsive design for all screen sizes
+- 🎨 **Modern UI** - CSS variables for easy theming and consistent design
 
 ### Security Features
 - 🔒 **Helmet.js** - HTTP header security
@@ -26,38 +40,39 @@ A comprehensive full-stack expense tracking application with budget management, 
 ### Performance Features
 - ⚡ **React Hooks** - useCallback and useMemo for optimization
 - ⚡ **Pagination** - Efficient data loading (10 items per page)
-- ⚡ **MongoDB Indexing** - Fast queries on userId and date
-- ⚡ **Aggregation Pipeline** - Efficient server-side calculations
+- ⚡ **CSS Variables** - Dynamic theming without page reload
+- ⚡ **Lazy Loading** - Components load on demand
 
 ## 🛠️ Tech Stack
 
 ### Backend
-- **Runtime**: Node.js
-- **Framework**: Express.js
-- **Database**: MongoDB with Mongoose
+- **Runtime**: Node.js 18+
+- **Framework**: Express.js 4.18
+- **Database**: JSON file storage (no MongoDB required)
 - **Authentication**: JWT + bcryptjs
 - **Security**: Helmet, CORS, Rate Limiting, express-validator
 - **Documentation**: Swagger/OpenAPI
 
 ### Frontend
-- **Framework**: React 18
-- **Build Tool**: Vite
+- **Framework**: React 18.2
+- **Build Tool**: Vite 5.0
 - **Routing**: React Router v6
 - **HTTP Client**: Axios with interceptors
 - **Charts**: Chart.js + react-chartjs-2
 - **State Management**: React Context API
+- **Styling**: CSS Variables + Vanilla CSS
 
 ## 📋 Prerequisites
 
-- **Node.js** >= 14.0.0
-- **npm** >= 6.0.0
-- **MongoDB** >= 4.0 (local or cloud)
+- **Node.js** >= 18.0.0
+- **npm** >= 9.0.0
+- **Git** for version control
 
 ## 🚀 Quick Start
 
 ### 1. Clone Repository
 ```bash
-git clone <repository-url>
+git clone https://github.com/adarshgupta09182/expense-tracker.git
 cd expense-tracker
 ```
 
@@ -72,8 +87,7 @@ cp .env.example .env
 
 # Configure environment variables
 # Edit .env with your settings:
-# - PORT=3000
-# - MONGODB_URI=mongodb://localhost:27017/expense-tracker
+# - PORT=3002
 # - JWT_SECRET=your-secret-key-here
 # - NODE_ENV=development
 # - CORS_ORIGIN=http://localhost:5173
@@ -92,7 +106,7 @@ cd client
 npm install
 
 # Create .env file
-echo "VITE_API_URL=http://localhost:3000/api" > .env
+echo "VITE_API_URL=http://localhost:3002" > .env
 
 # Start development server
 npm run dev
@@ -101,63 +115,65 @@ npm run dev
 ### 4. Access Application
 
 - **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:3000/api
-- **API Documentation**: http://localhost:3000/api-docs
-- **Health Check**: http://localhost:3000/api/health
+- **Backend API**: http://localhost:3002/api
+- **API Documentation**: http://localhost:3002/api-docs
+- **Health Check**: http://localhost:3002/api/health
 
 ## 📁 Project Structure
 
 ```
 expense-tracker/
-├── config/                    # Configuration files
-│   ├── db.js                 # MongoDB connection
-│   └── swagger.js            # Swagger/OpenAPI config
-├── controllers/              # Business logic
-│   ├── authController.js     # Authentication
-│   ├── expenseController.js  # Expense CRUD
-│   ├── budgetController.js   # Budget management
-│   ├── exportController.js   # Data export
-│   └── adminController.js    # Admin dashboard
-├── middleware/               # Express middleware
-│   ├── auth.js              # JWT verification
-│   ├── validators.js        # Input validation
-│   └── errorHandler.js      # Error handling
-├── models/                   # MongoDB schemas
-│   ├── User.js              # User model
-│   └── Expense.js           # Expense model
-├── routes/                   # API routes
-│   ├── auth.js              # Auth endpoints
-│   ├── expenses.js          # Expense endpoints
-│   ├── budget.js            # Budget endpoints
-│   ├── export.js            # Export endpoints
-│   └── admin.js             # Admin endpoints
-├── utils/                    # Utility functions
-│   └── asyncHandler.js      # Async error wrapper
-├── client/                   # React frontend
+├── client/                    # React frontend
 │   ├── src/
-│   │   ├── pages/           # Page components
-│   │   ├── components/      # Reusable components
-│   │   ├── context/         # React Context
-│   │   └── utils/           # Utilities
+│   │   ├── pages/            # Page components (Login, Register, Dashboard)
+│   │   ├── components/       # Reusable components (13 total)
+│   │   ├── context/          # React Context (Auth, Theme)
+│   │   ├── utils/            # Utilities (axios config)
+│   │   ├── theme.css         # CSS variables for dark mode
+│   │   └── index.css         # Global styles with animations
+│   ├── __tests__/            # Frontend tests
 │   ├── package.json
 │   └── vite.config.js
-├── public/                   # Static files
-├── server-mongodb.js        # Main server entry
-├── package.json             # Backend dependencies
-├── .env.example             # Environment template
-└── README.md               # This file
+├── __tests__/                # Backend tests
+├── server.js                 # Main server (JSON storage)
+├── package.json              # Backend dependencies
+├── .env.example              # Environment template
+└── README.md                 # This file
 ```
+
+## 🎨 Dark Mode
+
+The application includes a full dark mode implementation:
+
+- **Automatic Detection**: Respects system color scheme preference
+- **Manual Toggle**: Theme toggle button in navbar
+- **Persistent**: Theme preference saved to localStorage
+- **Smooth Transitions**: CSS transitions between themes
+- **CSS Variables**: Easy customization via CSS variables
+
+### Using Dark Mode
+1. Click the theme toggle button (☀️/🌙) in the navbar
+2. Or set your system to dark mode for automatic detection
+3. Your preference is saved automatically
+
+## 📊 Statistics & Insights
+
+The dashboard includes advanced analytics:
+
+- **Average Expense**: Per transaction average
+- **Daily Average**: Last 7 days spending pattern
+- **Top Category**: Highest spending category
+- **Monthly Projection**: Estimated month-end spending
+- **Spending Trend**: Comparison with historical average
+- **Budget Status**: Real-time budget tracking
 
 ## 🔐 Environment Variables
 
 ### Backend (.env)
 ```env
 # Server
-PORT=3000
+PORT=3002
 NODE_ENV=development
-
-# Database
-MONGODB_URI=mongodb://localhost:27017/expense-tracker
 
 # Authentication
 JWT_SECRET=your-super-secret-key-change-in-production
@@ -169,13 +185,13 @@ CORS_ORIGIN=http://localhost:5173
 
 ### Frontend (client/.env)
 ```env
-VITE_API_URL=http://localhost:3000/api
+VITE_API_URL=http://localhost:3002
 ```
 
 ## 📚 API Documentation
 
 ### Interactive API Docs
-Visit http://localhost:3000/api-docs for interactive Swagger documentation
+Visit http://localhost:3002/api-docs for interactive Swagger documentation
 
 ### Key Endpoints
 
@@ -193,15 +209,29 @@ Visit http://localhost:3000/api-docs for interactive Swagger documentation
 #### Budget
 - `GET /api/budget` - Get current budget status
 - `PUT /api/budget` - Update budget settings
-- `GET /api/budget/history` - Get 12-month history
 
 #### Export
 - `GET /api/export/expenses` - Export expenses as CSV
-- `GET /api/export/expenses-with-budget` - Export with budget summary
-- `GET /api/export/monthly-summary` - Export monthly summary
 
-#### Admin
-- `GET /api/admin/dashboard` - Admin dashboard data
+## 🧪 Testing
+
+### Run Tests
+```bash
+# Backend tests
+npm test
+
+# Backend tests with coverage
+npm test -- --coverage
+
+# Watch mode
+npm run test:watch
+```
+
+### Test Coverage
+- ✅ Authentication endpoints (register, login)
+- ✅ Input validation
+- ✅ Error handling
+- ✅ Frontend components (SummaryCards, etc.)
 
 ## 🔑 Authentication
 
@@ -211,73 +241,41 @@ All protected endpoints require JWT token in Authorization header:
 Authorization: Bearer <your-jwt-token>
 ```
 
-## 💾 Database Schema
+## 💾 Data Storage
 
-### User Model
-```javascript
-{
-  name: String,
-  email: String (unique),
-  password: String (hashed),
-  role: String (user|admin),
-  monthlyBudget: Number,
-  budgetWarningThreshold: Number,
-  createdAt: Date
-}
-```
+The application uses JSON file storage for simplicity:
 
-### Expense Model
-```javascript
-{
-  userId: ObjectId (ref: User),
-  description: String,
-  amount: Number,
-  category: String (Food|Transport|Entertainment|Bills|Other),
-  date: Date,
-  createdAt: Date
-}
-```
+- **users.json** - User accounts and credentials
+- **expenses.json** - All expense records
 
-## 🧪 Testing
+No database setup required!
 
-### Manual Testing Checklist
+## 📈 Performance Optimization
 
-#### Authentication
-- [ ] Register new user
-- [ ] Login with valid credentials
-- [ ] Login with invalid credentials (error)
-- [ ] Forgot password flow
-- [ ] Session persistence on refresh
+### Backend
+- Rate limiting to prevent abuse
+- Request body size limit (10kb)
+- Efficient JSON parsing and filtering
 
-#### Expenses
-- [ ] Add new expense
-- [ ] Edit existing expense
-- [ ] Delete expense
-- [ ] Filter by category
-- [ ] Filter by date range
-- [ ] Search by description
-- [ ] Pagination works
+### Frontend
+- React.memo for component optimization
+- useCallback for event handlers
+- useMemo for expensive calculations
+- Pagination for large datasets
+- CSS variables for instant theme switching
 
-#### Budget
-- [ ] Set monthly budget
-- [ ] Update budget
-- [ ] View budget status
-- [ ] Warning at 80%
-- [ ] Alert when exceeded
-- [ ] View budget history
+## 🔒 Security Best Practices
 
-#### Export
-- [ ] Export expenses as CSV
-- [ ] Export with budget summary
-- [ ] Export monthly summary
-- [ ] File downloads correctly
-
-#### UI/UX
-- [ ] Responsive on mobile
-- [ ] Charts render correctly
-- [ ] Loading states show
-- [ ] Error messages display
-- [ ] Form validation works
+1. **Change JWT_SECRET** in production
+2. **Use HTTPS** in production
+3. **Set NODE_ENV=production** in production
+4. **Configure CORS_ORIGIN** to specific domain
+5. **Keep dependencies updated** - `npm audit`
+6. **Use environment variables** for sensitive data
+7. **Enable request logging** in production
+8. **Set up monitoring** (PM2, New Relic)
+9. **Regular security audits**
+10. **Backup data regularly**
 
 ## 🐛 Troubleshooting
 
@@ -285,15 +283,13 @@ Authorization: Bearer <your-jwt-token>
 
 **Port Already in Use**
 ```bash
-# Kill process on port 3000
-lsof -ti:3000 | xargs kill -9  # macOS/Linux
-netstat -ano | findstr :3000   # Windows
-```
+# Windows
+netstat -ano | findstr :3002
+taskkill /PID <PID> /F
 
-**MongoDB Connection Error**
-- Verify MongoDB is running
-- Check MONGODB_URI in .env
-- Ensure database exists
+# macOS/Linux
+lsof -ti:3002 | xargs kill -9
+```
 
 **JWT Errors**
 - Verify JWT_SECRET is set
@@ -314,58 +310,40 @@ netstat -ano | findstr :3000   # Windows
 - Check network tab in DevTools
 - Verify JWT token is valid
 
-## 📊 Performance Optimization
+## 📱 Responsive Design
 
-### Backend
-- MongoDB indexes on userId and date
-- Aggregation pipeline for calculations
-- Rate limiting to prevent abuse
-- Request body size limit (10kb)
+The application is fully responsive:
 
-### Frontend
-- React.memo for component optimization
-- useCallback for event handlers
-- useMemo for expensive calculations
-- Pagination for large datasets
-- Lazy loading of components
+- **Desktop**: Full-featured layout (1200px+)
+- **Tablet**: Optimized grid layout (768px - 1199px)
+- **Mobile**: Single column layout (<768px)
+- **Small Mobile**: Compact layout (<480px)
 
-## 🔒 Security Best Practices
+## 🚀 Deployment
 
-1. **Change JWT_SECRET** in production
-2. **Use HTTPS** in production
-3. **Enable MongoDB authentication**
-4. **Set NODE_ENV=production**
-5. **Configure CORS_ORIGIN** to specific domain
-6. **Keep dependencies updated** - `npm audit`
-7. **Use environment variables** for sensitive data
-8. **Enable request logging** in production
-9. **Set up monitoring** (PM2, New Relic)
-10. **Regular security audits**
+### Deploy to Railway (Backend)
+1. Push code to GitHub
+2. Connect Railway to GitHub repository
+3. Set environment variables in Railway dashboard
+4. Railway auto-deploys on push
 
-## 📈 Future Enhancements
-
-- [ ] Category-specific budgets
-- [ ] Email/SMS alerts
-- [ ] Budget forecasting
-- [ ] Recurring expenses
-- [ ] Multi-currency support
-- [ ] Family budget sharing
-- [ ] Mobile app (React Native)
-- [ ] Dark mode
-- [ ] Advanced analytics
-- [ ] Spending recommendations
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
+### Deploy to Netlify (Frontend)
+1. Push code to GitHub
+2. Connect Netlify to GitHub repository
+3. Set build command: `npm run build --prefix client`
+4. Set publish directory: `client/dist`
+5. Netlify auto-deploys on push
 
 ## 📄 License
 
 This project is licensed under the MIT License - see LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- Express.js for the web framework
+- React for the UI framework
+- Chart.js for data visualization
+- All open-source contributors
 
 ## 📞 Support
 
@@ -374,18 +352,24 @@ For issues and questions:
 2. Review API documentation at `/api-docs`
 3. Check browser console for errors
 4. Verify environment variables
-5. Check MongoDB connection
+5. Check GitHub issues
 
-## 🙏 Acknowledgments
+## 🎯 Future Enhancements
 
-- Express.js for the web framework
-- MongoDB for the database
-- React for the UI framework
-- Chart.js for data visualization
-- All open-source contributors
+- [ ] Category-specific budgets
+- [ ] Email/SMS alerts
+- [ ] Budget forecasting
+- [ ] Recurring expenses
+- [ ] Multi-currency support
+- [ ] Family budget sharing
+- [ ] Mobile app (React Native)
+- [ ] Advanced analytics dashboard
+- [ ] Spending recommendations
+- [ ] Data import/export
 
 ---
 
 **Happy Tracking! 💰**
 
 Last Updated: February 2026
+Version: 2.0.0 (Portfolio Ready)

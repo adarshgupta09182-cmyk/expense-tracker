@@ -9,6 +9,7 @@ import ExpenseForm from '../components/ExpenseForm';
 import ExpenseTable from '../components/ExpenseTable';
 import ChartsSection from '../components/ChartsSection';
 import FilterBar from '../components/FilterBar';
+import StatisticsInsights from '../components/StatisticsInsights';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -192,6 +193,8 @@ const Dashboard = () => {
         )}
         
         <SummaryCards expenses={filteredExpenses} />
+        
+        <StatisticsInsights expenses={filteredExpenses} budget={budgetData?.budget} />
         
         <ExpenseForm
           onSubmit={handleAddExpense}

@@ -9,7 +9,8 @@
     "start:mongodb": "node server-mongodb.js",
     "dev:mongodb": "nodemon server-mongodb.js",
     "lint": "eslint .",
-    "test": "jest"
+    "test": "jest --coverage",
+    "test:watch": "jest --watch"
   },
   "keywords": [
     "expense",
@@ -35,7 +36,9 @@
     "swagger-jsdoc": "^6.2.8"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "nodemon": "^3.0.2",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3"
   },
   "engines": {
     "node": ">=14.0.0",
