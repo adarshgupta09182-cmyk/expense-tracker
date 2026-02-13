@@ -21,9 +21,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const { login, error: authError, clearError } = useAuth();
   const navigate = useNavigate();
-  
-  // Debug: Show API URL
-  const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
   const validateForm = useCallback(() => {
     const newErrors = {};
@@ -92,20 +89,6 @@ const Login = () => {
       <div className="auth-box">
         <h1>💰 Expense Tracker</h1>
         <h2>Login</h2>
-        
-        {/* Debug Info - More Visible */}
-        <div style={{ 
-          fontSize: '13px', 
-          color: '#fff', 
-          marginBottom: '15px', 
-          padding: '12px', 
-          backgroundColor: '#e74c3c', 
-          borderRadius: '4px',
-          border: '2px solid #c0392b',
-          fontWeight: 'bold'
-        }}>
-          🔧 API URL: <br/>{apiUrl}
-        </div>
         
         {authError && (
           <div className="error-message">
