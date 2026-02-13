@@ -2,6 +2,6 @@
   "buildCommand": "cd client && npm install && npm run build",
   "outputDirectory": "client/dist",
   "env": {
-    "VITE_API_URL": "@vite_api_url"
+    "VITE_API_URL": "https://web-production-43d51.up.railway.app/api"
   }
 }
