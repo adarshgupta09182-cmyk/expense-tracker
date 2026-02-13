@@ -104,6 +104,20 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Expense Tracker API',
+    version: '1.0.0',
+    endpoints: {
+      health: '/health',
+      register: '/api/auth/register',
+      login: '/api/auth/login'
+    }
+  });
+});
+
 // Health check (before rate limiter)
 app.get('/health', (req, res) => {
   const userCount = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8')).length;
