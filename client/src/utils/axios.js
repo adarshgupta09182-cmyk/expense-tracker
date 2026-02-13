@@ -3,6 +3,10 @@ import axios from 'axios';
 // Use environment variable for API URL in production, fallback to /api for development
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
+// Log the API URL for debugging
+console.log('API_URL configured as:', API_URL);
+console.log('VITE_API_URL env var:', import.meta.env.VITE_API_URL);
+
 const axiosInstance = axios.create({
   baseURL: API_URL,
   headers: {
@@ -17,6 +21,7 @@ axiosInstance.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    console.log('API Request:', config.method?.toUpperCase(), config.url, 'Full URL:', config.baseURL + config.url);
     return config;
   },
   (error) => {
