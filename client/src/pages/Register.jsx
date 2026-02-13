@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import AnimatedButton from '../components/AnimatedButton';
 import './Auth.css';
 
 const validateEmail = (email) => {
@@ -170,13 +171,13 @@ const Register = () => {
             {errors.confirmPassword && <span className="field-error">{errors.confirmPassword}</span>}
           </div>
 
-          <button 
+          <AnimatedButton 
             type="submit" 
             disabled={!isFormValid}
             className={loading ? 'loading' : ''}
           >
             {loading ? 'Registering...' : 'Register'}
-          </button>
+          </AnimatedButton>
         </form>
         
         <p className="auth-link">
