@@ -15,8 +15,7 @@ const validatePassword = (password) => {
 const Login = () => {
   const [formData, setFormData] = useState({
     email: '',
-    password: '',
-    role: 'user'
+    password: ''
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -53,7 +52,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      await login(formData.email, formData.password, formData.role);
+      await login(formData.email, formData.password);
       navigate('/dashboard');
     } catch (err) {
       // Error is handled by AuthContext
@@ -119,18 +118,6 @@ const Login = () => {
               className={errors.password ? 'input-error' : ''}
             />
             {errors.password && <span className="field-error">{errors.password}</span>}
-          </div>
-
-          <div className="form-group">
-            <select 
-              name="role" 
-              value={formData.role} 
-              onChange={handleChange}
-              disabled={loading}
-            >
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-            </select>
           </div>
 
           <button 

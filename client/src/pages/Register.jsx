@@ -21,8 +21,7 @@ const Register = () => {
     name: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    role: 'user'
+    confirmPassword: ''
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -71,7 +70,7 @@ const Register = () => {
     setLoading(true);
 
     try {
-      await register(formData.name, formData.email, formData.password, formData.role);
+      await register(formData.name, formData.email, formData.password);
       navigate('/dashboard');
     } catch (err) {
       // Error is handled by AuthContext
@@ -165,18 +164,6 @@ const Register = () => {
               className={errors.confirmPassword ? 'input-error' : ''}
             />
             {errors.confirmPassword && <span className="field-error">{errors.confirmPassword}</span>}
-          </div>
-
-          <div className="form-group">
-            <select 
-              name="role" 
-              value={formData.role} 
-              onChange={handleChange}
-              disabled={loading}
-            >
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-            </select>
           </div>
 
           <button 

@@ -38,10 +38,10 @@ export const AuthProvider = ({ children }) => {
     initializeAuth();
   }, []);
 
-  const login = useCallback(async (email, password, role) => {
+  const login = useCallback(async (email, password) => {
     setError(null);
     try {
-      const response = await axios.post('/auth/login', { email, password, role });
+      const response = await axios.post('/auth/login', { email, password });
       const { token, user } = response.data;
       
       // Store securely in localStorage
@@ -57,10 +57,10 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const register = useCallback(async (name, email, password, role) => {
+  const register = useCallback(async (name, email, password) => {
     setError(null);
     try {
-      const response = await axios.post('/auth/register', { name, email, password, role });
+      const response = await axios.post('/auth/register', { name, email, password });
       const { token, user } = response.data;
       
       localStorage.setItem('token', token);

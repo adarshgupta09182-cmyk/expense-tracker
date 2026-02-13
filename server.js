@@ -136,11 +136,10 @@ app.post('/api/auth/register', [
   body('name').trim().notEmpty().isLength({ min: 2, max: 50 }).escape(),
   body('email').trim().notEmpty().isEmail().normalizeEmail(),
   body('password').notEmpty().isLength({ min: 6 }),
-  body('role').optional().isIn(['user', 'admin']),
   validate
 ], async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
     const users = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
 
     if (users.find(u => u.email === email)) {
@@ -153,7 +152,7 @@ app.post('/api/auth/register', [
       name,
       email,
       password: hashedPassword,
-      role: role || 'user',
+      role: 'user',
       createdAt: new Date().toISOString()
     };
 
@@ -176,20 +175,15 @@ app.post('/api/auth/register', [
 app.post('/api/auth/login', [
   body('email').trim().notEmpty().isEmail().normalizeEmail(),
   body('password').notEmpty(),
-  body('role').optional().isIn(['user', 'admin']),
   validate
 ], async (req, res) => {
   try {
-    const { email, password, role } = req.body;
+    const { email, password } = req.body;
     const users = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
 
     const user = users.find(u => u.email === email);
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
-    }
-
-    if (role && user.role !== role) {
-      return res.status(401).json({ success: false, message: 'Invalid credentials or role' });
     }
 
     const token = generateToken(user.id);
