@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import axios from '../utils/axios';
+import { pageVariants } from '../utils/animations';
 import Navbar from '../components/Navbar';
 import SummaryCards from '../components/SummaryCards';
 import BudgetCard from '../components/BudgetCard';
@@ -10,6 +12,7 @@ import ExpenseTable from '../components/ExpenseTable';
 import ChartsSection from '../components/ChartsSection';
 import FilterBar from '../components/FilterBar';
 import StatisticsInsights from '../components/StatisticsInsights';
+import LoadingSkeleton from '../components/LoadingSkeleton';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -157,18 +160,36 @@ const Dashboard = () => {
   }, [currentPage, filteredExpenses, itemsPerPage]);
 
   if (loading) {
-    return <div className="loading">Loading...</div>;
+    return (
+      <div className="dashboard">
+        <Navbar />
+        <div className="dashboard-container">
+          <LoadingSkeleton count={5} type="card" />
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="dashboard">
+    <motion.div
+      className="dashboard"
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+    >
       <Navbar />
-      <div className="dashboard-container">
+      <motion.div className="dashboard-container">
         {error && (
-          <div className="error-banner">
+          <motion.div
+            className="error-banner"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+          >
             {error}
             <button onClick={() => setError('')} className="error-close">×</button>
-          </div>
+          </motion.div>
         )}
         
         <div className="dashboard-header">
@@ -219,8 +240,8 @@ const Dashboard = () => {
           onPageChange={setCurrentPage}
           totalItems={filteredExpenses.length}
         />
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

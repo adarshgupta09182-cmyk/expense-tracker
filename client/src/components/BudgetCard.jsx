@@ -1,4 +1,6 @@
 import { useMemo } from 'react';
+import { motion } from 'framer-motion';
+import { cardVariants } from '../utils/animations';
 import './BudgetCard.css';
 
 const BudgetCard = ({ budget, totalSpent, isWarning, isExceeded }) => {
@@ -56,18 +58,28 @@ const BudgetCard = ({ budget, totalSpent, isWarning, isExceeded }) => {
 
   if (!budget || budget === 0) {
     return (
-      <div className="budget-card no-budget">
+      <motion.div
+        className="budget-card no-budget"
+        variants={cardVariants}
+        initial="initial"
+        whileHover="hover"
+      >
         <div className="budget-header">
           <h3>Monthly Budget</h3>
           <span className="budget-status">Not Set</span>
         </div>
         <p className="no-budget-message">Set a monthly budget to track your spending</p>
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className={`budget-card ${budgetData.status}`}>
+    <motion.div
+      className={`budget-card ${budgetData.status}`}
+      variants={cardVariants}
+      initial="initial"
+      whileHover="hover"
+    >
       <div className="budget-header">
         <h3>Monthly Budget</h3>
         <span className={`budget-status ${budgetData.status}`}>
@@ -112,7 +124,7 @@ const BudgetCard = ({ budget, totalSpent, isWarning, isExceeded }) => {
       <div className={`status-message ${budgetData.status}`}>
         {getStatusText()}
       </div>
-    </div>
+    </motion.div>
   );
 };
 
