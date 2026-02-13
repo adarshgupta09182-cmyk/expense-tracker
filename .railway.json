@@ -1,5 +1,5 @@
 {
   "builder": "nixpacks",
-  "buildCommand": "npm install",
+  "buildCommand": "npm install --legacy-peer-deps",
   "startCommand": "node server.js"
 }
