@@ -8,11 +8,15 @@ const path = require('path');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, param, query, validationResult } = require('express-validator');
+const { ensureDataFiles } = require('./preserve-data');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const DATA_FILE = 'expenses.json';
 const USERS_FILE = 'users.json';
+
+// Ensure data files exist and are valid on startup
+ensureDataFiles();
 
 // ============================================================================
 // LOGGING UTILITY (Production-safe)
