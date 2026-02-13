@@ -1,7 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { AnimatePresence } from 'framer-motion'
 import { AuthProvider } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
 import PrivateRoute from './components/PrivateRoute'
+import AnimatedPage from './components/AnimatedPage'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import ForgotPassword from './pages/ForgotPassword'
@@ -13,20 +15,22 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <Router>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route
-              path="/dashboard"
-              element={
-                <PrivateRoute>
-                  <Dashboard />
-                </PrivateRoute>
-              }
-            />
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
+          <AnimatePresence mode="wait">
+            <Routes>
+              <Route path="/login" element={<AnimatedPage><Login /></AnimatedPage>} />
+              <Route path="/register" element={<AnimatedPage><Register /></AnimatedPage>} />
+              <Route path="/forgot-password" element={<AnimatedPage><ForgotPassword /></AnimatedPage>} />
+              <Route
+                path="/dashboard"
+                element={
+                  <PrivateRoute>
+                    <AnimatedPage><Dashboard /></AnimatedPage>
+                  </PrivateRoute>
+                }
+              />
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </AnimatePresence>
         </Router>
       </AuthProvider>
     </ThemeProvider>
