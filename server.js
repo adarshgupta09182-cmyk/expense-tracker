@@ -14,6 +14,61 @@ const PORT = process.env.PORT || 3000;
 const DATA_FILE = 'expenses.json';
 const USERS_FILE = 'users.json';
 
+// ============================================================================
+// LOGGING UTILITY (Production-safe)
+// ============================================================================
+const logger = {
+  info: (msg, data = {}) => {
+    console.log(`[INFO] ${new Date().toISOString()} - ${msg}`, data);
+  },
+  error: (msg, err = {}) => {
+    console.error(`[ERROR] ${new Date().toISOString()} - ${msg}`, err.message || err);
+  },
+  warn: (msg, data = {}) => {
+    console.warn(`[WARN] ${new Date().toISOString()} - ${msg}`, data);
+  }
+};
+
+// ============================================================================
+// DATABASE PERSISTENCE CHECK
+// ============================================================================
+const initializeDatabase = () => {
+  logger.info('Initializing database files...');
+  
+  // Ensure users.json exists and is valid
+  if (!fs.existsSync(USERS_FILE)) {
+    logger.warn('users.json not found, creating new file');
+    fs.writeFileSync(USERS_FILE, JSON.stringify([], null, 2));
+  } else {
+    try {
+      const data = fs.readFileSync(USERS_FILE, 'utf8');
+      JSON.parse(data); // Validate JSON
+      logger.info('users.json loaded successfully', { userCount: JSON.parse(data).length });
+    } catch (err) {
+      logger.error('users.json is corrupted, resetting', err);
+      fs.writeFileSync(USERS_FILE, JSON.stringify([], null, 2));
+    }
+  }
+
+  // Ensure expenses.json exists and is valid
+  if (!fs.existsSync(DATA_FILE)) {
+    logger.warn('expenses.json not found, creating new file');
+    fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
+  } else {
+    try {
+      const data = fs.readFileSync(DATA_FILE, 'utf8');
+      JSON.parse(data); // Validate JSON
+      logger.info('expenses.json loaded successfully', { expenseCount: JSON.parse(data).length });
+    } catch (err) {
+      logger.error('expenses.json is corrupted, resetting', err);
+      fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
+    }
+  }
+};
+
+// Initialize on startup
+initializeDatabase();
+
 // Security middleware
 app.use(helmet({
   contentSecurityPolicy: {
@@ -51,11 +106,17 @@ app.use('/api/', limiter);
 
 // Health check (before rate limiter)
 app.get('/health', (req, res) => {
+  const userCount = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8')).length;
   res.json({
     success: true,
     status: 'ok',
     message: 'Server is running (JSON file storage)',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    database: {
+      type: 'JSON File',
+      users: userCount,
+      persistent: true
+    }
   });
 });
 
@@ -66,14 +127,6 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 // Static files - only serve in development
 if (process.env.NODE_ENV !== 'production') {
   app.use(express.static('public'));
-}
-
-// Initialize data files
-if (!fs.existsSync(DATA_FILE)) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify([]));
-}
-if (!fs.existsSync(USERS_FILE)) {
-  fs.writeFileSync(USERS_FILE, JSON.stringify([]));
 }
 
 // Validation middleware
@@ -140,13 +193,19 @@ app.post('/api/auth/register', [
 ], async (req, res) => {
   try {
     const { name, email, password } = req.body;
+    
+    logger.info('Registration attempt', { email, name });
+    
     const users = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
 
     if (users.find(u => u.email === email)) {
+      logger.warn('Registration failed: email already exists', { email });
       return res.status(400).json({ success: false, message: 'Email already exists' });
     }
 
+    logger.info('Hashing password', { email });
     const hashedPassword = await bcrypt.hash(password, 12);
+    
     const user = {
       id: Date.now(),
       name,
@@ -159,11 +218,14 @@ app.post('/api/auth/register', [
     users.push(user);
     fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 
+    logger.info('Registration successful', { email, userId: user.id });
+
     res.status(201).json({
       success: true,
       message: 'Registration successful. Please login with your credentials.'
     });
   } catch (error) {
+    logger.error('Registration error', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
@@ -173,16 +235,40 @@ app.post('/api/auth/login', [
   body('password').notEmpty(),
   validate
 ], async (req, res) => {
+  const { email, password } = req.body;
+  
   try {
-    const { email, password } = req.body;
-    const users = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
+    logger.info('Login attempt', { email });
+    
+    // Read users from persistent storage
+    const usersData = fs.readFileSync(USERS_FILE, 'utf8');
+    const users = JSON.parse(usersData);
+    
+    logger.info('Users file loaded', { totalUsers: users.length });
 
+    // Find user by email
     const user = users.find(u => u.email === email);
-    if (!user || !(await bcrypt.compare(password, user.password))) {
+    
+    if (!user) {
+      logger.warn('Login failed: user not found', { email });
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
+    logger.info('User found, comparing password', { email, userId: user.id });
+
+    // Compare password using bcrypt
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    
+    if (!isPasswordValid) {
+      logger.warn('Login failed: invalid password', { email });
+      return res.status(401).json({ success: false, message: 'Invalid credentials' });
+    }
+
+    logger.info('Password valid, generating token', { email, userId: user.id });
+
     const token = generateToken(user.id);
+
+    logger.info('Login successful', { email, userId: user.id });
 
     res.json({
       success: true,
@@ -190,6 +276,7 @@ app.post('/api/auth/login', [
       user: { id: user.id, name: user.name, email: user.email, role: user.role }
     });
   } catch (error) {
+    logger.error('Login error', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });

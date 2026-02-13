@@ -1,6 +1,4 @@
 node_modules/
-expenses.json
-users.json
 .env
 .DS_Store
 *.log
