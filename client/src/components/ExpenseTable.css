@@ -66,8 +66,12 @@
 
 .expense-table .amount {
   font-weight: 600;
-  color: #9aafff;
+  color: #1976d2;
   font-size: 15px;
+  background: #e3f2fd;
+  padding: 6px 12px;
+  border-radius: 6px;
+  display: inline-block;
 }
 
 .description-cell {
@@ -75,7 +79,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: #e8f0ff;
+  color: #1976d2;
+  background: #e3f2fd;
+  padding: 6px 12px;
+  border-radius: 6px;
+  display: inline-block;
 }
 
 .category-badge {
