@@ -65,7 +65,6 @@
   background: #e3f2fd;
   padding: 6px 12px;
   border-radius: 6px;
-  display: inline-block;
 }
 
 .description-cell {
@@ -95,6 +94,7 @@
 .actions {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .btn-edit,
