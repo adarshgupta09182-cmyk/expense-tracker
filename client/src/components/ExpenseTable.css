@@ -60,11 +60,11 @@
 
 .expense-table .amount {
   font-weight: 600;
-  color: #1976d2;
+  color: #9aafff;
   font-size: 15px;
-  background: #e3f2fd;
-  padding: 6px 12px;
-  border-radius: 6px;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
 }
 
 .description-cell {
