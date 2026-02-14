@@ -27,12 +27,30 @@ const Register = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [localError, setLocalError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [focusedField, setFocusedField] = useState(null);
   const { register, error: authError, clearError } = useAuth();
   const navigate = useNavigate();
 
   // Debug: Log when localError changes
   useEffect(() => {
     console.log('localError state changed:', localError);
+  }, [localError]);
+
+  // Auto-hide success message
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => setSuccessMessage(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
+  // Auto-hide error message
+  useEffect(() => {
+    if (localError) {
+      const timer = setTimeout(() => setLocalError(null), 5000);
+      return () => clearTimeout(timer);
+    }
   }, [localError]);
 
   const validateForm = useCallback(() => {
@@ -83,7 +101,8 @@ const Register = () => {
       console.log('Attempting registration...');
       await register(formData.name, formData.email, formData.password);
       console.log('Registration successful, navigating to login');
-      navigate('/login');
+      setSuccessMessage('Registration successful! Redirecting to login...');
+      setTimeout(() => navigate('/login'), 1500);
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Registration failed';
       console.log('Registration error caught:', errorMsg);
@@ -110,6 +129,14 @@ const Register = () => {
     }
   }, [errors]);
 
+  const handleFocus = useCallback((fieldName) => {
+    setFocusedField(fieldName);
+  }, []);
+
+  const handleBlur = useCallback(() => {
+    setFocusedField(null);
+  }, []);
+
   const isFormValid = useMemo(() => {
     return formData.name && formData.email && formData.password && 
            formData.confirmPassword && !loading;
@@ -119,96 +146,160 @@ const Register = () => {
 
   return (
     <div className="auth-container">
-      <div className="auth-box">
-        <h1>💰 Expense Tracker</h1>
-        <h2>Register</h2>
-        
-        {displayError && (
-          <div className="error-message">
-            <span>{displayError}</span>
-            <button 
-              type="button"
-              onClick={() => {
-                console.log('Close button clicked');
-                setLocalError(null);
-              }} 
-              className="error-close"
-            >
-              ×
-            </button>
-          </div>
-        )}
-        
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <input
-              type="text"
-              name="name"
-              placeholder="Full Name"
-              value={formData.name}
-              onChange={handleChange}
-              disabled={loading}
-              className={errors.name ? 'input-error' : ''}
-              autoComplete="name"
-            />
-            {errors.name && <span className="field-error">{errors.name}</span>}
+      <div className="auth-wrapper">
+        {/* Left Side - Hero Section */}
+        <div className="auth-hero">
+          <div className="hero-content">
+            <h1 className="hero-heading">Take Control of Your Finances</h1>
+            <p className="hero-subheading">Track expenses, monitor spending trends, and manage your budget with clarity and confidence.</p>
+            
+            <div className="features-list">
+              <div className="feature-item">
+                <span className="feature-icon">⚡</span>
+                <span className="feature-text">Real-time expense tracking</span>
+              </div>
+              <div className="feature-item">
+                <span className="feature-icon">📊</span>
+                <span className="feature-text">Smart monthly analytics</span>
+              </div>
+              <div className="feature-item">
+                <span className="feature-icon">🔒</span>
+                <span className="feature-text">Secure & private data storage</span>
+              </div>
+            </div>
           </div>
 
-          <div className="form-group">
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleChange}
-              disabled={loading}
-              className={errors.email ? 'input-error' : ''}
-              autoComplete="email"
-            />
-            {errors.email && <span className="field-error">{errors.email}</span>}
-          </div>
+          {/* Floating animation elements */}
+          <div className="floating-element element-1"></div>
+          <div className="floating-element element-2"></div>
+          <div className="floating-element element-3"></div>
+        </div>
 
-          <div className="form-group">
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              minLength="6"
-              value={formData.password}
-              onChange={handleChange}
-              disabled={loading}
-              className={errors.password ? 'input-error' : ''}
-              autoComplete="new-password"
-            />
-            {errors.password && <span className="field-error">{errors.password}</span>}
-          </div>
+        {/* Right Side - Register Card */}
+        <div className="auth-form-container">
+          <div className="auth-box">
+            <h2>Register</h2>
+            
+            {displayError && (
+              <div className="notification error-notification">
+                <span className="notification-icon">✕</span>
+                <span>{displayError}</span>
+                <button 
+                  type="button"
+                  onClick={() => setLocalError(null)} 
+                  className="notification-close"
+                >
+                  ×
+                </button>
+              </div>
+            )}
 
-          <div className="form-group">
-            <input
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              disabled={loading}
-              className={errors.confirmPassword ? 'input-error' : ''}
-              autoComplete="new-password"
-            />
-            {errors.confirmPassword && <span className="field-error">{errors.confirmPassword}</span>}
-          </div>
+            {successMessage && (
+              <div className="notification success-notification">
+                <span className="notification-icon">✓</span>
+                <span>{successMessage}</span>
+              </div>
+            )}
+            
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <div className={`input-wrapper ${focusedField === 'name' ? 'focused' : ''} ${errors.name ? 'error' : ''}`}>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Full Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    onFocus={() => handleFocus('name')}
+                    onBlur={handleBlur}
+                    disabled={loading}
+                    className={errors.name ? 'input-error' : ''}
+                    autoComplete="name"
+                  />
+                  {focusedField === 'name' && <div className="input-focus-indicator"></div>}
+                </div>
+                {errors.name && <span className="field-error">{errors.name}</span>}
+              </div>
 
-          <AnimatedButton 
-            type="submit" 
-            disabled={!isFormValid}
-            className={loading ? 'loading' : ''}
-          >
-            {loading ? 'Registering...' : 'Register'}
-          </AnimatedButton>
-        </form>
-        
-        <p className="auth-link">
-          Already have an account? <Link to="/login">Login here</Link>
-        </p>
+              <div className="form-group">
+                <div className={`input-wrapper ${focusedField === 'email' ? 'focused' : ''} ${errors.email ? 'error' : ''}`}>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    onFocus={() => handleFocus('email')}
+                    onBlur={handleBlur}
+                    disabled={loading}
+                    className={errors.email ? 'input-error' : ''}
+                    autoComplete="email"
+                  />
+                  {focusedField === 'email' && <div className="input-focus-indicator"></div>}
+                </div>
+                {errors.email && <span className="field-error">{errors.email}</span>}
+              </div>
+
+              <div className="form-group">
+                <div className={`input-wrapper ${focusedField === 'password' ? 'focused' : ''} ${errors.password ? 'error' : ''}`}>
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    minLength="6"
+                    value={formData.password}
+                    onChange={handleChange}
+                    onFocus={() => handleFocus('password')}
+                    onBlur={handleBlur}
+                    disabled={loading}
+                    className={errors.password ? 'input-error' : ''}
+                    autoComplete="new-password"
+                  />
+                  {focusedField === 'password' && <div className="input-focus-indicator"></div>}
+                </div>
+                {errors.password && <span className="field-error">{errors.password}</span>}
+              </div>
+
+              <div className="form-group">
+                <div className={`input-wrapper ${focusedField === 'confirmPassword' ? 'focused' : ''} ${errors.confirmPassword ? 'error' : ''}`}>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    placeholder="Confirm Password"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    onFocus={() => handleFocus('confirmPassword')}
+                    onBlur={handleBlur}
+                    disabled={loading}
+                    className={errors.confirmPassword ? 'input-error' : ''}
+                    autoComplete="new-password"
+                  />
+                  {focusedField === 'confirmPassword' && <div className="input-focus-indicator"></div>}
+                </div>
+                {errors.confirmPassword && <span className="field-error">{errors.confirmPassword}</span>}
+              </div>
+
+              <AnimatedButton 
+                type="submit" 
+                disabled={!isFormValid}
+                className={`${loading ? 'loading' : ''}`}
+              >
+                {loading ? (
+                  <>
+                    <span className="spinner"></span>
+                    Registering...
+                  </>
+                ) : (
+                  'Register'
+                )}
+              </AnimatedButton>
+            </form>
+            
+            <p className="auth-link">
+              Already have an account? <Link to="/login">Login here</Link>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
