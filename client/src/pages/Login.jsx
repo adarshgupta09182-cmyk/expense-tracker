@@ -22,6 +22,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [localError, setLocalError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+  const [welcomeMessage, setWelcomeMessage] = useState(null);
   const [focusedField, setFocusedField] = useState(null);
   const { login, error: authError, clearError } = useAuth();
   const navigate = useNavigate();
@@ -81,10 +82,14 @@ const Login = () => {
 
     try {
       console.log('Attempting login...');
-      await login(formData.email, formData.password);
+      const response = await login(formData.email, formData.password);
       console.log('Login successful, navigating to dashboard');
-      setSuccessMessage('Login successful! Redirecting...');
-      setTimeout(() => navigate('/dashboard'), 1500);
+      
+      // Show welcome message with user's name
+      const userName = response.user?.name || 'User';
+      setWelcomeMessage(userName);
+      
+      setTimeout(() => navigate('/dashboard'), 2000);
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Login failed';
       console.log('Login error caught:', errorMsg);
@@ -159,6 +164,17 @@ const Login = () => {
         {/* Right Side - Login Card */}
         <div className="auth-form-container">
           <div className="auth-box">
+            {welcomeMessage && (
+              <div className="welcome-message-overlay">
+                <div className="welcome-message">
+                  <div className="welcome-icon">👋</div>
+                  <h2 className="welcome-heading">Welcome Back!</h2>
+                  <p className="welcome-name">{welcomeMessage}</p>
+                  <div className="welcome-loader"></div>
+                </div>
+              </div>
+            )}
+            
             <h2>Login</h2>
             
             {displayError && (
