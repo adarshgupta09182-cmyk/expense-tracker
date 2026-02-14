@@ -46,6 +46,7 @@ const Login = () => {
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     setLocalError(null);
+    clearError();
 
     if (!validateForm()) {
       return;
@@ -59,10 +60,11 @@ const Login = () => {
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Login failed';
       setLocalError(errorMsg);
+      console.log('Login error set:', errorMsg);
     } finally {
       setLoading(false);
     }
-  }, [formData, login, navigate, validateForm]);
+  }, [formData, login, navigate, validateForm, clearError]);
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;

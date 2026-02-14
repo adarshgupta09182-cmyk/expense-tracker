@@ -64,6 +64,7 @@ const Register = () => {
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     setLocalError(null);
+    clearError();
 
     if (!validateForm()) {
       return;
@@ -77,10 +78,11 @@ const Register = () => {
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Registration failed';
       setLocalError(errorMsg);
+      console.log('Registration error set:', errorMsg);
     } finally {
       setLoading(false);
     }
-  }, [formData, register, navigate, validateForm]);
+  }, [formData, register, navigate, validateForm, clearError]);
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;

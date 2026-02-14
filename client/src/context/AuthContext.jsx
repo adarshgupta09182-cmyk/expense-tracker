@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
       return response.data;
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Login failed';
-      setError(errorMsg);
+      // Don't set error here - let the component handle it
       throw err;
     }
   }, []);
@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
       return response.data;
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Registration failed';
-      setError(errorMsg);
+      // Don't set error here - let the component handle it
       throw err;
     }
   }, []);
