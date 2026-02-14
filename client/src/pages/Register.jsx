@@ -93,11 +93,7 @@ const Register = () => {
         [name]: ''
       }));
     }
-    // Clear auth error when user starts typing
-    if (clearError) {
-      clearError();
-    }
-  }, [errors, clearError]);
+  }, [errors]);
 
   const isFormValid = useMemo(() => {
     return formData.name && formData.email && formData.password && 
