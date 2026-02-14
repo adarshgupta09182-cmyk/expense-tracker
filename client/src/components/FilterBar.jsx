@@ -45,15 +45,6 @@ const FilterBar = ({ filters, onFilterChange, onClearFilters }) => {
           placeholder="Start Date"
         />
         
-        <input
-          type="date"
-          name="endDate"
-          value={filters.endDate}
-          onChange={handleChange}
-          className="filter-input"
-          placeholder="End Date"
-        />
-        
         <button onClick={onClearFilters} className="btn-clear">
           Clear Filters
         </button>

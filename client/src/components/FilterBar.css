@@ -15,7 +15,7 @@
 
 .filter-controls {
   display: grid;
-  grid-template-columns: 2fr 1.5fr 1.2fr 1.2fr auto;
+  grid-template-columns: 2fr 1.5fr 1.2fr auto;
   gap: 12px;
   align-items: center;
 }
