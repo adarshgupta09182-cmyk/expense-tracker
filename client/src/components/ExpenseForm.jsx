@@ -28,6 +28,15 @@ const ExpenseForm = ({ onSubmit, editingExpense, onCancel }) => {
         date: editingExpense.date.split('T')[0]
       });
       setErrors({});
+    } else {
+      // Reset form when not editing
+      setFormData({
+        description: '',
+        amount: '',
+        category: '',
+        date: new Date().toISOString().split('T')[0]
+      });
+      setErrors({});
     }
   }, [editingExpense]);
 
