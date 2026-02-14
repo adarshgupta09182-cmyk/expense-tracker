@@ -21,7 +21,6 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [localError, setLocalError] = useState(null);
-  const [showPassword, setShowPassword] = useState(false);
   const { login, error: authError, clearError } = useAuth();
   const navigate = useNavigate();
 
@@ -137,27 +136,16 @@ const Login = () => {
           </div>
 
           <div className="form-group">
-            <div className="password-input-wrapper">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                name="password"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-                disabled={loading}
-                className={errors.password ? 'input-error' : ''}
-                autoComplete="current-password"
-              />
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowPassword(!showPassword)}
-                disabled={loading}
-                title={showPassword ? 'Hide password' : 'Show password'}
-              >
-                {showPassword ? '👁️' : '👁️‍🗨️'}
-              </button>
-            </div>
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              disabled={loading}
+              className={errors.password ? 'input-error' : ''}
+              autoComplete="current-password"
+            />
             {errors.password && <span className="field-error">{errors.password}</span>}
           </div>
 
