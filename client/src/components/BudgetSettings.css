@@ -110,13 +110,15 @@
   font-family: 'Inter', sans-serif;
 }
 
-/* Style number input spinner to match background */
+/* Hide number input spinner */
+.form-group input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 .form-group input[type="number"]::-webkit-outer-spin-button,
 .form-group input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: inner-spin-button;
-  appearance: inner-spin-button;
-  background: rgba(42, 63, 95, 0.5);
-  color: #d0d8e8;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .form-group input[type="number"]::placeholder,
