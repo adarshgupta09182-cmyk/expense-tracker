@@ -80,7 +80,7 @@ export const listItemVariants = {
 };
 
 // Container animations with stagger for list items
-export const listContainerVariants = {
+export const containerVariants = {
   initial: { opacity: 0 },
   animate: {
     opacity: 1,
@@ -90,3 +90,6 @@ export const listContainerVariants = {
     }
   }
 };
+
+// Alias for backward compatibility
+export const listContainerVariants = containerVariants;
