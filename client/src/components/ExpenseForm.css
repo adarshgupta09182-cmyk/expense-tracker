@@ -37,7 +37,7 @@
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-/* Show number input spinners */
+/* Show number input spinners with Jellyfish theme */
 .expense-form input[type="number"] {
   -moz-appearance: textfield;
 }
@@ -46,6 +46,8 @@
 .expense-form input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: inner-spin-button;
   opacity: 1;
+  background: linear-gradient(180deg, #2a3f5f 0%, #1a2332 100%);
+  color: #7c8ff5;
 }
 
 .expense-form input::placeholder {
