@@ -167,6 +167,14 @@ const Login = () => {
             {welcomeMessage && (
               <div className="welcome-message-overlay">
                 <div className="welcome-message">
+                  <button 
+                    type="button"
+                    onClick={() => setWelcomeMessage(null)}
+                    className="welcome-close-btn"
+                    aria-label="Close welcome message"
+                  >
+                    ×
+                  </button>
                   <div className="welcome-icon">👋</div>
                   <h2 className="welcome-heading">Welcome Back!</h2>
                   <p className="welcome-name">{welcomeMessage}</p>
