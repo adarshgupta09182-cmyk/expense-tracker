@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import AnimatedButton from '../components/AnimatedButton';
@@ -29,6 +29,11 @@ const Register = () => {
   const [localError, setLocalError] = useState(null);
   const { register, error: authError, clearError } = useAuth();
   const navigate = useNavigate();
+
+  // Debug: Log when localError changes
+  useEffect(() => {
+    console.log('localError state changed:', localError);
+  }, [localError]);
 
   const validateForm = useCallback(() => {
     const newErrors = {};
@@ -63,22 +68,27 @@ const Register = () => {
 
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
+    console.log('Form submitted');
     setLocalError(null);
     clearError();
 
     if (!validateForm()) {
+      console.log('Form validation failed');
       return;
     }
 
     setLoading(true);
 
     try {
+      console.log('Attempting registration...');
       await register(formData.name, formData.email, formData.password);
+      console.log('Registration successful, navigating to login');
       navigate('/login');
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Registration failed';
+      console.log('Registration error caught:', errorMsg);
       setLocalError(errorMsg);
-      console.log('Registration error set:', errorMsg);
+      console.log('Error state set to:', errorMsg);
     } finally {
       setLoading(false);
     }
@@ -115,7 +125,10 @@ const Register = () => {
         {displayError && (
           <div className="error-message">
             <span>{displayError}</span>
-            <button onClick={() => setLocalError(null)} className="error-close">×</button>
+            <button onClick={() => {
+              console.log('Close button clicked');
+              setLocalError(null);
+            }} className="error-close">×</button>
           </div>
         )}
         
