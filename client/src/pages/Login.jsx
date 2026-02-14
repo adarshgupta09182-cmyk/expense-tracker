@@ -21,12 +21,31 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [localError, setLocalError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [focusedField, setFocusedField] = useState(null);
   const { login, error: authError, clearError } = useAuth();
   const navigate = useNavigate();
 
   // Debug: Log when localError changes
   useEffect(() => {
     console.log('localError state changed:', localError);
+  }, [localError]);
+
+  // Auto-hide success message
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => setSuccessMessage(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
+  // Auto-hide error message
+  useEffect(() => {
+    if (localError) {
+      const timer = setTimeout(() => setLocalError(null), 5000);
+      return () => clearTimeout(timer);
+    }
   }, [localError]);
 
   const validateForm = useCallback(() => {
@@ -65,7 +84,8 @@ const Login = () => {
       console.log('Attempting login...');
       await login(formData.email, formData.password);
       console.log('Login successful, navigating to dashboard');
-      navigate('/dashboard');
+      setSuccessMessage('Login successful! Redirecting...');
+      setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Login failed';
       console.log('Login error caught:', errorMsg);
@@ -91,6 +111,14 @@ const Login = () => {
       }));
     }
   }, [errors]);
+
+  const handleFocus = useCallback((fieldName) => {
+    setFocusedField(fieldName);
+  }, []);
+
+  const handleBlur = useCallback(() => {
+    setFocusedField(null);
+  }, []);
 
   const isFormValid = useMemo(() => {
     return formData.email && formData.password && !loading;
@@ -135,56 +163,87 @@ const Login = () => {
             <h2>Login</h2>
             
             {displayError && (
-              <div className="error-message">
+              <div className="notification error-notification">
+                <span className="notification-icon">✕</span>
                 <span>{displayError}</span>
                 <button 
                   type="button"
-                  onClick={() => {
-                    console.log('Close button clicked');
-                    setLocalError(null);
-                  }} 
-                  className="error-close"
+                  onClick={() => setLocalError(null)} 
+                  className="notification-close"
                 >
                   ×
                 </button>
               </div>
             )}
+
+            {successMessage && (
+              <div className="notification success-notification">
+                <span className="notification-icon">✓</span>
+                <span>{successMessage}</span>
+              </div>
+            )}
             
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  disabled={loading}
-                  className={errors.email ? 'input-error' : ''}
-                  autoComplete="email"
-                />
+                <div className={`input-wrapper ${focusedField === 'email' ? 'focused' : ''} ${errors.email ? 'error' : ''}`}>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    onFocus={() => handleFocus('email')}
+                    onBlur={handleBlur}
+                    disabled={loading}
+                    className={errors.email ? 'input-error' : ''}
+                    autoComplete="email"
+                  />
+                  {focusedField === 'email' && <div className="input-focus-indicator"></div>}
+                </div>
                 {errors.email && <span className="field-error">{errors.email}</span>}
               </div>
 
               <div className="form-group">
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  disabled={loading}
-                  className={errors.password ? 'input-error' : ''}
-                  autoComplete="current-password"
-                />
+                <div className={`input-wrapper password-wrapper ${focusedField === 'password' ? 'focused' : ''} ${errors.password ? 'error' : ''}`}>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    placeholder="Password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    onFocus={() => handleFocus('password')}
+                    onBlur={handleBlur}
+                    disabled={loading}
+                    className={errors.password ? 'input-error' : ''}
+                    autoComplete="current-password"
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                    disabled={loading}
+                    title={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? '👁️' : '👁️‍🗨️'}
+                  </button>
+                  {focusedField === 'password' && <div className="input-focus-indicator"></div>}
+                </div>
                 {errors.password && <span className="field-error">{errors.password}</span>}
               </div>
 
               <AnimatedButton 
                 type="submit" 
                 disabled={!isFormValid}
-                className={loading ? 'loading' : ''}
+                className={`${loading ? 'loading' : ''}`}
               >
-                {loading ? 'Logging in...' : 'Login'}
+                {loading ? (
+                  <>
+                    <span className="spinner"></span>
+                    Logging in...
+                  </>
+                ) : (
+                  'Login'
+                )}
               </AnimatedButton>
             </form>
             

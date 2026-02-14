@@ -309,56 +309,104 @@
   gap: 5px;
 }
 
-.auth-box input,
-.auth-box select {
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
   padding: 14px 16px;
   border: 1.5px solid rgba(102, 126, 234, 0.3);
   border-radius: 10px;
-  font-size: 14px;
   background: rgba(15, 20, 25, 0.5);
-  color: var(--input-text);
-  font-family: 'Inter', sans-serif;
   transition: all 0.3s ease;
-  position: relative;
 }
 
-.auth-box input::placeholder {
+.input-wrapper input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--input-text);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  padding: 0;
+  margin: 0;
+}
+
+.input-wrapper input::placeholder {
   color: rgba(208, 216, 232, 0.5);
 }
 
-.auth-box input:hover {
+.input-wrapper:hover {
   border-color: rgba(102, 126, 234, 0.5);
   background: rgba(15, 20, 25, 0.7);
 }
 
-.auth-box input:focus,
-.auth-box select:focus {
-  outline: none;
+.input-wrapper.focused {
   border-color: var(--primary-color);
   background: rgba(15, 20, 25, 0.9);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.05);
 }
 
-.auth-box input:disabled,
-.auth-box select:disabled {
-  background: rgba(45, 62, 80, 0.5);
-  cursor: not-allowed;
-  opacity: 0.6;
+.input-wrapper.error {
+  border-color: var(--danger-color);
 }
 
-/* Override autofill background color */
-.auth-box input:-webkit-autofill,
-.auth-box input:-webkit-autofill:hover,
-.auth-box input:-webkit-autofill:focus,
-.auth-box input:-webkit-autofill:active {
+.input-wrapper.error:focus-within {
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.05);
+}
+
+.input-focus-indicator {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  height: 2px;
+  background: var(--primary-color);
+  border-radius: 1px;
+  animation: expandWidth 0.3s ease-out;
+}
+
+@keyframes expandWidth {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.password-wrapper {
+  gap: 8px;
+}
+
+.password-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  color: rgba(208, 216, 232, 0.6);
+  flex-shrink: 0;
+}
+
+.password-toggle:hover:not(:disabled) {
+  color: var(--primary-color);
+  transform: scale(1.1);
+}
+
+.password-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.input-wrapper input:-webkit-autofill,
+.input-wrapper input:-webkit-autofill:hover,
+.input-wrapper input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 30px rgba(15, 20, 25, 0.9) inset !important;
   -webkit-text-fill-color: var(--input-text) !important;
-}
-
-/* Override autofill border color */
-.auth-box input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0 30px rgba(15, 20, 25, 0.9) inset !important;
-  border-color: var(--primary-color) !important;
 }
 
 .input-error {
@@ -370,6 +418,91 @@
   font-size: 12px;
   margin-top: 4px;
   font-weight: 500;
+  animation: slideInLeft 0.3s ease-out;
+}
+
+.notification {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  min-height: 44px;
+  backdrop-filter: blur(10px);
+  animation: slideInDown 0.3s ease-out;
+  border: 1px solid;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.error-notification {
+  background: rgba(220, 53, 69, 0.1);
+  color: var(--danger-color);
+  border-color: rgba(220, 53, 69, 0.3);
+  border-left: 4px solid var(--danger-color);
+}
+
+.success-notification {
+  background: rgba(40, 167, 69, 0.1);
+  color: var(--success-color);
+  border-color: rgba(40, 167, 69, 0.3);
+  border-left: 4px solid var(--success-color);
+  justify-content: center;
+}
+
+.notification-icon {
+  font-weight: bold;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 22px;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  margin-left: auto;
+  color: inherit;
+}
+
+.notification-close:hover {
+  opacity: 0.7;
+  transform: scale(1.15);
+}
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .auth-box button {
@@ -386,6 +519,10 @@
   position: relative;
   overflow: hidden;
   letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .auth-box button::before {
@@ -417,6 +554,10 @@
   background: rgba(102, 126, 234, 0.3);
   cursor: not-allowed;
   opacity: 0.6;
+}
+
+.auth-box button.loading {
+  opacity: 0.9;
 }
 
 .error-message {
