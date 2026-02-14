@@ -6,15 +6,16 @@
 }
 
 .summary-card {
-  background: white;
+  background: linear-gradient(135deg, #1a2332 0%, #2a3f5f 100%);
   padding: 24px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(58, 90, 143, 0.3);
 }
 
 .summary-card h3 {
   font-size: 14px;
-  color: #666;
+  color: #a0b0d0;
   margin-bottom: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -23,20 +24,20 @@
 .summary-card .amount {
   font-size: 32px;
   font-weight: bold;
-  color: #667eea;
+  color: #7c8ff5;
   margin: 0;
 }
 
 .summary-card .category {
   font-size: 24px;
   font-weight: bold;
-  color: #667eea;
+  color: #7c8ff5;
   margin: 0;
 }
 
 .summary-card .count {
   font-size: 14px;
-  color: #999;
+  color: #7a8aaa;
   display: block;
   margin-top: 8px;
 }

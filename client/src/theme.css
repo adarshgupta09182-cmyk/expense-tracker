@@ -55,6 +55,10 @@
   --navbar-text: #ffffff;
   --table-hover: #3a3a3a;
   --table-border: #404040;
+  --jellyfish-dark: #0f1419;
+  --jellyfish-card: #1a2332;
+  --jellyfish-accent: #2a3f5f;
+  --jellyfish-border: #3a5a8f;
 }
 
 /* Smooth theme transition */

@@ -1,6 +1,6 @@
 .dashboard {
   min-height: 100vh;
-  background: #f5f7fa;
+  background: linear-gradient(135deg, #0f1419 0%, #1a2332 100%);
 }
 
 .dashboard-container {
@@ -19,7 +19,7 @@
 
 .dashboard-header h1 {
   margin: 0;
-  color: #333;
+  color: #e0e8ff;
   font-size: 28px;
 }
 
@@ -30,21 +30,21 @@
 }
 
 .error-banner {
-  background: #fee;
-  color: #c33;
+  background: rgba(239, 83, 80, 0.1);
+  color: #ef9a9a;
   padding: 12px;
   border-radius: 8px;
   margin-bottom: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-left: 4px solid #c33;
+  border-left: 4px solid #ef5350;
 }
 
 .error-close {
   background: none;
   border: none;
-  color: #c33;
+  color: #ef9a9a;
   font-size: 20px;
   cursor: pointer;
   padding: 0;

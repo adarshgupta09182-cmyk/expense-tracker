@@ -1,5 +1,5 @@
 .budget-settings-btn {
-  background: #667eea;
+  background: #7c8ff5;
   color: white;
   border: none;
   padding: 10px 16px;
@@ -11,13 +11,13 @@
 }
 
 .budget-settings-btn:hover {
-  background: #5568d3;
+  background: #6b7ee8;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(124, 143, 245, 0.4);
 }
 
 .budget-settings-btn:disabled {
-  background: #ccc;
+  background: #7a8aaa;
   cursor: not-allowed;
   opacity: 0.6;
 }
@@ -28,7 +28,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -36,13 +36,14 @@
 }
 
 .modal-content {
-  background: white;
+  background: linear-gradient(135deg, #1a2332 0%, #2a3f5f 100%);
   border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
   max-width: 500px;
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
+  border: 1px solid rgba(58, 90, 143, 0.3);
 }
 
 .modal-header {
@@ -50,12 +51,12 @@
   justify-content: space-between;
   align-items: center;
   padding: 24px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid rgba(58, 90, 143, 0.3);
 }
 
 .modal-header h2 {
   margin: 0;
-  color: #333;
+  color: #e0e8ff;
   font-size: 20px;
 }
 
@@ -63,7 +64,7 @@
   background: none;
   border: none;
   font-size: 28px;
-  color: #999;
+  color: #7a8aaa;
   cursor: pointer;
   padding: 0;
   width: 32px;
@@ -75,7 +76,7 @@
 }
 
 .modal-close:hover {
-  color: #333;
+  color: #e0e8ff;
 }
 
 .budget-form {
@@ -93,35 +94,42 @@
 
 .form-group label {
   font-weight: 600;
-  color: #333;
+  color: #e0e8ff;
   font-size: 14px;
 }
 
 .form-group input[type="number"],
 .form-group input[type="text"] {
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid rgba(58, 90, 143, 0.5);
   border-radius: 6px;
   font-size: 14px;
   transition: border-color 0.3s, box-shadow 0.3s;
+  background: rgba(42, 63, 95, 0.3);
+  color: #d0d8e8;
+}
+
+.form-group input[type="number"]::placeholder,
+.form-group input[type="text"]::placeholder {
+  color: #7a8aaa;
 }
 
 .form-group input[type="number"]:focus,
 .form-group input[type="text"]:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #7c8ff5;
+  box-shadow: 0 0 0 3px rgba(124, 143, 245, 0.2);
 }
 
 .form-group input[type="number"]:disabled,
 .form-group input[type="text"]:disabled {
-  background: #f5f5f5;
+  background: rgba(58, 90, 143, 0.2);
   cursor: not-allowed;
   opacity: 0.6;
 }
 
 .form-group small {
-  color: #999;
+  color: #7a8aaa;
   font-size: 12px;
 }
 
@@ -135,7 +143,7 @@
   flex: 1;
   height: 6px;
   border-radius: 3px;
-  background: #ddd;
+  background: rgba(58, 90, 143, 0.3);
   outline: none;
   -webkit-appearance: none;
   appearance: none;
@@ -147,52 +155,52 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #667eea;
+  background: #7c8ff5;
   cursor: pointer;
   transition: background 0.3s;
 }
 
 .threshold-input-group input[type="range"]::-webkit-slider-thumb:hover {
-  background: #5568d3;
+  background: #6b7ee8;
 }
 
 .threshold-input-group input[type="range"]::-moz-range-thumb {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #667eea;
+  background: #7c8ff5;
   cursor: pointer;
   border: none;
   transition: background 0.3s;
 }
 
 .threshold-input-group input[type="range"]::-moz-range-thumb:hover {
-  background: #5568d3;
+  background: #6b7ee8;
 }
 
 .threshold-value {
   min-width: 50px;
   text-align: right;
   font-weight: 600;
-  color: #667eea;
+  color: #7c8ff5;
   font-size: 14px;
 }
 
 .error-message {
-  background: #fee;
-  color: #c33;
+  background: rgba(239, 83, 80, 0.1);
+  color: #ef9a9a;
   padding: 12px;
   border-radius: 6px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-left: 4px solid #c33;
+  border-left: 4px solid #ef5350;
 }
 
 .error-close {
   background: none;
   border: none;
-  color: #c33;
+  color: #ef9a9a;
   font-size: 20px;
   cursor: pointer;
   padding: 0;
@@ -208,12 +216,12 @@
 }
 
 .success-message {
-  background: #efe;
-  color: #3c3;
+  background: rgba(76, 175, 80, 0.1);
+  color: #81c784;
   padding: 12px;
   border-radius: 6px;
   text-align: center;
-  border-left: 4px solid #3c3;
+  border-left: 4px solid #4caf50;
   font-weight: 500;
 }
 
@@ -225,9 +233,9 @@
 }
 
 .btn-cancel {
-  background: #e0e0e0;
-  color: #333;
-  border: none;
+  background: rgba(58, 90, 143, 0.3);
+  color: #a0b0d0;
+  border: 1px solid rgba(58, 90, 143, 0.5);
   padding: 12px 24px;
   border-radius: 6px;
   cursor: pointer;
@@ -236,7 +244,8 @@
 }
 
 .btn-cancel:hover:not(:disabled) {
-  background: #d0d0d0;
+  background: rgba(58, 90, 143, 0.5);
+  color: #e0e8ff;
 }
 
 .btn-cancel:disabled {
@@ -245,7 +254,7 @@
 }
 
 .btn-save {
-  background: #667eea;
+  background: #7c8ff5;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -256,13 +265,13 @@
 }
 
 .btn-save:hover:not(:disabled) {
-  background: #5568d3;
+  background: #6b7ee8;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(124, 143, 245, 0.4);
 }
 
 .btn-save:disabled {
-  background: #ccc;
+  background: #7a8aaa;
   cursor: not-allowed;
   opacity: 0.6;
 }
