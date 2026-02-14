@@ -129,7 +129,7 @@ const Login = () => {
     <div className="auth-container">
       <div className="auth-wrapper">
         {/* Left Side - Hero Section */}
-        <div className="auth-hero">
+        <div className="auth-hero" style={{ opacity: loading ? 0 : 1, pointerEvents: loading ? 'none' : 'auto', transition: 'opacity 0.3s ease' }}>
           <div className="hero-content">
             <h1 className="hero-heading">Take Control of Your Finances</h1>
             <p className="hero-subheading">Track expenses, monitor spending trends, and manage your budget with clarity and confidence.</p>
