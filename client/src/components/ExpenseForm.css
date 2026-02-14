@@ -37,29 +37,15 @@
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-/* Style number input spinners */
-.expense-form input[type="number"]::-webkit-outer-spin-button,
-.expense-form input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
+/* Show number input spinners */
 .expense-form input[type="number"] {
   -moz-appearance: textfield;
 }
 
-/* Custom spinner buttons */
 .expense-form input[type="number"]::-webkit-outer-spin-button,
 .expense-form input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: inner-spin-button;
   opacity: 1;
-  height: 36px;
-  background: linear-gradient(90deg, #2a3f5f 0%, #3a5a8f 100%);
-  border-left: 1px solid var(--input-border);
-  cursor: pointer;
-}
-
-.expense-form input[type="number"]::-webkit-outer-spin-button {
-  border-radius: 0 6px 6px 0;
 }
 
 .expense-form input::placeholder {
