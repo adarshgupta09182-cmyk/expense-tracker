@@ -20,6 +20,7 @@ const Login = () => {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [localError, setLocalError] = useState(null);
   const { login, error: authError, clearError } = useAuth();
   const navigate = useNavigate();
 
@@ -44,6 +45,7 @@ const Login = () => {
 
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
+    setLocalError(null);
 
     if (!validateForm()) {
       return;
@@ -55,7 +57,8 @@ const Login = () => {
       await login(formData.email, formData.password);
       navigate('/dashboard');
     } catch (err) {
-      // Error is handled by AuthContext
+      const errorMsg = err.response?.data?.message || 'Login failed';
+      setLocalError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -80,16 +83,18 @@ const Login = () => {
     return formData.email && formData.password && !loading;
   }, [formData, loading]);
 
+  const displayError = localError || authError;
+
   return (
     <div className="auth-container">
       <div className="auth-box">
         <h1>💰 Expense Tracker</h1>
         <h2>Login</h2>
         
-        {authError && (
+        {displayError && (
           <div className="error-message">
-            <span>{authError}</span>
-            <button onClick={clearError} className="error-close">×</button>
+            <span>{displayError}</span>
+            <button onClick={() => setLocalError(null)} className="error-close">×</button>
           </div>
         )}
         

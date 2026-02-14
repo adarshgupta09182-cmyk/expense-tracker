@@ -26,6 +26,7 @@ const Register = () => {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [localError, setLocalError] = useState(null);
   const { register, error: authError, clearError } = useAuth();
   const navigate = useNavigate();
 
@@ -62,6 +63,7 @@ const Register = () => {
 
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
+    setLocalError(null);
 
     if (!validateForm()) {
       return;
@@ -73,7 +75,8 @@ const Register = () => {
       await register(formData.name, formData.email, formData.password);
       navigate('/login');
     } catch (err) {
-      // Error is handled by AuthContext
+      const errorMsg = err.response?.data?.message || 'Registration failed';
+      setLocalError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -99,16 +102,18 @@ const Register = () => {
            formData.confirmPassword && !loading;
   }, [formData, loading]);
 
+  const displayError = localError || authError;
+
   return (
     <div className="auth-container">
       <div className="auth-box">
         <h1>💰 Expense Tracker</h1>
         <h2>Register</h2>
         
-        {authError && (
+        {displayError && (
           <div className="error-message">
-            <span>{authError}</span>
-            <button onClick={clearError} className="error-close">×</button>
+            <span>{displayError}</span>
+            <button onClick={() => setLocalError(null)} className="error-close">×</button>
           </div>
         )}
         
