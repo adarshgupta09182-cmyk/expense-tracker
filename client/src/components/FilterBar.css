@@ -43,6 +43,23 @@
   background: rgba(42, 63, 95, 0.5);
 }
 
+/* Style for select dropdown options */
+.filter-select option {
+  background: #1a2332;
+  color: #d0d8e8;
+  padding: 8px 12px;
+}
+
+.filter-select option:hover {
+  background: #2a3f5f;
+  color: #e0e8ff;
+}
+
+.filter-select option:checked {
+  background: #3a5a8f;
+  color: #ffffff;
+}
+
 .btn-clear {
   padding: 10px 20px;
   background: rgba(58, 90, 143, 0.3);

@@ -59,6 +59,23 @@
   box-shadow: 0 0 0 3px var(--input-focus);
 }
 
+/* Style for select dropdown options */
+.expense-form select option {
+  background: var(--input-bg);
+  color: var(--input-text);
+  padding: 8px 12px;
+}
+
+.expense-form select option:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.expense-form select option:checked {
+  background: var(--primary-color);
+  color: white;
+}
+
 .expense-form input:disabled,
 .expense-form select:disabled {
   background: var(--bg-tertiary);
