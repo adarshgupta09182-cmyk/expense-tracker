@@ -36,6 +36,11 @@ const Login = () => {
       console.log('Restoring error from localStorage:', storedError);
       setLocalError(storedError);
     }
+
+    // Cleanup: Clear error when component unmounts (user navigates away)
+    return () => {
+      localStorage.removeItem('loginError');
+    };
   }, []);
 
   const validateForm = useCallback(() => {
