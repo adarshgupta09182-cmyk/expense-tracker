@@ -21,7 +21,6 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [localError, setLocalError] = useState(null);
-  const [showPassword, setShowPassword] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
   const [focusedField, setFocusedField] = useState(null);
   const { login, error: authError, clearError } = useAuth();
@@ -204,9 +203,9 @@ const Login = () => {
               </div>
 
               <div className="form-group">
-                <div className={`input-wrapper password-wrapper ${focusedField === 'password' ? 'focused' : ''} ${errors.password ? 'error' : ''}`}>
+                <div className={`input-wrapper ${focusedField === 'password' ? 'focused' : ''} ${errors.password ? 'error' : ''}`}>
                   <input
-                    type={showPassword ? 'text' : 'password'}
+                    type="password"
                     name="password"
                     placeholder="Password"
                     value={formData.password}
@@ -217,15 +216,6 @@ const Login = () => {
                     className={errors.password ? 'input-error' : ''}
                     autoComplete="current-password"
                   />
-                  <button
-                    type="button"
-                    className="password-toggle"
-                    onClick={() => setShowPassword(!showPassword)}
-                    disabled={loading}
-                    title={showPassword ? 'Hide password' : 'Show password'}
-                  >
-                    {showPassword ? '👁️' : '👁️‍🗨️'}
-                  </button>
                   {focusedField === 'password' && <div className="input-focus-indicator"></div>}
                 </div>
                 {errors.password && <span className="field-error">{errors.password}</span>}
