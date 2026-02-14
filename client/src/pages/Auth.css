@@ -67,6 +67,21 @@
   transition: all 0.3s ease;
 }
 
+/* Override autofill background color */
+.auth-box input:-webkit-autofill,
+.auth-box input:-webkit-autofill:hover,
+.auth-box input:-webkit-autofill:focus,
+.auth-box input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--input-bg) inset !important;
+  -webkit-text-fill-color: var(--input-text) !important;
+}
+
+/* Override autofill border color */
+.auth-box input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 30px var(--input-bg) inset !important;
+  border-color: var(--input-border) !important;
+}
+
 .auth-box input:focus,
 .auth-box select:focus {
   outline: none;
