@@ -57,7 +57,7 @@
   padding: 14px 12px;
   border-bottom: 1px solid rgba(58, 90, 143, 0.2);
   font-size: 14px;
-  color: #d0d8e8;
+  color: #e8f0ff;
 }
 
 .expense-table tr:hover {
@@ -66,7 +66,7 @@
 
 .expense-table .amount {
   font-weight: 600;
-  color: var(--primary-color);
+  color: #9aafff;
   font-size: 15px;
 }
 
@@ -75,7 +75,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--text-primary);
+  color: #e8f0ff;
 }
 
 .category-badge {
