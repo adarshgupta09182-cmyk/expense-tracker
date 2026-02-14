@@ -39,7 +39,6 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = useCallback(async (email, password) => {
-    setError(null);
     try {
       const response = await axios.post('/auth/login', { email, password });
       const { token, user } = response.data;
@@ -49,6 +48,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('user', JSON.stringify(user));
       
       setUser(user);
+      setError(null);
       return response.data;
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Login failed';
@@ -58,10 +58,10 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const register = useCallback(async (name, email, password) => {
-    setError(null);
     try {
       const response = await axios.post('/auth/register', { name, email, password });
       // Don't store token or user data - just return success
+      setError(null);
       return response.data;
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Registration failed';
