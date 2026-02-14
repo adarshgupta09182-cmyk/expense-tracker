@@ -4,27 +4,9 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 5173,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3002',
-        changeOrigin: true
-      }
-    }
+    port: 5173
   },
   build: {
-    outDir: 'dist',
-    sourcemap: false,
-    minify: 'esbuild',
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'framer-motion': ['framer-motion']
-        }
-      }
-    }
-  },
-  optimizeDeps: {
-    include: ['framer-motion']
+    outDir: 'dist'
   }
 })
