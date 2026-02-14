@@ -151,7 +151,7 @@ const ExpenseForm = ({ onSubmit, editingExpense, onCancel }) => {
           >
             <option value="">Select Category</option>
             <option value="Food">Food</option>
-            <option value="Transport">Transport</option>
+            <option value="Travelling">Travelling</option>
             <option value="Entertainment">Entertainment</option>
             <option value="Shopping">Shopping</option>
             <option value="Bills">Bills</option>

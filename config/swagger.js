@@ -102,7 +102,7 @@ const swaggerDefinition = {
           },
           category: {
             type: 'string',
-            enum: ['Food', 'Transport', 'Entertainment', 'Bills', 'Other'],
+            enum: ['Food', 'Travelling', 'Entertainment', 'Shopping', 'Bills', 'Other'],
             description: 'Expense category'
           },
           date: {

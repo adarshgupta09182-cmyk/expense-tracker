@@ -363,7 +363,7 @@ app.get('/api/expenses', [
   authenticate,
   query('startDate').optional().isISO8601().toDate(),
   query('endDate').optional().isISO8601().toDate(),
-  query('category').optional().isIn(['Food', 'Transport', 'Entertainment', 'Shopping', 'Bills', 'Other']).withMessage('Invalid category'),
+  query('category').optional().isIn(['Food', 'Travelling', 'Entertainment', 'Shopping', 'Bills', 'Other']).withMessage('Invalid category'),
   validate
 ], async (req, res) => {
   try {
@@ -395,7 +395,7 @@ app.post('/api/expenses', [
   authenticate,
   body('description').trim().notEmpty().isLength({ min: 3, max: 200 }).escape(),
   body('amount').notEmpty().isFloat({ min: 0 }),
-  body('category').trim().notEmpty().isIn(['Food', 'Transport', 'Entertainment', 'Shopping', 'Bills', 'Other']).withMessage('Invalid category'),
+  body('category').trim().notEmpty().isIn(['Food', 'Travelling', 'Entertainment', 'Shopping', 'Bills', 'Other']).withMessage('Invalid category'),
   body('date').notEmpty().isISO8601(),
   validate
 ], async (req, res) => {
@@ -430,7 +430,7 @@ app.put('/api/expenses/:id', [
   param('id').notEmpty(),
   body('description').optional().trim().isLength({ min: 3, max: 200 }).escape(),
   body('amount').optional().isFloat({ min: 0 }),
-  body('category').optional().trim().isIn(['Food', 'Transport', 'Entertainment', 'Shopping', 'Bills', 'Other']).withMessage('Invalid category'),
+  body('category').optional().trim().isIn(['Food', 'Travelling', 'Entertainment', 'Shopping', 'Bills', 'Other']).withMessage('Invalid category'),
   body('date').optional().isISO8601(),
   validate
 ], async (req, res) => {
