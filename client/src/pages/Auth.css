@@ -121,17 +121,18 @@
 
 .password-toggle {
   position: absolute;
-  right: 12px;
+  right: 14px;
   background: none;
   border: none;
   cursor: pointer;
   font-size: 18px;
-  padding: 8px;
+  padding: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  color: var(--text-secondary);
+  color: rgba(208, 216, 232, 0.6);
+  pointer-events: auto;
 }
 
 .password-toggle:hover:not(:disabled) {
