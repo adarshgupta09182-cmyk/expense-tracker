@@ -29,6 +29,7 @@
   transition: border-color 0.3s;
   background: rgba(42, 63, 95, 0.3);
   color: #d0d8e8;
+  font-family: 'Inter', sans-serif;
 }
 
 .filter-input::placeholder {
