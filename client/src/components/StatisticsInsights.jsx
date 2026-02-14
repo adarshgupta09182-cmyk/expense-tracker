@@ -163,6 +163,10 @@ const StatisticsInsights = ({ expenses, budget }) => {
           <span className="summary-value">₹{insights.last7DaysTotal} ({insights.last7DaysCount} txns)</span>
         </div>
         <div className="summary-item">
+          <span className="summary-label">Highest Category:</span>
+          <span className="summary-value">{insights.topCategory} (₹{insights.topCategoryAmount})</span>
+        </div>
+        <div className="summary-item">
           <span className="summary-label">Lowest Category:</span>
           <span className="summary-value">{insights.lowestCategory} (₹{insights.lowestCategoryAmount})</span>
         </div>
