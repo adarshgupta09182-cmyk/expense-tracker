@@ -32,7 +32,7 @@
 .expense-table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
+  table-layout: auto;
 }
 
 .expense-table th {
@@ -46,12 +46,6 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-
-.expense-table th:nth-child(1) { width: 12%; }
-.expense-table th:nth-child(2) { width: 25%; }
-.expense-table th:nth-child(3) { width: 15%; }
-.expense-table th:nth-child(4) { width: 15%; }
-.expense-table th:nth-child(5) { width: 33%; }
 
 .expense-table td {
   padding: 14px 12px;
@@ -75,15 +69,12 @@
 }
 
 .description-cell {
-  max-width: 300px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: #1976d2;
-  background: #e3f2fd;
-  padding: 6px 12px;
-  border-radius: 6px;
-  display: inline-block;
+  color: #ffffff;
+  font-weight: 500;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  display: block;
 }
 
 .category-badge {
