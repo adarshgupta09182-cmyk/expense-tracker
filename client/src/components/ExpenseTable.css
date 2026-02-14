@@ -1,8 +1,8 @@
 .expense-table-container {
-  background: white;
+  background: var(--card-bg);
   padding: 24px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-md);
   margin-top: 24px;
 }
 
@@ -15,12 +15,12 @@
 
 .table-header h2 {
   margin: 0;
-  color: #333;
+  color: var(--text-primary);
   font-size: 20px;
 }
 
 .table-info {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
@@ -36,10 +36,10 @@
 .expense-table th {
   text-align: left;
   padding: 14px 12px;
-  background: #f8f9fa;
+  background: var(--bg-secondary);
   font-weight: 600;
-  color: #555;
-  border-bottom: 2px solid #e0e0e0;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--border-color);
   font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -47,17 +47,18 @@
 
 .expense-table td {
   padding: 14px 12px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--border-color);
   font-size: 14px;
+  color: var(--text-primary);
 }
 
 .expense-table tr:hover {
-  background: #f9f9f9;
+  background: var(--table-hover);
 }
 
 .expense-table .amount {
   font-weight: 600;
-  color: #667eea;
+  color: var(--primary-color);
   font-size: 15px;
 }
 
@@ -66,6 +67,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: var(--text-primary);
 }
 
 .category-badge {
@@ -97,21 +99,20 @@
   font-size: 13px;
   font-weight: 600;
   transition: all 0.3s;
-}
-
-.btn-edit {
-  background: #667eea;
   color: white;
 }
 
+.btn-edit {
+  background: var(--primary-color);
+}
+
 .btn-edit:hover {
-  background: #5568d3;
+  background: var(--primary-dark);
   transform: translateY(-1px);
 }
 
 .btn-delete {
-  background: #dc3545;
-  color: white;
+  background: var(--danger-color);
 }
 
 .btn-delete:hover {
@@ -121,7 +122,7 @@
 
 .no-data {
   text-align: center;
-  color: #999;
+  color: var(--text-secondary);
   padding: 60px 20px;
   font-size: 16px;
 }
@@ -132,12 +133,12 @@
   align-items: center;
   margin-top: 24px;
   padding-top: 20px;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--border-color);
 }
 
 .pagination-btn {
   padding: 10px 20px;
-  background: #667eea;
+  background: var(--primary-color);
   color: white;
   border: none;
   border-radius: 6px;
@@ -148,18 +149,18 @@
 }
 
 .pagination-btn:hover:not(:disabled) {
-  background: #5568d3;
+  background: var(--primary-dark);
   transform: translateY(-1px);
 }
 
 .pagination-btn:disabled {
-  background: #ccc;
+  background: var(--text-tertiary);
   cursor: not-allowed;
   opacity: 0.6;
 }
 
 .pagination-info {
-  color: #666;
+  color: var(--text-secondary);
   font-weight: 600;
   font-size: 14px;
 }
