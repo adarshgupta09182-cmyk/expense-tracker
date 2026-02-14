@@ -44,7 +44,6 @@ const Login = () => {
 
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
-    clearError();
 
     if (!validateForm()) {
       return;
@@ -60,7 +59,7 @@ const Login = () => {
     } finally {
       setLoading(false);
     }
-  }, [formData, login, navigate, validateForm, clearError]);
+  }, [formData, login, navigate, validateForm]);
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;

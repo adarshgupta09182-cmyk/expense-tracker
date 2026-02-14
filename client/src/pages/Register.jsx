@@ -62,7 +62,6 @@ const Register = () => {
 
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
-    clearError();
 
     if (!validateForm()) {
       return;
@@ -78,7 +77,7 @@ const Register = () => {
     } finally {
       setLoading(false);
     }
-  }, [formData, register, navigate, validateForm, clearError]);
+  }, [formData, register, navigate, validateForm]);
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
