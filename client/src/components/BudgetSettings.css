@@ -110,18 +110,12 @@
   font-family: 'Inter', sans-serif;
 }
 
-/* Style number input spinner */
+/* Style number input spinner to match background */
 .form-group input[type="number"]::-webkit-outer-spin-button,
 .form-group input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  appearance: none;
-  margin: 0;
-  background: rgba(42, 63, 95, 0.3);
-  color: #d0d8e8;
-}
-
-.form-group input[type="number"]::-webkit-calendar-picker-indicator {
-  background: rgba(42, 63, 95, 0.3);
+  -webkit-appearance: inner-spin-button;
+  appearance: inner-spin-button;
+  background: rgba(42, 63, 95, 0.5);
   color: #d0d8e8;
 }
 
