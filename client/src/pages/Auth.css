@@ -222,6 +222,12 @@
   animation: slideInRight 0.8s ease-out 0.1s both;
 }
 
+.auth-form-container.auth-form-centered {
+  flex: 1;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
 @keyframes slideInRight {
   from {
     opacity: 0;

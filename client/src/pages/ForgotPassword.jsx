@@ -126,120 +126,109 @@ const ForgotPassword = () => {
 
   return (
     <div className="auth-container">
-      <div className="auth-wrapper">
-        {/* Left Side - Empty Hero Section */}
-        <div className="auth-hero">
-          {/* Floating animation elements */}
-          <div className="floating-element element-1"></div>
-          <div className="floating-element element-2"></div>
-          <div className="floating-element element-3"></div>
-        </div>
-
-        {/* Right Side - Reset Password Card */}
-        <div className="auth-form-container">
-          <div className="auth-box">
-            <h2>Reset Password</h2>
-            
-            {localError && (
-              <div className="notification error-notification">
-                <span className="notification-icon">✕</span>
-                <span>{localError}</span>
-                <button 
-                  type="button"
-                  onClick={() => setLocalError(null)} 
-                  className="notification-close"
-                >
-                  ×
-                </button>
-              </div>
-            )}
-
-            {successMessage && (
-              <div className="notification success-notification">
-                <span className="notification-icon">✓</span>
-                <span>{successMessage}</span>
-              </div>
-            )}
-            
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <div className={`input-wrapper ${focusedField === 'email' ? 'focused' : ''} ${errors.email ? 'error' : ''}`}>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Enter your email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    onFocus={() => handleFocus('email')}
-                    onBlur={handleBlur}
-                    disabled={loading}
-                    className={errors.email ? 'input-error' : ''}
-                    autoComplete="email"
-                  />
-                  {focusedField === 'email' && <div className="input-focus-indicator"></div>}
-                </div>
-                {errors.email && <span className="field-error">{errors.email}</span>}
-              </div>
-
-              <div className="form-group">
-                <div className={`input-wrapper ${focusedField === 'newPassword' ? 'focused' : ''} ${errors.newPassword ? 'error' : ''}`}>
-                  <input
-                    type="password"
-                    name="newPassword"
-                    placeholder="New Password"
-                    minLength="6"
-                    value={formData.newPassword}
-                    onChange={handleChange}
-                    onFocus={() => handleFocus('newPassword')}
-                    onBlur={handleBlur}
-                    disabled={loading}
-                    className={errors.newPassword ? 'input-error' : ''}
-                    autoComplete="new-password"
-                  />
-                  {focusedField === 'newPassword' && <div className="input-focus-indicator"></div>}
-                </div>
-                {errors.newPassword && <span className="field-error">{errors.newPassword}</span>}
-              </div>
-
-              <div className="form-group">
-                <div className={`input-wrapper ${focusedField === 'confirmPassword' ? 'focused' : ''} ${errors.confirmPassword ? 'error' : ''}`}>
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    placeholder="Confirm New Password"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    onFocus={() => handleFocus('confirmPassword')}
-                    onBlur={handleBlur}
-                    disabled={loading}
-                    className={errors.confirmPassword ? 'input-error' : ''}
-                    autoComplete="new-password"
-                  />
-                  {focusedField === 'confirmPassword' && <div className="input-focus-indicator"></div>}
-                </div>
-                {errors.confirmPassword && <span className="field-error">{errors.confirmPassword}</span>}
-              </div>
-
-              <AnimatedButton 
-                type="submit" 
-                disabled={!isFormValid}
-                className={`${loading ? 'loading' : ''}`}
+      <div className="auth-form-container auth-form-centered">
+        <div className="auth-box">
+          <h2>Reset Password</h2>
+          
+          {localError && (
+            <div className="notification error-notification">
+              <span className="notification-icon">✕</span>
+              <span>{localError}</span>
+              <button 
+                type="button"
+                onClick={() => setLocalError(null)} 
+                className="notification-close"
               >
-                {loading ? (
-                  <>
-                    <span className="spinner"></span>
-                    Resetting...
-                  </>
-                ) : (
-                  'Reset Password'
-                )}
-              </AnimatedButton>
-            </form>
-            
-            <p className="auth-link">
-              Remember your password? <Link to="/login">Login here</Link>
-            </p>
-          </div>
+                ×
+              </button>
+            </div>
+          )}
+
+          {successMessage && (
+            <div className="notification success-notification">
+              <span className="notification-icon">✓</span>
+              <span>{successMessage}</span>
+            </div>
+          )}
+          
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <div className={`input-wrapper ${focusedField === 'email' ? 'focused' : ''} ${errors.email ? 'error' : ''}`}>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  onFocus={() => handleFocus('email')}
+                  onBlur={handleBlur}
+                  disabled={loading}
+                  className={errors.email ? 'input-error' : ''}
+                  autoComplete="email"
+                />
+                {focusedField === 'email' && <div className="input-focus-indicator"></div>}
+              </div>
+              {errors.email && <span className="field-error">{errors.email}</span>}
+            </div>
+
+            <div className="form-group">
+              <div className={`input-wrapper ${focusedField === 'newPassword' ? 'focused' : ''} ${errors.newPassword ? 'error' : ''}`}>
+                <input
+                  type="password"
+                  name="newPassword"
+                  placeholder="New Password"
+                  minLength="6"
+                  value={formData.newPassword}
+                  onChange={handleChange}
+                  onFocus={() => handleFocus('newPassword')}
+                  onBlur={handleBlur}
+                  disabled={loading}
+                  className={errors.newPassword ? 'input-error' : ''}
+                  autoComplete="new-password"
+                />
+                {focusedField === 'newPassword' && <div className="input-focus-indicator"></div>}
+              </div>
+              {errors.newPassword && <span className="field-error">{errors.newPassword}</span>}
+            </div>
+
+            <div className="form-group">
+              <div className={`input-wrapper ${focusedField === 'confirmPassword' ? 'focused' : ''} ${errors.confirmPassword ? 'error' : ''}`}>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  placeholder="Confirm New Password"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  onFocus={() => handleFocus('confirmPassword')}
+                  onBlur={handleBlur}
+                  disabled={loading}
+                  className={errors.confirmPassword ? 'input-error' : ''}
+                  autoComplete="new-password"
+                />
+                {focusedField === 'confirmPassword' && <div className="input-focus-indicator"></div>}
+              </div>
+              {errors.confirmPassword && <span className="field-error">{errors.confirmPassword}</span>}
+            </div>
+
+            <AnimatedButton 
+              type="submit" 
+              disabled={!isFormValid}
+              className={`${loading ? 'loading' : ''}`}
+            >
+              {loading ? (
+                <>
+                  <span className="spinner"></span>
+                  Resetting...
+                </>
+              ) : (
+                'Reset Password'
+              )}
+            </AnimatedButton>
+          </form>
+          
+          <p className="auth-link">
+            Remember your password? <Link to="/login">Login here</Link>
+          </p>
         </div>
       </div>
     </div>
