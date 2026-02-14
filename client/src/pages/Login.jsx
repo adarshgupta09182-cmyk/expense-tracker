@@ -100,69 +100,101 @@ const Login = () => {
 
   return (
     <div className="auth-container">
-      <div className="auth-box">
-        <h1>💰 Expense Tracker</h1>
-        <h2>Login</h2>
-        
-        {displayError && (
-          <div className="error-message">
-            <span>{displayError}</span>
-            <button 
-              type="button"
-              onClick={() => {
-                console.log('Close button clicked');
-                setLocalError(null);
-              }} 
-              className="error-close"
-            >
-              ×
-            </button>
-          </div>
-        )}
-        
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleChange}
-              disabled={loading}
-              className={errors.email ? 'input-error' : ''}
-              autoComplete="email"
-            />
-            {errors.email && <span className="field-error">{errors.email}</span>}
+      <div className="auth-wrapper">
+        {/* Left Side - Hero Section */}
+        <div className="auth-hero">
+          <div className="hero-content">
+            <h1 className="hero-heading">Take Control of Your Finances</h1>
+            <p className="hero-subheading">Track expenses, monitor spending trends, and manage your budget with clarity and confidence.</p>
+            
+            <div className="features-list">
+              <div className="feature-item">
+                <span className="feature-icon">⚡</span>
+                <span className="feature-text">Real-time expense tracking</span>
+              </div>
+              <div className="feature-item">
+                <span className="feature-icon">📊</span>
+                <span className="feature-text">Smart monthly analytics</span>
+              </div>
+              <div className="feature-item">
+                <span className="feature-icon">🔒</span>
+                <span className="feature-text">Secure & private data storage</span>
+              </div>
+            </div>
           </div>
 
-          <div className="form-group">
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-              disabled={loading}
-              className={errors.password ? 'input-error' : ''}
-              autoComplete="current-password"
-            />
-            {errors.password && <span className="field-error">{errors.password}</span>}
-          </div>
+          {/* Floating animation elements */}
+          <div className="floating-element element-1"></div>
+          <div className="floating-element element-2"></div>
+          <div className="floating-element element-3"></div>
+        </div>
 
-          <AnimatedButton 
-            type="submit" 
-            disabled={!isFormValid}
-            className={loading ? 'loading' : ''}
-          >
-            {loading ? 'Logging in...' : 'Login'}
-          </AnimatedButton>
-        </form>
-        
-        <p className="auth-link">
-          Don't have an account? <Link to="/register">Register here</Link>
-          <br />
-          <Link to="/forgot-password">Forgot password?</Link>
-        </p>
+        {/* Right Side - Login Card */}
+        <div className="auth-form-container">
+          <div className="auth-box">
+            <h2>Login</h2>
+            
+            {displayError && (
+              <div className="error-message">
+                <span>{displayError}</span>
+                <button 
+                  type="button"
+                  onClick={() => {
+                    console.log('Close button clicked');
+                    setLocalError(null);
+                  }} 
+                  className="error-close"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+            
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  disabled={loading}
+                  className={errors.email ? 'input-error' : ''}
+                  autoComplete="email"
+                />
+                {errors.email && <span className="field-error">{errors.email}</span>}
+              </div>
+
+              <div className="form-group">
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  disabled={loading}
+                  className={errors.password ? 'input-error' : ''}
+                  autoComplete="current-password"
+                />
+                {errors.password && <span className="field-error">{errors.password}</span>}
+              </div>
+
+              <AnimatedButton 
+                type="submit" 
+                disabled={!isFormValid}
+                className={loading ? 'loading' : ''}
+              >
+                {loading ? 'Logging in...' : 'Login'}
+              </AnimatedButton>
+            </form>
+            
+            <p className="auth-link">
+              Don't have an account? <Link to="/register">Register here</Link>
+              <br />
+              <Link to="/forgot-password">Forgot password?</Link>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
