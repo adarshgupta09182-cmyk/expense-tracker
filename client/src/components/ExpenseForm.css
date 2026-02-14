@@ -46,6 +46,13 @@
 .expense-form input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+  background: var(--input-bg);
+  color: var(--input-text);
+}
+
+.expense-form input[type="number"]::-webkit-calendar-picker-indicator {
+  background: var(--input-bg);
+  color: var(--input-text);
 }
 
 .expense-form input::placeholder {
