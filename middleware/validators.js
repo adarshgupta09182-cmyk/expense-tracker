@@ -63,7 +63,7 @@ exports.createExpenseValidator = [
     .isFloat({ min: 0.01 }).withMessage('Amount must be a positive number'),
   body('category')
     .notEmpty().withMessage('Category is required')
-    .isIn(['Food', 'Transport', 'Entertainment', 'Bills', 'Other'])
+    .isIn(['Food', 'Transport', 'Entertainment', 'Shopping', 'Bills', 'Other'])
     .withMessage('Invalid category'),
   body('date')
     .optional()
@@ -85,7 +85,7 @@ exports.updateExpenseValidator = [
     .isFloat({ min: 0.01 }).withMessage('Amount must be a positive number'),
   body('category')
     .optional()
-    .isIn(['Food', 'Transport', 'Entertainment', 'Bills', 'Other'])
+    .isIn(['Food', 'Transport', 'Entertainment', 'Shopping', 'Bills', 'Other'])
     .withMessage('Invalid category'),
   body('date')
     .optional()
@@ -111,7 +111,7 @@ exports.expenseQueryValidator = [
     .toDate(),
   query('category')
     .optional()
-    .isIn(['Food', 'Transport', 'Entertainment', 'Bills', 'Other'])
+    .isIn(['Food', 'Transport', 'Entertainment', 'Shopping', 'Bills', 'Other'])
     .withMessage('Invalid category'),
   validate
 ];
