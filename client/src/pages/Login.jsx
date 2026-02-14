@@ -22,7 +22,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [localError, setLocalError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
-  const [welcomeMessage, setWelcomeMessage] = useState(null);
   const [focusedField, setFocusedField] = useState(null);
   const { login, error: authError, clearError } = useAuth();
   const navigate = useNavigate();
@@ -167,14 +166,6 @@ const Login = () => {
             {welcomeMessage && (
               <div className="welcome-message-overlay">
                 <div className="welcome-message">
-                  <button 
-                    type="button"
-                    onClick={() => setWelcomeMessage(null)}
-                    className="welcome-close-btn"
-                    aria-label="Close welcome message"
-                  >
-                    ×
-                  </button>
                   <div className="welcome-icon">👋</div>
                   <h2 className="welcome-heading">Welcome Back!</h2>
                   <p className="welcome-name">{welcomeMessage}</p>
@@ -251,10 +242,7 @@ const Login = () => {
                 className={`${loading ? 'loading' : ''}`}
               >
                 {loading ? (
-                  <>
-                    <span className="spinner"></span>
-                    Logging in...
-                  </>
+                  <span className="spinner"></span>
                 ) : (
                   'Login'
                 )}
