@@ -35,6 +35,15 @@ const Register = () => {
     console.log('localError state changed:', localError);
   }, [localError]);
 
+  // Restore error from localStorage if it exists
+  useEffect(() => {
+    const storedError = localStorage.getItem('registerError');
+    if (storedError) {
+      console.log('Restoring error from localStorage:', storedError);
+      setLocalError(storedError);
+    }
+  }, []);
+
   const validateForm = useCallback(() => {
     const newErrors = {};
 
@@ -83,11 +92,16 @@ const Register = () => {
       console.log('Attempting registration...');
       await register(formData.name, formData.email, formData.password);
       console.log('Registration successful, navigating to login');
+      // Clear any stored error on successful registration
+      localStorage.removeItem('registerError');
       navigate('/login');
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Registration failed';
       console.log('Registration error caught:', errorMsg);
+      console.log('Error response:', err.response);
       setLocalError(errorMsg);
+      // Store error in localStorage as backup
+      localStorage.setItem('registerError', errorMsg);
       console.log('Error state set to:', errorMsg);
     } finally {
       setLoading(false);
@@ -128,6 +142,7 @@ const Register = () => {
             <button onClick={() => {
               console.log('Close button clicked');
               setLocalError(null);
+              localStorage.removeItem('registerError');
             }} className="error-close">×</button>
           </div>
         )}

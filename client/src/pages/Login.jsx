@@ -29,6 +29,15 @@ const Login = () => {
     console.log('localError state changed:', localError);
   }, [localError]);
 
+  // Restore error from localStorage if it exists
+  useEffect(() => {
+    const storedError = localStorage.getItem('loginError');
+    if (storedError) {
+      console.log('Restoring error from localStorage:', storedError);
+      setLocalError(storedError);
+    }
+  }, []);
+
   const validateForm = useCallback(() => {
     const newErrors = {};
 
@@ -65,11 +74,16 @@ const Login = () => {
       console.log('Attempting login...');
       await login(formData.email, formData.password);
       console.log('Login successful, navigating to dashboard');
+      // Clear any stored error on successful login
+      localStorage.removeItem('loginError');
       navigate('/dashboard');
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Login failed';
       console.log('Login error caught:', errorMsg);
+      console.log('Error response:', err.response);
       setLocalError(errorMsg);
+      // Store error in localStorage as backup
+      localStorage.setItem('loginError', errorMsg);
       console.log('Error state set to:', errorMsg);
     } finally {
       setLoading(false);
@@ -109,6 +123,7 @@ const Login = () => {
             <button onClick={() => {
               console.log('Close button clicked');
               setLocalError(null);
+              localStorage.removeItem('loginError');
             }} className="error-close">×</button>
           </div>
         )}
