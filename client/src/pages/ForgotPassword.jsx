@@ -122,6 +122,7 @@ const ForgotPassword = () => {
               onChange={handleChange}
               disabled={loading}
               className={errors.email ? 'input-error' : ''}
+              autoComplete="email"
             />
             {errors.email && <span className="field-error">{errors.email}</span>}
           </div>
@@ -136,6 +137,7 @@ const ForgotPassword = () => {
               onChange={handleChange}
               disabled={loading}
               className={errors.newPassword ? 'input-error' : ''}
+              autoComplete="new-password"
             />
             {errors.newPassword && <span className="field-error">{errors.newPassword}</span>}
           </div>
@@ -149,6 +151,7 @@ const ForgotPassword = () => {
               onChange={handleChange}
               disabled={loading}
               className={errors.confirmPassword ? 'input-error' : ''}
+              autoComplete="new-password"
             />
             {errors.confirmPassword && <span className="field-error">{errors.confirmPassword}</span>}
           </div>

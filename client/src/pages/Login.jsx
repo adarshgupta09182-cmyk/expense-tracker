@@ -104,6 +104,7 @@ const Login = () => {
               onChange={handleChange}
               disabled={loading}
               className={errors.email ? 'input-error' : ''}
+              autoComplete="email"
             />
             {errors.email && <span className="field-error">{errors.email}</span>}
           </div>
@@ -117,6 +118,7 @@ const Login = () => {
               onChange={handleChange}
               disabled={loading}
               className={errors.password ? 'input-error' : ''}
+              autoComplete="current-password"
             />
             {errors.password && <span className="field-error">{errors.password}</span>}
           </div>
