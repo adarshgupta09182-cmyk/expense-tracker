@@ -90,6 +90,9 @@ async function initializeDatabase() {
     // Migrate data from JSON if it exists
     await migrateFromJSON();
 
+    // Migrate Transport category to Travelling
+    await migrateTransportToTravelling();
+
     logger.info('✓ Database initialization complete');
   } catch (err) {
     logger.error('Database initialization failed', err);
@@ -142,6 +145,24 @@ async function migrateFromJSON() {
     }
   } catch (err) {
     logger.warn('Migration from JSON skipped', err.message);
+  }
+}
+
+// ============================================================================
+// MIGRATE TRANSPORT TO TRAVELLING
+// ============================================================================
+async function migrateTransportToTravelling() {
+  try {
+    const result = await pool.query(
+      'UPDATE expenses SET category = $1 WHERE category = $2',
+      ['Travelling', 'Transport']
+    );
+    
+    if (result.rowCount > 0) {
+      logger.info(`✓ Migrated ${result.rowCount} expenses from Transport to Travelling`);
+    }
+  } catch (err) {
+    logger.warn('Transport to Travelling migration skipped', err.message);
   }
 }
 
