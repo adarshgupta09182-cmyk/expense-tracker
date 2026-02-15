@@ -13,6 +13,7 @@ A comprehensive full-stack expense tracking application with budget management, 
 
 ### Core Features
 - ✅ **User Authentication** - Secure JWT-based authentication with bcrypt password hashing
+- ✅ **Password Reset** - Forgot password functionality with email verification
 - ✅ **Expense Management** - Create, read, update, and delete expenses with real-time updates
 - ✅ **Budget Tracking** - Set monthly budgets with customizable warning thresholds
 - ✅ **Data Visualization** - Interactive charts using Chart.js (Bar & Pie charts)
@@ -24,9 +25,11 @@ A comprehensive full-stack expense tracking application with budget management, 
 ### Premium Features
 - 🌙 **Dark Mode** - Full dark theme support with system preference detection
 - 📊 **Statistics Insights** - Advanced analytics including spending trends, daily averages, and projections
-- ✨ **Smooth Animations** - Meaningful transitions and loading states
+- ✨ **Smooth Animations** - Meaningful transitions and loading states with professional UI
 - 📱 **Mobile Optimized** - Enhanced responsive design for all screen sizes
 - 🎨 **Modern UI** - CSS variables for easy theming and consistent design
+- 👋 **Welcome Message** - Personalized welcome overlay for returning users on login
+- 🎯 **Modern Auth Pages** - Two-column layout with hero section and smooth animations
 
 ### Security Features
 - 🔒 **Helmet.js** - HTTP header security
@@ -48,7 +51,7 @@ A comprehensive full-stack expense tracking application with budget management, 
 ### Backend
 - **Runtime**: Node.js 18+
 - **Framework**: Express.js 4.18
-- **Database**: JSON file storage (no MongoDB required)
+- **Database**: PostgreSQL with connection pooling
 - **Authentication**: JWT + bcryptjs
 - **Security**: Helmet, CORS, Rate Limiting, express-validator
 - **Documentation**: Swagger/OpenAPI
@@ -60,7 +63,7 @@ A comprehensive full-stack expense tracking application with budget management, 
 - **HTTP Client**: Axios with interceptors
 - **Charts**: Chart.js + react-chartjs-2
 - **State Management**: React Context API
-- **Styling**: CSS Variables + Vanilla CSS
+- **Styling**: CSS Variables + Vanilla CSS with animations
 
 ## 📋 Prerequisites
 
@@ -198,6 +201,7 @@ Visit http://localhost:3002/api-docs for interactive Swagger documentation
 #### Authentication
 - `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - Login user
+- `POST /api/auth/reset-password` - Reset user password
 
 #### Expenses
 - `GET /api/expenses` - Get all expenses (with filters)
@@ -243,12 +247,13 @@ Authorization: Bearer <your-jwt-token>
 
 ## 💾 Data Storage
 
-The application uses JSON file storage for simplicity:
+The application uses PostgreSQL for reliable data persistence:
 
-- **users.json** - User accounts and credentials
-- **expenses.json** - All expense records
+- **users** - User accounts and credentials
+- **expenses** - All expense records
+- **budgets** - Budget settings and history
 
-No database setup required!
+PostgreSQL provides ACID compliance, scalability, and data integrity.
 
 ## 📈 Performance Optimization
 
@@ -321,18 +326,22 @@ The application is fully responsive:
 
 ## 🚀 Deployment
 
+### Live Application
+- **Frontend**: https://expense-tracker-rho-brown.vercel.app
+- **Backend API**: https://web-production-43d51.up.railway.app
+
 ### Deploy to Railway (Backend)
 1. Push code to GitHub
 2. Connect Railway to GitHub repository
 3. Set environment variables in Railway dashboard
 4. Railway auto-deploys on push
 
-### Deploy to Netlify (Frontend)
+### Deploy to Vercel (Frontend)
 1. Push code to GitHub
-2. Connect Netlify to GitHub repository
-3. Set build command: `npm run build --prefix client`
-4. Set publish directory: `client/dist`
-5. Netlify auto-deploys on push
+2. Connect Vercel to GitHub repository
+3. Set build command: `npm run build`
+4. Set output directory: `dist`
+5. Vercel auto-deploys on push
 
 ## 📄 License
 
@@ -372,4 +381,4 @@ For issues and questions:
 **Happy Tracking! 💰**
 
 Last Updated: February 2026
-Version: 2.0.0 (Portfolio Ready)
+Version: 2.1.0 (Password Reset & Modern Auth UI)
