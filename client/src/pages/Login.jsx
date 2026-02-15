@@ -22,6 +22,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [localError, setLocalError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+  const [welcomeMessage, setWelcomeMessage] = useState(null);
   const [focusedField, setFocusedField] = useState(null);
   const { login, error: authError, clearError } = useAuth();
   const navigate = useNavigate();
