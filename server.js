@@ -375,6 +375,46 @@ app.post('/api/auth/login', [
   }
 });
 
+// Reset Password
+app.post('/api/auth/reset-password', [
+  body('email').trim().notEmpty().isEmail().normalizeEmail(),
+  body('newPassword').notEmpty().isLength({ min: 6 }),
+  validate
+], async (req, res) => {
+  const { email, newPassword } = req.body;
+  
+  try {
+    logger.info('Password reset attempt', { email });
+
+    // Find user
+    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    
+    if (result.rows.length === 0) {
+      logger.warn('Password reset failed: user not found', { email });
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password
+    await pool.query(
+      'UPDATE users SET password = $1 WHERE email = $2',
+      [hashedPassword, email]
+    );
+
+    logger.info('Password reset successful', { email });
+
+    res.json({
+      success: true,
+      message: 'Password reset successful'
+    });
+  } catch (error) {
+    logger.error('Password reset error', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // ============================================================================
 // EXPENSE ROUTES
 // ============================================================================
