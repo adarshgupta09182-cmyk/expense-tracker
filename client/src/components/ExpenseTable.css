@@ -97,77 +97,64 @@
   font-size: 12px;
   font-weight: 600;
   text-transform: capitalize;
+  background: linear-gradient(135deg, #1a2332 0%, #2a3f5f 100%);
 }
 
 /* Light Mode - Different colors for each category */
 .category-badge.food { 
-  background: rgba(79, 70, 229, 0.15); 
   color: #4F46E5; 
 }
 
 .category-badge.transport { 
-  background: rgba(16, 185, 129, 0.15); 
   color: #10B981; 
 }
 
 .category-badge.travelling { 
-  background: rgba(59, 130, 246, 0.15); 
   color: #3B82F6; 
 }
 
 .category-badge.entertainment { 
-  background: rgba(245, 158, 11, 0.15); 
   color: #F59E0B; 
 }
 
 .category-badge.shopping { 
-  background: rgba(239, 68, 68, 0.15); 
   color: #EF4444; 
 }
 
 .category-badge.bills { 
-  background: rgba(168, 85, 247, 0.15); 
   color: #A855F7; 
 }
 
 .category-badge.other { 
-  background: rgba(107, 114, 128, 0.15); 
   color: #6B7280; 
 }
 
 /* Dark Mode - Different colors for each category */
 [data-theme="dark"] .category-badge.food { 
-  background: rgba(79, 70, 229, 0.25); 
   color: #818CF8; 
 }
 
 [data-theme="dark"] .category-badge.transport { 
-  background: rgba(16, 185, 129, 0.25); 
   color: #6EE7B7; 
 }
 
 [data-theme="dark"] .category-badge.travelling { 
-  background: rgba(59, 130, 246, 0.25); 
   color: #93C5FD; 
 }
 
 [data-theme="dark"] .category-badge.entertainment { 
-  background: rgba(245, 158, 11, 0.25); 
   color: #FCD34D; 
 }
 
 [data-theme="dark"] .category-badge.shopping { 
-  background: rgba(239, 68, 68, 0.25); 
   color: #FCA5A5; 
 }
 
 [data-theme="dark"] .category-badge.bills { 
-  background: rgba(168, 85, 247, 0.25); 
   color: #D8B4FE; 
 }
 
 [data-theme="dark"] .category-badge.other { 
-  background: rgba(107, 114, 128, 0.25); 
   color: #D1D5DB; 
 }
 
