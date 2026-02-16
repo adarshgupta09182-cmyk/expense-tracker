@@ -1,5 +1,4 @@
 /* Light Mode Dashboard */
-:root,
 [data-theme="light"] .dashboard {
   background: var(--bg-default);
 }
@@ -11,7 +10,6 @@
 
 .dashboard {
   min-height: 100vh;
-  background: var(--bg-default);
 }
 
 .dashboard-container {
