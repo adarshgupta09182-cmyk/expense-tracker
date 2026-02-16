@@ -46,6 +46,14 @@
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
+/* Dark Mode */
+[data-theme="dark"] .expense-form input,
+[data-theme="dark"] .expense-form select {
+  background: rgba(26, 35, 50, 0.6);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  color: #E0E8FF;
+}
+
 /* Remove number input spinners */
 .expense-form input[type="number"] {
   -moz-appearance: textfield;
@@ -68,6 +76,11 @@
   color: var(--text-secondary);
 }
 
+/* Dark Mode Placeholder */
+[data-theme="dark"] .expense-form input::placeholder {
+  color: rgba(208, 216, 232, 0.5);
+}
+
 .expense-form input:focus,
 .expense-form select:focus {
   outline: none;
@@ -76,10 +89,25 @@
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
+/* Dark Mode Focus */
+[data-theme="dark"] .expense-form input:focus,
+[data-theme="dark"] .expense-form select:focus {
+  background: rgba(26, 35, 50, 0.8);
+  border-color: rgba(102, 126, 234, 0.5);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
 /* Style for select dropdown options */
 .expense-form select option {
   background: var(--bg-surface);
   color: var(--text-primary);
+  padding: 8px 12px;
+}
+
+/* Dark Mode Select Options */
+[data-theme="dark"] .expense-form select option {
+  background: #1A2332;
+  color: #E0E8FF;
   padding: 8px 12px;
 }
 
@@ -96,6 +124,14 @@
 .expense-form input:disabled,
 .expense-form select:disabled {
   background: var(--bg-default);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Dark Mode Disabled */
+[data-theme="dark"] .expense-form input:disabled,
+[data-theme="dark"] .expense-form select:disabled {
+  background: rgba(26, 35, 50, 0.4);
   cursor: not-allowed;
   opacity: 0.6;
 }
