@@ -904,3 +904,48 @@
   animation: spin 1s linear infinite, welcomeFadeIn 0.6s ease-out 0.5s both;
   margin-top: 8px;
 }
+
+/* Keep login page dark in both light and dark modes */
+.hero-heading {
+  color: #E0E8FF !important;
+}
+
+.hero-subheading {
+  color: #D0D8E8 !important;
+}
+
+.feature-text {
+  color: #E0E8FF !important;
+}
+
+.auth-box h2 {
+  color: #E0E8FF !important;
+}
+
+.input-wrapper input {
+  color: #E0E8FF !important;
+}
+
+.input-wrapper input::placeholder {
+  color: rgba(208, 216, 232, 0.5) !important;
+}
+
+.welcome-heading {
+  color: #E0E8FF !important;
+}
+
+.welcome-name {
+  color: #4F46E5 !important;
+}
+
+.auth-link {
+  color: #D0D8E8 !important;
+}
+
+.auth-link a {
+  color: #4F46E5 !important;
+}
+
+.auth-link a:hover {
+  color: #4338CA !important;
+}
