@@ -181,12 +181,12 @@
 }
 
 .btn-edit {
-  background: #10B981;
-  color: #FFFFFF;
+  background: #10B981 !important;
+  color: #FFFFFF !important;
 }
 
 .btn-edit:hover {
-  background: #059669;
+  background: #059669 !important;
   transform: translateY(-1px);
 }
 
