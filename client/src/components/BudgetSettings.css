@@ -310,3 +310,95 @@
     width: 100%;
   }
 }
+
+/* Light Mode Styling */
+[data-theme="light"] .modal-content {
+  background: #F8FAFC;
+  border: 1px solid #E5E7EB;
+}
+
+[data-theme="light"] .modal-header {
+  border-bottom: 1px solid #E5E7EB;
+}
+
+[data-theme="light"] .modal-header h2 {
+  color: #111827;
+}
+
+[data-theme="light"] .modal-close {
+  color: #6B7280;
+}
+
+[data-theme="light"] .modal-close:hover {
+  color: #111827;
+}
+
+[data-theme="light"] .form-group label {
+  color: #111827;
+}
+
+[data-theme="light"] .form-group input[type="number"],
+[data-theme="light"] .form-group input[type="text"] {
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
+  color: #111827;
+}
+
+[data-theme="light"] .form-group input[type="number"]::placeholder,
+[data-theme="light"] .form-group input[type="text"]::placeholder {
+  color: #6B7280;
+}
+
+[data-theme="light"] .form-group input[type="number"]:focus,
+[data-theme="light"] .form-group input[type="text"]:focus {
+  border-color: #4F46E5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+[data-theme="light"] .form-group small {
+  color: #6B7280;
+}
+
+[data-theme="light"] .threshold-input-group input[type="range"] {
+  background: #E5E7EB;
+}
+
+[data-theme="light"] .threshold-input-group input[type="range"]::-webkit-slider-thumb {
+  background: #4F46E5;
+}
+
+[data-theme="light"] .threshold-input-group input[type="range"]::-webkit-slider-thumb:hover {
+  background: #4338CA;
+}
+
+[data-theme="light"] .threshold-input-group input[type="range"]::-moz-range-thumb {
+  background: #4F46E5;
+}
+
+[data-theme="light"] .threshold-input-group input[type="range"]::-moz-range-thumb:hover {
+  background: #4338CA;
+}
+
+[data-theme="light"] .threshold-value {
+  color: #4F46E5;
+}
+
+[data-theme="light"] .btn-cancel {
+  background: #E5E7EB;
+  color: #111827;
+  border: 1px solid #D1D5DB;
+}
+
+[data-theme="light"] .btn-cancel:hover:not(:disabled) {
+  background: #D1D5DB;
+  color: #111827;
+}
+
+[data-theme="light"] .btn-save {
+  background: #4F46E5;
+  color: white;
+}
+
+[data-theme="light"] .btn-save:hover:not(:disabled) {
+  background: #4338CA;
+}
