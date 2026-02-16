@@ -1,6 +1,17 @@
+/* Light Mode Dashboard */
+:root,
+[data-theme="light"] .dashboard {
+  background: var(--bg-default);
+}
+
+/* Dark Mode Dashboard */
+[data-theme="dark"] .dashboard {
+  background: linear-gradient(135deg, #0f1419 0%, #1a2332 100%);
+}
+
 .dashboard {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0f1419 0%, #1a2332 100%);
+  background: var(--bg-default);
 }
 
 .dashboard-container {
@@ -19,7 +30,7 @@
 
 .dashboard-header h1 {
   margin: 0;
-  color: #e0e8ff;
+  color: var(--text-primary);
   font-size: 28px;
 }
 
@@ -30,21 +41,21 @@
 }
 
 .error-banner {
-  background: rgba(239, 83, 80, 0.1);
-  color: #ef9a9a;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error);
   padding: 12px;
   border-radius: 8px;
   margin-bottom: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-left: 4px solid #ef5350;
+  border-left: 4px solid var(--error);
 }
 
 .error-close {
   background: none;
   border: none;
-  color: #ef9a9a;
+  color: var(--error);
   font-size: 20px;
   cursor: pointer;
   padding: 0;
