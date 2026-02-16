@@ -645,9 +645,10 @@ app.get('/api/export/expenses', [
 
     const csv = [
       ['Date', 'Description', 'Category', 'Amount'].join(','),
-      ...result.rows.map(row => 
-        [row.date, `"${row.description}"`, row.category, row.amount].join(',')
-      )
+      ...result.rows.map(row => {
+        const date = new Date(row.date).toISOString().split('T')[0];
+        return [date, `"${row.description}"`, row.category, row.amount].join(',');
+      })
     ].join('\n');
 
     res.setHeader('Content-Type', 'text/csv');
@@ -698,16 +699,16 @@ app.get('/api/export/expenses-with-budget', [
       const percentageUsed = (totalSpent / budget.monthly_budget) * 100;
 
       csv += 'BUDGET SUMMARY\n';
-      csv += `Monthly Budget,₹${parseFloat(budget.monthly_budget).toFixed(2)}\n`;
-      csv += `Total Spent,₹${totalSpent.toFixed(2)}\n`;
-      csv += `Remaining,₹${remaining.toFixed(2)}\n`;
+      csv += `Monthly Budget,${parseFloat(budget.monthly_budget).toFixed(2)}\n`;
+      csv += `Total Spent,${totalSpent.toFixed(2)}\n`;
+      csv += `Remaining,${remaining.toFixed(2)}\n`;
       csv += `Usage,${percentageUsed.toFixed(2)}%\n`;
       csv += '\n';
     }
 
     // Expenses section
     csv += 'EXPENSES\n';
-    csv += ['Date', 'Description', 'Category', 'Amount (₹)'].join(',') + '\n';
+    csv += ['Date', 'Description', 'Category', 'Amount'].join(',') + '\n';
     expenses.forEach(exp => {
       let date = '';
       if (exp.date) {
@@ -720,7 +721,7 @@ app.get('/api/export/expenses-with-budget', [
     // Category breakdown
     if (expenses.length > 0) {
       csv += '\n\nCATEGORY BREAKDOWN\n';
-      csv += 'Category,Amount (₹),Count\n';
+      csv += 'Category,Amount,Count\n';
 
       const categoryBreakdown = {};
       expenses.forEach(exp => {
@@ -763,7 +764,7 @@ app.get('/api/export/monthly-summary', [
 
     let csv = 'MONTHLY EXPENSE SUMMARY\n';
     csv += `Generated: ${new Date().toLocaleString('en-IN')}\n\n`;
-    csv += 'Month,Total Expenses (₹),Transaction Count\n';
+    csv += 'Month,Total Expenses,Transaction Count\n';
 
     let grandTotal = 0;
     let totalTransactions = 0;
