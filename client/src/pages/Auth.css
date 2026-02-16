@@ -416,7 +416,7 @@
 
 .input-wrapper input:-webkit-autofill {
   -webkit-box-shadow: none !important;
-  -webkit-text-fill-color: var(--input-text) !important;
+  -webkit-text-fill-color: #E0E8FF !important;
   -webkit-autofill-background-color: transparent !important;
   background-color: transparent !important;
   background-image: none !important;
@@ -426,14 +426,14 @@
 
 .input-wrapper input:-webkit-autofill:hover {
   -webkit-box-shadow: none !important;
-  -webkit-text-fill-color: var(--input-text) !important;
+  -webkit-text-fill-color: #E0E8FF !important;
   background-color: transparent !important;
   border: none !important;
 }
 
 .input-wrapper input:-webkit-autofill:focus {
   -webkit-box-shadow: none !important;
-  -webkit-text-fill-color: var(--input-text) !important;
+  -webkit-text-fill-color: #E0E8FF !important;
   background-color: transparent !important;
   border: none !important;
 }
