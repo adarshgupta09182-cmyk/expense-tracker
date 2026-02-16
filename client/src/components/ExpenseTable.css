@@ -97,7 +97,7 @@
   font-size: 12px;
   font-weight: 600;
   text-transform: capitalize;
-  background: linear-gradient(135deg, #1a2332 0%, #2a3f5f 100%);
+  background: #F3F4F6;
 }
 
 /* Light Mode - Different colors for each category */
@@ -130,6 +130,10 @@
 }
 
 /* Dark Mode - Different colors for each category */
+[data-theme="dark"] .category-badge { 
+  background: linear-gradient(135deg, #1a2332 0%, #2a3f5f 100%);
+}
+
 [data-theme="dark"] .category-badge.food { 
   color: #818CF8; 
 }
