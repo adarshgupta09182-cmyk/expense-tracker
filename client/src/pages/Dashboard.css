@@ -3,9 +3,9 @@
   background: var(--bg-default);
 }
 
-/* Dark Mode Dashboard */
+/* Dark Mode Dashboard - Jellyfish Theme */
 [data-theme="dark"] .dashboard {
-  background: linear-gradient(135deg, #0f1419 0%, #1a2332 100%);
+  background: linear-gradient(135deg, #0F1419 0%, #1A2332 50%, #2D3E50 100%);
 }
 
 .dashboard {
