@@ -12,7 +12,7 @@
 }
 
 .export-button {
-  background: #667eea;
+  background: linear-gradient(135deg, #1a2332 0%, #2a3f5f 100%);
   color: white;
   border: none;
   padding: 10px 16px;
@@ -27,9 +27,9 @@
 }
 
 .export-button:hover:not(:disabled) {
-  background: #5568d3;
+  background: linear-gradient(135deg, #2a3f5f 0%, #3a5a8f 100%);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(42, 63, 95, 0.4);
 }
 
 .export-button:disabled {
