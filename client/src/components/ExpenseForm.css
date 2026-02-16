@@ -204,3 +204,43 @@
   }
 }
 
+
+/* Light Mode Input Fields */
+[data-theme="light"] .expense-form input[type="text"],
+[data-theme="light"] .expense-form input[type="number"],
+[data-theme="light"] .expense-form input[type="date"] {
+  background: #FFFFFF !important;
+  border: 1px solid #E5E7EB !important;
+  color: #111827 !important;
+}
+
+[data-theme="light"] .expense-form input[type="text"]::placeholder,
+[data-theme="light"] .expense-form input[type="number"]::placeholder,
+[data-theme="light"] .expense-form input[type="date"]::placeholder {
+  color: #9CA3AF !important;
+}
+
+[data-theme="light"] .expense-form input[type="text"]:focus,
+[data-theme="light"] .expense-form input[type="number"]:focus,
+[data-theme="light"] .expense-form input[type="date"]:focus {
+  border-color: #4F46E5 !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1) !important;
+  background: #FFFFFF !important;
+}
+
+[data-theme="light"] .expense-form select {
+  background: #FFFFFF !important;
+  border: 1px solid #E5E7EB !important;
+  color: #111827 !important;
+}
+
+[data-theme="light"] .expense-form select:focus {
+  border-color: #4F46E5 !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1) !important;
+  background: #FFFFFF !important;
+}
+
+[data-theme="light"] .expense-form select option {
+  background: #FFFFFF !important;
+  color: #111827 !important;
+}
