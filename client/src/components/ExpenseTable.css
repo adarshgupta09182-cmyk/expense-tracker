@@ -46,7 +46,7 @@
 .expense-table th {
   text-align: left;
   padding: 14px 12px;
-  background: transparent;
+  background: var(--bg-secondary);
   font-weight: 600;
   color: var(--text-primary);
   border-bottom: 2px solid var(--border);
@@ -71,7 +71,7 @@
 }
 
 .expense-table tbody tr:hover {
-  background: rgba(79, 70, 229, 0.05);
+  background: var(--bg-secondary);
 }
 
 .expense-table .amount {
