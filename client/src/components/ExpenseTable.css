@@ -41,6 +41,7 @@
   width: 100%;
   border-collapse: collapse;
   table-layout: auto;
+  border-spacing: 0;
 }
 
 .expense-table th {
@@ -49,7 +50,7 @@
   background: var(--bg-secondary);
   font-weight: 600;
   color: var(--text-primary);
-  border-bottom: 2px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
   font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
