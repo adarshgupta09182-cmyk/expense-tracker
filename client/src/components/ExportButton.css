@@ -42,8 +42,8 @@
   position: absolute;
   top: 100%;
   right: 0;
-  background: white;
-  border: 1px solid #ddd;
+  background: linear-gradient(135deg, #1a2332 0%, #2a3f5f 100%);
+  border: 1px solid rgba(58, 90, 143, 0.3);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1000;
@@ -59,11 +59,11 @@
   width: 100%;
   padding: 12px 16px;
   border: none;
-  background: white;
+  background: transparent;
   cursor: pointer;
   text-align: left;
   transition: all 0.2s;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid rgba(58, 90, 143, 0.3);
 }
 
 .export-option:last-child {
@@ -71,7 +71,7 @@
 }
 
 .export-option:hover:not(:disabled) {
-  background: #f5f7fa;
+  background: rgba(58, 90, 143, 0.3);
 }
 
 .export-option:disabled {
@@ -94,13 +94,13 @@
 }
 
 .option-text strong {
-  color: #333;
+  color: #e0e8ff;
   font-size: 14px;
   font-weight: 600;
 }
 
 .option-text small {
-  color: #999;
+  color: #7a8aaa;
   font-size: 12px;
   font-weight: 400;
 }
