@@ -73,6 +73,28 @@
   transform: scale(0.95);
 }
 
+/* Light Mode Theme Toggle */
+[data-theme="light"] .theme-toggle {
+  background: #E2E8F0 !important;
+  color: #F59E0B !important;
+  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="light"] .theme-toggle:hover {
+  background: #CBD5E1 !important;
+}
+
+/* Dark Mode Theme Toggle */
+[data-theme="dark"] .theme-toggle {
+  background: #334155 !important;
+  color: #FFFFFF !important;
+  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] .theme-toggle:hover {
+  background: #475569 !important;
+}
+
 .logout-btn {
   background: rgba(255, 255, 255, 0.2);
   color: var(--navbar-text);
