@@ -54,8 +54,16 @@
   color: var(--text-primary);
 }
 
-.expense-table tr:hover {
+.expense-table tbody tr {
+  background: var(--bg-default);
+}
+
+.expense-table tbody tr:nth-child(even) {
   background: var(--bg-surface);
+}
+
+.expense-table tbody tr:hover {
+  background: rgba(79, 70, 229, 0.05);
 }
 
 .expense-table .amount {

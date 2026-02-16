@@ -1,9 +1,10 @@
 .expense-form {
-  background: var(--card-bg);
+  background: var(--bg-surface);
   padding: 24px;
   border-radius: 12px;
-  box-shadow: var(--shadow-md);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
   margin-bottom: 30px;
+  border: 1px solid var(--border);
 }
 
 .expense-form h2 {
@@ -28,11 +29,11 @@
 .expense-form input,
 .expense-form select {
   padding: 12px;
-  border: 1px solid var(--input-border);
+  border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 14px;
-  background: var(--input-bg);
-  color: var(--input-text);
+  background: var(--bg-surface);
+  color: var(--text-primary);
   font-family: 'Inter', sans-serif;
   transition: border-color 0.3s, box-shadow 0.3s;
 }
@@ -56,36 +57,36 @@
 }
 
 .expense-form input::placeholder {
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 .expense-form input:focus,
 .expense-form select:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px var(--input-focus);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
 /* Style for select dropdown options */
 .expense-form select option {
-  background: var(--input-bg);
-  color: var(--input-text);
+  background: var(--bg-surface);
+  color: var(--text-primary);
   padding: 8px 12px;
 }
 
 .expense-form select option:hover {
-  background: var(--bg-secondary);
-  color: var(--text-primary);
+  background: var(--primary);
+  color: white;
 }
 
 .expense-form select option:checked {
-  background: var(--primary-color);
+  background: var(--primary);
   color: white;
 }
 
 .expense-form input:disabled,
 .expense-form select:disabled {
-  background: var(--bg-tertiary);
+  background: var(--bg-surface);
   cursor: not-allowed;
   opacity: 0.6;
 }
@@ -106,7 +107,7 @@
 }
 
 .btn-primary {
-  background: var(--primary-color);
+  background: var(--primary);
   color: white;
   border: none;
   padding: 12px 24px;
@@ -118,21 +119,21 @@
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--primary-dark);
+  background: var(--primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
 }
 
 .btn-primary:disabled {
-  background: var(--text-tertiary);
+  background: var(--border);
   cursor: not-allowed;
   opacity: 0.6;
 }
 
 .btn-secondary {
-  background: var(--bg-tertiary);
+  background: var(--bg-surface);
   color: var(--text-primary);
-  border: none;
+  border: 1px solid var(--border);
   padding: 12px 24px;
   border-radius: 6px;
   cursor: pointer;
@@ -142,7 +143,9 @@
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: var(--border-color);
+  background: var(--bg-default);
+  border-color: var(--primary);
+  color: var(--primary);
 }
 
 .btn-secondary:disabled {

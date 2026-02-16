@@ -50,13 +50,17 @@ const ChartsSection = ({ expenses }) => {
       }, {})
     );
 
-    const pieColors = [
-      colors.primary,
-      colors.success,
-      colors.warning,
-      colors.error,
-      '#8B5CF6',
+    // Chart color palette - matches light mode design system
+    const chartColors = [
+      '#4F46E5', // Indigo
+      '#10B981', // Green
+      '#F59E0B', // Amber
+      '#EF4444', // Red
+      '#3B82F6', // Blue
+      '#6B7280'  // Grey
     ];
+
+    const pieColors = chartColors;
 
     const pieData = {
       labels: categoryData.map(([name]) => name),
@@ -89,8 +93,8 @@ const ChartsSection = ({ expenses }) => {
         {
           label: 'Monthly Expenses (₹)',
           data: monthlyData.map(d => d.amount),
-          backgroundColor: colors.primary + 'CC',
-          borderColor: colors.primary,
+          backgroundColor: '#4F46E5CC',
+          borderColor: '#4F46E5',
           borderWidth: 2,
         },
       ],

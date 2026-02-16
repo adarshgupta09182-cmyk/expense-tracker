@@ -1,8 +1,8 @@
 .filter-bar {
-  background: var(--bg-default);
+  background: var(--bg-surface);
   padding: 20px 24px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
   margin-bottom: 24px;
   border: 1px solid var(--border);
 }
@@ -28,7 +28,7 @@
   border-radius: 6px;
   font-size: 14px;
   transition: all 0.3s;
-  background: var(--bg-surface);
+  background: var(--bg-default);
   color: var(--text-primary);
   font-family: 'Inter', sans-serif;
 }
@@ -41,20 +41,20 @@
 .filter-select:focus {
   outline: none;
   border-color: var(--primary);
-  background: var(--bg-default);
+  background: var(--bg-surface);
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
 /* Style for select dropdown options */
 .filter-select option {
-  background: var(--bg-default);
+  background: var(--bg-surface);
   color: var(--text-primary);
   padding: 8px 12px;
 }
 
 .filter-select option:hover {
-  background: var(--bg-surface);
-  color: var(--text-primary);
+  background: var(--primary);
+  color: white;
 }
 
 .filter-select option:checked {
@@ -64,8 +64,8 @@
 
 .btn-clear {
   padding: 10px 20px;
-  background: var(--bg-surface);
-  color: var(--text-secondary);
+  background: var(--bg-default);
+  color: var(--text-primary);
   border: 1px solid var(--border);
   border-radius: 6px;
   cursor: pointer;
@@ -76,8 +76,9 @@
 }
 
 .btn-clear:hover {
-  background: var(--border);
-  color: var(--text-primary);
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
 }
 
 @media (max-width: 1024px) {
