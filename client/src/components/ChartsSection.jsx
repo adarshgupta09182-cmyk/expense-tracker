@@ -154,6 +154,7 @@ const ChartsSection = ({ expenses }) => {
 
   const pieOptions = useMemo(() => {
     const colors = getThemeColors();
+    const isDarkMode = colors.bgDefault !== '#FFFFFF';
     
     return {
       responsive: true,
@@ -162,7 +163,7 @@ const ChartsSection = ({ expenses }) => {
         legend: {
           position: 'right',
           labels: {
-            color: colors.textPrimary,
+            color: isDarkMode ? colors.textPrimary : '#111827',
             font: {
               family: "'Inter', sans-serif",
               size: 14,
