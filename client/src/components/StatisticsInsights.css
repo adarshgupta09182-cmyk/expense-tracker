@@ -112,6 +112,12 @@
   border-bottom: none;
 }
 
+.summary-item:nth-child(3),
+.summary-item:nth-child(4) {
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 12px;
+}
+
 .summary-label {
   color: var(--text-secondary);
   font-weight: 600;
