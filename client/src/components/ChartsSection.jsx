@@ -23,7 +23,25 @@ ChartJS.register(
 );
 
 const ChartsSection = ({ expenses }) => {
+  // Get theme colors from CSS variables
+  const getThemeColors = () => {
+    const root = document.documentElement;
+    const computedStyle = getComputedStyle(root);
+    
+    return {
+      textPrimary: computedStyle.getPropertyValue('--text-primary').trim(),
+      textSecondary: computedStyle.getPropertyValue('--text-secondary').trim(),
+      primary: computedStyle.getPropertyValue('--primary').trim(),
+      success: computedStyle.getPropertyValue('--success').trim(),
+      warning: computedStyle.getPropertyValue('--warning').trim(),
+      error: computedStyle.getPropertyValue('--error').trim(),
+      bgDefault: computedStyle.getPropertyValue('--bg-default').trim(),
+    };
+  };
+
   const chartData = useMemo(() => {
+    const colors = getThemeColors();
+    
     // Category data for pie chart
     const categoryData = Object.entries(
       expenses.reduce((acc, exp) => {
@@ -32,26 +50,22 @@ const ChartsSection = ({ expenses }) => {
       }, {})
     );
 
+    const pieColors = [
+      colors.primary,
+      colors.success,
+      colors.warning,
+      colors.error,
+      '#8B5CF6',
+    ];
+
     const pieData = {
       labels: categoryData.map(([name]) => name),
       datasets: [
         {
           label: 'Expenses by Category',
           data: categoryData.map(([, value]) => value),
-          backgroundColor: [
-            'rgba(102, 126, 234, 0.8)',
-            'rgba(118, 75, 162, 0.8)',
-            'rgba(240, 147, 251, 0.8)',
-            'rgba(79, 172, 254, 0.8)',
-            'rgba(67, 233, 123, 0.8)',
-          ],
-          borderColor: [
-            'rgba(102, 126, 234, 1)',
-            'rgba(118, 75, 162, 1)',
-            'rgba(240, 147, 251, 1)',
-            'rgba(79, 172, 254, 1)',
-            'rgba(67, 233, 123, 1)',
-          ],
+          backgroundColor: pieColors.map(color => color + 'CC'),
+          borderColor: pieColors,
           borderWidth: 2,
         },
       ],
@@ -75,8 +89,8 @@ const ChartsSection = ({ expenses }) => {
         {
           label: 'Monthly Expenses (₹)',
           data: monthlyData.map(d => d.amount),
-          backgroundColor: 'rgba(102, 126, 234, 0.8)',
-          borderColor: 'rgba(102, 126, 234, 1)',
+          backgroundColor: colors.primary + 'CC',
+          borderColor: colors.primary,
           borderWidth: 2,
         },
       ],
@@ -85,49 +99,83 @@ const ChartsSection = ({ expenses }) => {
     return { pieData, barData };
   }, [expenses]);
 
-  const barOptions = useMemo(() => ({
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'top',
+  const barOptions = useMemo(() => {
+    const colors = getThemeColors();
+    
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: {
+            color: colors.textPrimary,
+            font: {
+              family: "'Inter', sans-serif",
+              size: 14,
+            },
+          },
+        },
+        title: {
+          display: false,
+        },
       },
-      title: {
-        display: false,
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          callback: function(value) {
-            return '₹' + value.toLocaleString();
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            color: colors.textSecondary,
+            callback: function(value) {
+              return '₹' + value.toLocaleString();
+            }
+          },
+          grid: {
+            color: colors.bgDefault === '#FFFFFF' ? '#E5E7EB' : 'rgba(255, 255, 255, 0.1)',
+          }
+        },
+        x: {
+          ticks: {
+            color: colors.textSecondary,
+          },
+          grid: {
+            display: false,
           }
         }
       }
-    }
-  }), []);
+    };
+  }, []);
 
-  const pieOptions = useMemo(() => ({
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'right',
-      },
-      tooltip: {
-        callbacks: {
-          label: function(context) {
-            const label = context.label || '';
-            const value = context.parsed || 0;
-            const total = context.dataset.data.reduce((a, b) => a + b, 0);
-            const percentage = ((value / total) * 100).toFixed(1);
-            return `${label}: ₹${value.toFixed(2)} (${percentage}%)`;
+  const pieOptions = useMemo(() => {
+    const colors = getThemeColors();
+    
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: {
+            color: colors.textPrimary,
+            font: {
+              family: "'Inter', sans-serif",
+              size: 14,
+            },
+          },
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const label = context.label || '';
+              const value = context.parsed || 0;
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              const percentage = ((value / total) * 100).toFixed(1);
+              return `${label}: ₹${value.toFixed(2)} (${percentage}%)`;
+            }
           }
         }
-      }
-    },
-  }), []);
+      },
+    };
+  }, []);
 
   if (expenses.length === 0) {
     return (
