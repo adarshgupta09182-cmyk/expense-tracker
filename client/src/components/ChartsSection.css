@@ -17,9 +17,9 @@
 
 /* Dark Mode */
 [data-theme="dark"] .chart-container {
-  background: #1A2332;
+  background: var(--bg-secondary);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  border: none;
+  border: 1px solid var(--border-color);
 }
 
 .chart-container:hover {
