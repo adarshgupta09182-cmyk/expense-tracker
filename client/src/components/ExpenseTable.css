@@ -1,6 +1,6 @@
 /* Light Mode */
 .expense-table-container {
-  background: var(--card-bg);
+  background: var(--bg-secondary);
   padding: 24px;
   border-radius: 12px;
   box-shadow: var(--shadow-md);
@@ -46,7 +46,7 @@
 .expense-table th {
   text-align: left;
   padding: 14px 12px;
-  background: var(--bg-surface);
+  background: transparent;
   font-weight: 600;
   color: var(--text-primary);
   border-bottom: 2px solid var(--border);
@@ -63,11 +63,11 @@
 }
 
 .expense-table tbody tr {
-  background: var(--bg-default);
+  background: var(--bg-secondary);
 }
 
 .expense-table tbody tr:nth-child(even) {
-  background: var(--bg-surface);
+  background: var(--bg-secondary);
 }
 
 .expense-table tbody tr:hover {
