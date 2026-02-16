@@ -93,6 +93,22 @@
   transform: translateY(0);
 }
 
+/* Dark Mode Logout Button */
+[data-theme="dark"] .logout-btn {
+  background: #EF4444 !important;
+  color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .logout-btn:hover {
+  background: #DC2626 !important;
+  transform: translateY(-2px);
+}
+
+[data-theme="dark"] .logout-btn:active {
+  background: #B91C1C !important;
+  transform: translateY(0);
+}
+
 @media (max-width: 768px) {
   .navbar-container {
     padding: 0 15px;
