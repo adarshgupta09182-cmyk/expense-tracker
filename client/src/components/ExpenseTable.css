@@ -190,6 +190,20 @@
   transform: translateY(-1px);
 }
 
+/* Dark Mode Edit Button */
+[data-theme="dark"] .btn-edit {
+  background: #6366F1 !important;
+  color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .btn-edit:hover {
+  background: #4F46E5 !important;
+}
+
+[data-theme="dark"] .btn-edit:active {
+  background: #4338CA !important;
+}
+
 /* Light Mode Edit Button */
 [data-theme="light"] .btn-edit {
   background: #4F46E5 !important;
