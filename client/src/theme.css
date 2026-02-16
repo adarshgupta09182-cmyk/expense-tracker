@@ -1,66 +1,112 @@
-/* Light Mode (Default) */
+/* Light Mode (Default) - Modern Clean Palette */
 :root,
 [data-theme="light"] {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f5f7fa;
-  --bg-tertiary: #eff2f5;
-  --text-primary: #1a1a1a;
-  --text-secondary: #666666;
-  --text-tertiary: #999999;
-  --border-color: #e0e0e0;
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.15);
-  --primary-color: #667eea;
-  --primary-dark: #5568d3;
-  --primary-light: #8b9ef5;
-  --success-color: #28a745;
-  --warning-color: #ffc107;
-  --danger-color: #dc3545;
-  --info-color: #17a2b8;
-  --card-bg: #ffffff;
-  --input-bg: #f0f4f8;
-  --input-text: #1a1a1a;
-  --input-border: #d0d8e8;
-  --input-focus: rgba(102, 126, 234, 0.1);
-  --navbar-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --navbar-text: #ffffff;
-  --table-hover: #f9f9f9;
-  --table-border: #e0e0e0;
+  /* New Standardized Variables */
+  --bg-default: #FFFFFF;
+  --bg-surface: #F8FAFC;
+  --text-primary: #111827;
+  --text-secondary: #6B7280;
+  --border: #E5E7EB;
+  --primary: #4F46E5;
+  --primary-hover: #4338CA;
+  --success: #10B981;
+  --error: #EF4444;
+  --warning: #F59E0B;
+  
+  /* Backgrounds */
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F8FAFC;
+  --bg-tertiary: #F1F5F9;
+  
+  /* Text */
+  --text-tertiary: #9CA3AF;
+  
+  /* Borders & Dividers */
+  --border-color: #E5E7EB;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  
+  /* Primary Colors */
+  --primary-color: #4F46E5;
+  --primary-dark: #4338CA;
+  --primary-light: #6366F1;
+  
+  /* Status Colors */
+  --success-color: #10B981;
+  --warning-color: #F59E0B;
+  --danger-color: #EF4444;
+  --info-color: #3B82F6;
+  
+  /* Component Backgrounds */
+  --card-bg: #FFFFFF;
+  --input-bg: #F8FAFC;
+  --input-text: #111827;
+  --input-border: #E5E7EB;
+  --input-focus: rgba(79, 70, 229, 0.1);
+  
+  /* Navigation */
+  --navbar-bg: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+  --navbar-text: #FFFFFF;
+  
+  /* Table */
+  --table-hover: #F9FAFB;
+  --table-border: #E5E7EB;
 }
 
-/* Dark Mode */
+/* Dark Mode - Jellyfish Theme */
 [data-theme="dark"] {
-  --bg-primary: #1a1a1a;
-  --bg-secondary: #2d2d2d;
-  --bg-tertiary: #3a3a3a;
-  --text-primary: #ffffff;
-  --text-secondary: #b0b0b0;
-  --text-tertiary: #808080;
-  --border-color: #404040;
+  /* Backgrounds */
+  --bg-primary: #0F1419;
+  --bg-secondary: #1A2332;
+  --bg-tertiary: #2D3E50;
+  
+  /* Text */
+  --text-primary: #FFFFFF;
+  --text-secondary: #D0D8E8;
+  --text-tertiary: #9CA3AF;
+  
+  /* Borders & Dividers */
+  --border-color: #3A5A8F;
+  
+  /* Shadows */
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.5);
-  --primary-color: #7c8ff5;
-  --primary-dark: #6b7ee8;
-  --primary-light: #9aafff;
-  --success-color: #4caf50;
-  --warning-color: #ffb74d;
-  --danger-color: #ef5350;
-  --info-color: #29b6f6;
-  --card-bg: #2d2d2d;
-  --input-bg: #1a2332;
-  --input-text: #e0e8ff;
-  --input-border: #3a5a8f;
-  --input-focus: rgba(124, 143, 245, 0.2);
-  --navbar-bg: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
-  --navbar-text: #ffffff;
-  --table-hover: #3a3a3a;
-  --table-border: #404040;
-  --jellyfish-dark: #0f1419;
-  --jellyfish-card: #1a2332;
-  --jellyfish-accent: #2a3f5f;
-  --jellyfish-border: #3a5a8f;
+  
+  /* Primary Colors */
+  --primary-color: #667EEA;
+  --primary-dark: #5568D3;
+  --primary-light: #8B9EF5;
+  
+  /* Status Colors */
+  --success-color: #4CAF50;
+  --warning-color: #FFB74D;
+  --danger-color: #EF5350;
+  --info-color: #29B6F6;
+  
+  /* Component Backgrounds */
+  --card-bg: #1A2332;
+  --input-bg: #0F1419;
+  --input-text: #E0E8FF;
+  --input-border: #3A5A8F;
+  --input-focus: rgba(102, 126, 234, 0.2);
+  
+  /* Navigation */
+  --navbar-bg: linear-gradient(135deg, #1A2332 0%, #0F1419 100%);
+  --navbar-text: #FFFFFF;
+  
+  /* Table */
+  --table-hover: #2D3E50;
+  --table-border: #3A5A8F;
+  
+  /* Jellyfish Specific */
+  --jellyfish-dark: #0F1419;
+  --jellyfish-card: #1A2332;
+  --jellyfish-accent: #2A3F5F;
+  --jellyfish-border: #3A5A8F;
 }
 
 /* Smooth theme transition */

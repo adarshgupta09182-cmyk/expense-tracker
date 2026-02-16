@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@capacitor/cli": "^8.1.0",
+    "@capacitor/core": "^8.1.0",
     "axios": "^1.6.2",
     "chart.js": "^4.4.1",
     "framer-motion": "^12.34.0",

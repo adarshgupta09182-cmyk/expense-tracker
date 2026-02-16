@@ -6,38 +6,45 @@
 }
 
 .summary-card {
-  background: linear-gradient(135deg, #1a2332 0%, #2a3f5f 100%);
+  background: var(--bg-default);
   padding: 24px;
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(58, 90, 143, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+.summary-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
 }
 
 .summary-card h3 {
   font-size: 14px;
-  color: #a0b0d0;
+  color: var(--text-secondary);
   margin-bottom: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  font-weight: 600;
 }
 
 .summary-card .amount {
   font-size: 32px;
   font-weight: bold;
-  color: #7c8ff5;
+  color: var(--primary);
   margin: 0;
 }
 
 .summary-card .category {
   font-size: 24px;
   font-weight: bold;
-  color: #7c8ff5;
+  color: var(--primary);
   margin: 0;
 }
 
 .summary-card .count {
   font-size: 14px;
-  color: #7a8aaa;
+  color: var(--text-secondary);
   display: block;
   margin-top: 8px;
 }

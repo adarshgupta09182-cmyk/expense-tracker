@@ -1,10 +1,10 @@
 .expense-table-container {
-  background: linear-gradient(135deg, #0f1419 0%, #1a2332 100%);
+  background: var(--bg-default);
   padding: 24px;
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   margin-top: 24px;
-  border: 1px solid rgba(58, 90, 143, 0.3);
+  border: 1px solid var(--border);
 }
 
 .table-header {
@@ -38,10 +38,10 @@
 .expense-table th {
   text-align: left;
   padding: 14px 12px;
-  background: linear-gradient(90deg, #1a2332 0%, #2a3f5f 100%);
+  background: var(--bg-surface);
   font-weight: 600;
-  color: #e0e8ff;
-  border-bottom: 2px solid rgba(58, 90, 143, 0.5);
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--border);
   font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -49,18 +49,18 @@
 
 .expense-table td {
   padding: 14px 12px;
-  border-bottom: 1px solid rgba(58, 90, 143, 0.2);
+  border-bottom: 1px solid var(--border);
   font-size: 14px;
-  color: #e8f0ff;
+  color: var(--text-primary);
 }
 
 .expense-table tr:hover {
-  background: rgba(42, 63, 95, 0.4);
+  background: var(--bg-surface);
 }
 
 .expense-table .amount {
   font-weight: 600;
-  color: #9aafff;
+  color: var(--primary);
   font-size: 15px;
   background: transparent;
   padding: 0;
@@ -68,7 +68,7 @@
 }
 
 .description-cell {
-  color: #ffffff;
+  color: var(--text-primary);
   font-weight: 500;
   background: transparent;
   padding: 0;
@@ -85,13 +85,13 @@
   text-transform: capitalize;
 }
 
-.category-badge.food { background: #e3f2fd; color: #1976d2; }
-.category-badge.transport { background: #f3e5f5; color: #7b1fa2; }
-.category-badge.travelling { background: #f3e5f5; color: #7b1fa2; }
-.category-badge.entertainment { background: #fff3e0; color: #f57c00; }
-.category-badge.shopping { background: #fce4ec; color: #c2185b; }
-.category-badge.bills { background: #ffebee; color: #c62828; }
-.category-badge.other { background: #e8f5e9; color: #388e3c; }
+.category-badge.food { background: rgba(79, 70, 229, 0.1); color: var(--primary); }
+.category-badge.transport { background: rgba(79, 70, 229, 0.1); color: var(--primary); }
+.category-badge.travelling { background: rgba(79, 70, 229, 0.1); color: var(--primary); }
+.category-badge.entertainment { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+.category-badge.shopping { background: rgba(239, 68, 68, 0.1); color: var(--error); }
+.category-badge.bills { background: rgba(239, 68, 68, 0.1); color: var(--error); }
+.category-badge.other { background: rgba(16, 185, 129, 0.1); color: var(--success); }
 
 .actions {
   display: flex;
@@ -112,20 +112,20 @@
 }
 
 .btn-edit {
-  background: var(--primary-color);
+  background: var(--primary);
 }
 
 .btn-edit:hover {
-  background: var(--primary-dark);
+  background: var(--primary-hover);
   transform: translateY(-1px);
 }
 
 .btn-delete {
-  background: var(--danger-color);
+  background: var(--error);
 }
 
 .btn-delete:hover {
-  background: #c82333;
+  background: #dc2626;
   transform: translateY(-1px);
 }
 
@@ -142,12 +142,12 @@
   align-items: center;
   margin-top: 24px;
   padding-top: 20px;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--border);
 }
 
 .pagination-btn {
   padding: 10px 20px;
-  background: var(--primary-color);
+  background: var(--primary);
   color: white;
   border: none;
   border-radius: 6px;
@@ -158,12 +158,12 @@
 }
 
 .pagination-btn:hover:not(:disabled) {
-  background: var(--primary-dark);
+  background: var(--primary-hover);
   transform: translateY(-1px);
 }
 
 .pagination-btn:disabled {
-  background: var(--text-tertiary);
+  background: var(--border);
   cursor: not-allowed;
   opacity: 0.6;
 }
