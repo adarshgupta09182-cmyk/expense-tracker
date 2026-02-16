@@ -659,6 +659,133 @@ app.get('/api/export/expenses', [
   }
 });
 
+// Export expenses with budget summary
+app.get('/api/export/expenses-with-budget', [
+  authenticate,
+  query('startDate').optional().isISO8601().toDate(),
+  query('endDate').optional().isISO8601().toDate(),
+  validate
+], async (req, res) => {
+  try {
+    const userResult = await pool.query(
+      'SELECT * FROM budgets WHERE user_id = $1',
+      [req.user.id]
+    );
+
+    const expensesResult = await pool.query(
+      'SELECT * FROM expenses WHERE user_id = $1 ORDER BY date DESC',
+      [req.user.id]
+    );
+
+    const userResult2 = await pool.query(
+      'SELECT name, email FROM users WHERE id = $1',
+      [req.user.id]
+    );
+
+    const budget = userResult.rows[0];
+    const expenses = expensesResult.rows;
+    const user = userResult2.rows[0];
+
+    let csv = 'EXPENSE REPORT\n';
+    csv += `Generated: ${new Date().toLocaleString('en-IN')}\n`;
+    csv += `User: ${user.name} (${user.email})\n`;
+    csv += '\n';
+
+    // Budget summary section
+    if (budget && budget.monthly_budget > 0) {
+      const totalSpent = expenses.reduce((sum, exp) => sum + parseFloat(exp.amount), 0);
+      const remaining = budget.monthly_budget - totalSpent;
+      const percentageUsed = (totalSpent / budget.monthly_budget) * 100;
+
+      csv += 'BUDGET SUMMARY\n';
+      csv += `Monthly Budget,₹${parseFloat(budget.monthly_budget).toFixed(2)}\n`;
+      csv += `Total Spent,₹${totalSpent.toFixed(2)}\n`;
+      csv += `Remaining,₹${remaining.toFixed(2)}\n`;
+      csv += `Usage,${percentageUsed.toFixed(2)}%\n`;
+      csv += '\n';
+    }
+
+    // Expenses section
+    csv += 'EXPENSES\n';
+    csv += ['Date', 'Description', 'Category', 'Amount (₹)'].join(',') + '\n';
+    expenses.forEach(exp => {
+      const date = new Date(exp.date).toLocaleDateString('en-IN');
+      csv += `${date},"${exp.description}",${exp.category},${parseFloat(exp.amount).toFixed(2)}\n`;
+    });
+
+    // Category breakdown
+    if (expenses.length > 0) {
+      csv += '\n\nCATEGORY BREAKDOWN\n';
+      csv += 'Category,Amount (₹),Count\n';
+
+      const categoryBreakdown = {};
+      expenses.forEach(exp => {
+        if (!categoryBreakdown[exp.category]) {
+          categoryBreakdown[exp.category] = { amount: 0, count: 0 };
+        }
+        categoryBreakdown[exp.category].amount += parseFloat(exp.amount);
+        categoryBreakdown[exp.category].count += 1;
+      });
+
+      Object.entries(categoryBreakdown).forEach(([cat, data]) => {
+        csv += `${cat},${data.amount.toFixed(2)},${data.count}\n`;
+      });
+    }
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="expense-report.csv"');
+    res.send(csv);
+  } catch (error) {
+    logger.error('Export expenses with budget error', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Export monthly summary
+app.get('/api/export/monthly-summary', [
+  authenticate
+], async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT 
+        DATE_TRUNC('month', date) as month,
+        SUM(amount) as total_amount,
+        COUNT(*) as total_count
+      FROM expenses
+      WHERE user_id = $1
+      GROUP BY DATE_TRUNC('month', date)
+      ORDER BY month DESC
+    `, [req.user.id]);
+
+    let csv = 'MONTHLY EXPENSE SUMMARY\n';
+    csv += `Generated: ${new Date().toLocaleString('en-IN')}\n\n`;
+    csv += 'Month,Total Expenses (₹),Transaction Count\n';
+
+    let grandTotal = 0;
+    let totalTransactions = 0;
+
+    result.rows.forEach(row => {
+      const monthName = new Date(row.month).toLocaleString('en-IN', {
+        month: 'long',
+        year: 'numeric'
+      });
+      const amount = parseFloat(row.total_amount).toFixed(2);
+      csv += `${monthName},${amount},${row.total_count}\n`;
+      grandTotal += parseFloat(row.total_amount);
+      totalTransactions += parseInt(row.total_count);
+    });
+
+    csv += `\nTotal,${grandTotal.toFixed(2)},${totalTransactions}`;
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="monthly-summary.csv"');
+    res.send(csv);
+  } catch (error) {
+    logger.error('Export monthly summary error', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // ============================================================================
 // ERROR HANDLING
 // ============================================================================
