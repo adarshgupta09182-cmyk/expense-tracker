@@ -709,8 +709,11 @@ app.get('/api/export/expenses-with-budget', [
     csv += 'EXPENSES\n';
     csv += ['Date', 'Description', 'Category', 'Amount (₹)'].join(',') + '\n';
     expenses.forEach(exp => {
-      const dateObj = new Date(exp.date);
-      const date = dateObj.toISOString().split('T')[0]; // YYYY-MM-DD format
+      let date = '';
+      if (exp.date) {
+        const dateObj = new Date(exp.date);
+        date = dateObj.toISOString().split('T')[0]; // YYYY-MM-DD format
+      }
       csv += `${date},"${exp.description}",${exp.category},${parseFloat(exp.amount).toFixed(2)}\n`;
     });
 
