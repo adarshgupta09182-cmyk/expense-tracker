@@ -65,7 +65,7 @@ const ExpenseTable = ({ expenses, onEdit, onDelete, currentPage, totalPages, onP
                         {expense.category}
                       </span>
                     </td>
-                    <td className="amount">₹{expense.amount.toFixed(2)}</td>
+                    <td className="amount text-negative">₹{expense.amount.toFixed(2)}</td>
                     <td className="actions">
                       <button onClick={() => onEdit(expense)} className="btn-edit">
                         Edit

@@ -423,6 +423,23 @@ hr {
   color: var(--warning);
 }
 
+/* Data Accent Text Colors */
+.text-positive {
+  color: var(--success);
+}
+
+.text-warning-accent {
+  color: var(--warning);
+}
+
+.text-negative {
+  color: var(--error);
+}
+
+.text-info {
+  color: var(--primary);
+}
+
 /* ============================================================================
    BACKGROUND UTILITIES
    ============================================================================ */
@@ -439,6 +456,23 @@ hr {
   background-color: var(--bg-tertiary);
 }
 
+/* Data Accent Background Colors */
+.bg-positive {
+  background-color: rgba(16, 185, 129, 0.1);
+}
+
+.bg-warning-accent {
+  background-color: rgba(245, 158, 11, 0.1);
+}
+
+.bg-negative {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.bg-info {
+  background-color: rgba(79, 70, 229, 0.1);
+}
+
 /* ============================================================================
    BORDER UTILITIES
    ============================================================================ */
@@ -453,6 +487,23 @@ hr {
 
 .border-bottom {
   border-bottom: 1px solid var(--border);
+}
+
+/* Data Accent Border Colors */
+.border-positive {
+  border-color: var(--success);
+}
+
+.border-warning-accent {
+  border-color: var(--warning);
+}
+
+.border-negative {
+  border-color: var(--error);
+}
+
+.border-info {
+  border-color: var(--primary);
 }
 
 /* ============================================================================

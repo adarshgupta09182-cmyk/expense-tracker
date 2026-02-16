@@ -97,7 +97,7 @@ const StatisticsInsights = ({ expenses, budget }) => {
             <span className="insight-label">Average Expense</span>
             <span className="insight-icon">📈</span>
           </div>
-          <p className="insight-value">₹{insights.avgExpense}</p>
+          <p className="insight-value text-negative">₹{insights.avgExpense}</p>
           <p className="insight-detail">Per transaction</p>
         </div>
 
@@ -106,7 +106,7 @@ const StatisticsInsights = ({ expenses, budget }) => {
             <span className="insight-label">Daily Average</span>
             <span className="insight-icon">📅</span>
           </div>
-          <p className="insight-value">₹{insights.dailyAverage}</p>
+          <p className="insight-value text-negative">₹{insights.dailyAverage}</p>
           <p className="insight-detail">Last 7 days</p>
         </div>
 
@@ -116,7 +116,7 @@ const StatisticsInsights = ({ expenses, budget }) => {
             <span className="insight-icon">🎯</span>
           </div>
           <p className="insight-value">{insights.topCategory}</p>
-          <p className="insight-detail">₹{insights.topCategoryAmount}</p>
+          <p className="insight-detail text-negative">₹{insights.topCategoryAmount}</p>
         </div>
 
         <div className="insight-card">
@@ -124,7 +124,7 @@ const StatisticsInsights = ({ expenses, budget }) => {
             <span className="insight-label">This Month</span>
             <span className="insight-icon">📆</span>
           </div>
-          <p className="insight-value">₹{insights.thisMonthTotal}</p>
+          <p className="insight-value text-negative">₹{insights.thisMonthTotal}</p>
           <p className="insight-detail">{insights.thisMonthCount} transactions</p>
         </div>
 
@@ -160,15 +160,18 @@ const StatisticsInsights = ({ expenses, budget }) => {
         </div>
         <div className="summary-item">
           <span className="summary-label">Last 7 Days:</span>
-          <span className="summary-value">₹{insights.last7DaysTotal} ({insights.last7DaysCount} txns)</span>
+          <span className="summary-value text-negative">₹{insights.last7DaysTotal}</span>
+          <span className="summary-detail">({insights.last7DaysCount} txns)</span>
         </div>
         <div className="summary-item">
           <span className="summary-label">Highest Category:</span>
-          <span className="summary-value">{insights.topCategory} (₹{insights.topCategoryAmount})</span>
+          <span className="summary-value">{insights.topCategory}</span>
+          <span className="summary-detail text-negative">(₹{insights.topCategoryAmount})</span>
         </div>
         <div className="summary-item">
           <span className="summary-label">Lowest Category:</span>
-          <span className="summary-value">{insights.lowestCategory} (₹{insights.lowestCategoryAmount})</span>
+          <span className="summary-value">{insights.lowestCategory}</span>
+          <span className="summary-detail text-positive">(₹{insights.lowestCategoryAmount})</span>
         </div>
       </div>
     </div>

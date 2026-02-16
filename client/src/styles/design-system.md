@@ -155,6 +155,12 @@
 - **Warning**: #F59E0B
 - **Info**: #3B82F6
 
+### Data Accent Colors
+- **Success (#10B981)**: Positive numbers, income, gains
+- **Warning (#F59E0B)**: Budgets nearing limit, caution alerts
+- **Error (#EF4444)**: Overspending alerts, negative values
+- **Info (#3B82F6)**: Informational badges, neutral data
+
 ### Neutral
 - **Text Primary**: #111827
 - **Text Secondary**: #6B7280

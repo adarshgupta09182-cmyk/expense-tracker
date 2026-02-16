@@ -86,11 +86,11 @@ const BudgetCard = ({ budget, totalSpent, isWarning, isExceeded }) => {
         </div>
         <div className="amount-item">
           <span className="label">Spent</span>
-          <span className="value spent">₹{totalSpent.toFixed(2)}</span>
+          <span className={`value spent ${budgetData.remaining < 0 ? 'text-negative' : 'text-warning-accent'}`}>₹{totalSpent.toFixed(2)}</span>
         </div>
         <div className="amount-item">
           <span className="label">Remaining</span>
-          <span className={`value ${budgetData.remaining < 0 ? 'negative' : ''}`}>
+          <span className={`value ${budgetData.remaining < 0 ? 'text-negative' : 'text-positive'}`}>
             ₹{budgetData.remaining.toFixed(2)}
           </span>
         </div>

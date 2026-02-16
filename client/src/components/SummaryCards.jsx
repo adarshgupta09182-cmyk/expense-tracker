@@ -42,14 +42,14 @@ const SummaryCards = ({ expenses }) => {
       <AnimatedCard className="summary-card">
         <motion.div variants={listItemVariants}>
           <h3>Total Expenses</h3>
-          <p className="amount">₹{summaryData.totalExpenses.toFixed(2)}</p>
+          <p className="amount text-negative">₹{summaryData.totalExpenses.toFixed(2)}</p>
           <span className="count">{summaryData.expensesCount} transactions</span>
         </motion.div>
       </AnimatedCard>
       <AnimatedCard className="summary-card">
         <motion.div variants={listItemVariants}>
           <h3>This Month</h3>
-          <p className="amount">₹{summaryData.monthlyTotal.toFixed(2)}</p>
+          <p className="amount text-negative">₹{summaryData.monthlyTotal.toFixed(2)}</p>
           <span className="count">{summaryData.thisMonthCount} transactions</span>
         </motion.div>
       </AnimatedCard>
