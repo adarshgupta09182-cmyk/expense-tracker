@@ -12,8 +12,8 @@
 }
 
 .export-button {
-  background: linear-gradient(135deg, #1a2332 0%, #2a3f5f 100%);
-  color: white;
+  background: #6366F1;
+  color: #FFFFFF;
   border: none;
   padding: 10px 16px;
   border-radius: 6px;
@@ -27,9 +27,15 @@
 }
 
 .export-button:hover:not(:disabled) {
-  background: linear-gradient(135deg, #2a3f5f 0%, #3a5a8f 100%);
+  background: #4F46E5;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(42, 63, 95, 0.4);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.export-button:disabled {
+  background: #818CF8;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .export-button:disabled {
