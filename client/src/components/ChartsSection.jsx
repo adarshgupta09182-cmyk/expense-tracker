@@ -104,7 +104,9 @@ const ChartsSection = ({ expenses }) => {
   }, [expenses]);
 
   const barOptions = useMemo(() => {
-    const colors = getThemeColors();
+    const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+    const labelColor = isDarkMode ? '#E0E8FF' : '#111827';
+    const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : '#E5E7EB';
     
     return {
       responsive: true,
@@ -113,7 +115,7 @@ const ChartsSection = ({ expenses }) => {
         legend: {
           position: 'top',
           labels: {
-            color: colors.textPrimary,
+            color: labelColor,
             font: {
               family: "'Inter', sans-serif",
               size: 14,
@@ -131,18 +133,18 @@ const ChartsSection = ({ expenses }) => {
         y: {
           beginAtZero: true,
           ticks: {
-            color: colors.textSecondary,
+            color: labelColor,
             callback: function(value) {
               return '₹' + value.toLocaleString();
             }
           },
           grid: {
-            color: colors.bgDefault === '#FFFFFF' ? '#E5E7EB' : 'rgba(255, 255, 255, 0.1)',
+            color: gridColor,
           }
         },
         x: {
           ticks: {
-            color: colors.textSecondary,
+            color: labelColor,
           },
           grid: {
             display: false,
@@ -153,8 +155,8 @@ const ChartsSection = ({ expenses }) => {
   }, []);
 
   const pieOptions = useMemo(() => {
-    const colors = getThemeColors();
-    const isDarkMode = colors.bgDefault !== '#FFFFFF';
+    const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+    const labelColor = isDarkMode ? '#E0E8FF' : '#111827';
     
     return {
       responsive: true,
@@ -163,7 +165,7 @@ const ChartsSection = ({ expenses }) => {
         legend: {
           position: 'right',
           labels: {
-            color: isDarkMode ? colors.textPrimary : '#111827',
+            color: labelColor,
             font: {
               family: "'Inter', sans-serif",
               size: 14,
