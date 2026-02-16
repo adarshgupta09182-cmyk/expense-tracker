@@ -320,9 +320,9 @@
   display: flex;
   align-items: center;
   padding: 14px 16px;
-  border: 1.5px solid #E5E7EB;
+  border: 1.5px solid rgba(102, 126, 234, 0.3);
   border-radius: 10px;
-  background: #F8FAFC;
+  background: rgba(26, 35, 50, 0.5);
   transition: all 0.3s ease;
   min-height: 48px;
   box-sizing: border-box;
@@ -333,7 +333,7 @@
   background: transparent !important;
   border: none !important;
   outline: none !important;
-  color: #111827;
+  color: #E0E8FF;
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   padding: 0 !important;
@@ -345,18 +345,18 @@
 }
 
 .input-wrapper input::placeholder {
-  color: rgba(107, 114, 128, 0.6);
+  color: rgba(208, 216, 232, 0.5);
 }
 
 .input-wrapper:hover {
-  border-color: #D1D5DB;
-  background: #FFFFFF;
+  border-color: rgba(102, 126, 234, 0.5);
+  background: rgba(26, 35, 50, 0.7);
 }
 
 .input-wrapper.focused {
-  border-color: #4F46E5;
-  background: #FFFFFF;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.05);
+  border-color: #667EEA;
+  background: rgba(26, 35, 50, 0.9);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.05);
 }
 
 .input-wrapper.error {
@@ -364,7 +364,7 @@
 }
 
 .input-wrapper.error:focus-within {
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.05);
 }
 
 .input-focus-indicator {
@@ -536,7 +536,7 @@
 
 .auth-box button {
   padding: 14px;
-  background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+  background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
   color: white;
   border: none;
   border-radius: 10px;
@@ -570,9 +570,9 @@
 }
 
 .auth-box button:hover:not(:disabled) {
-  background: linear-gradient(135deg, #4338CA 0%, #6D28D9 100%);
+  background: linear-gradient(135deg, #5568D3 0%, #6D3E8F 100%);
   transform: translateY(-3px);
-  box-shadow: 0 12px 24px rgba(79, 70, 229, 0.4);
+  box-shadow: 0 12px 24px rgba(102, 126, 234, 0.4);
 }
 
 .auth-box button:active:not(:disabled) {
@@ -580,7 +580,7 @@
 }
 
 .auth-box button:disabled {
-  background: rgba(79, 70, 229, 0.3);
+  background: rgba(102, 126, 234, 0.3);
   cursor: not-allowed;
   opacity: 0.6;
 }
