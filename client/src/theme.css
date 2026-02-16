@@ -54,6 +54,9 @@
   /* Table */
   --table-hover: #F9FAFB;
   --table-border: #E5E7EB;
+  
+  /* Chart Canvas Background */
+  --chart-bg: #FFFFFF;
 }
 
 /* Dark Mode - Jellyfish Theme */
@@ -107,6 +110,9 @@
   --jellyfish-card: #1A2332;
   --jellyfish-accent: #2A3F5F;
   --jellyfish-border: #3A5A8F;
+  
+  /* Chart Canvas Background */
+  --chart-bg: #1A2332;
 }
 
 /* Smooth theme transition */

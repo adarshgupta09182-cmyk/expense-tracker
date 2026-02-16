@@ -119,6 +119,9 @@ const ChartsSection = ({ expenses }) => {
         title: {
           display: false,
         },
+        filler: {
+          propagate: true,
+        },
       },
       scales: {
         y: {

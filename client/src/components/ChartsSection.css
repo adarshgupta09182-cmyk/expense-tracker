@@ -28,6 +28,13 @@
 .chart-wrapper {
   height: 350px;
   position: relative;
+  background: var(--chart-bg);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.chart-wrapper canvas {
+  background: var(--chart-bg) !important;
 }
 
 .no-data-message {
