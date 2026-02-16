@@ -48,8 +48,8 @@
   position: absolute;
   top: 100%;
   right: 0;
-  background: linear-gradient(135deg, #1a2332 0%, #2a3f5f 100%);
-  border: 1px solid rgba(58, 90, 143, 0.3);
+  background: linear-gradient(135deg, #5B5BEF, #7C6CF8);
+  border: 1px solid rgba(123, 108, 248, 0.3);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1000;
@@ -69,7 +69,7 @@
   cursor: pointer;
   text-align: left;
   transition: all 0.2s;
-  border-bottom: 1px solid rgba(58, 90, 143, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .export-option:last-child {
@@ -77,7 +77,7 @@
 }
 
 .export-option:hover:not(:disabled) {
-  background: rgba(58, 90, 143, 0.3);
+  background: linear-gradient(135deg, #4F46E5, #6D5CF5);
 }
 
 .export-option:disabled {
