@@ -5,6 +5,7 @@
   margin: 30px 0;
 }
 
+/* Light Mode */
 .chart-container {
   background: var(--bg-surface);
   padding: 24px;
@@ -12,6 +13,12 @@
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
   border: 1px solid var(--border);
   transition: all 0.3s ease;
+}
+
+/* Dark Mode */
+[data-theme="dark"] .chart-container {
+  background: rgba(26, 35, 50, 0.8);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
 .chart-container:hover {
