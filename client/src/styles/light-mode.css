@@ -1,41 +1,176 @@
 /* Light Mode Component Styles - Using Standardized Variables */
 
-/* Buttons */
-button {
+/* ============================================================================
+   SPACING SCALE (8px increments)
+   ============================================================================ */
+:root {
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 40px;
+  --spacing-3xl: 48px;
+}
+
+/* ============================================================================
+   TYPOGRAPHY
+   ============================================================================ */
+
+/* Headings */
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -1px;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg);
+}
+
+h2 {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+h3 {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+/* Body Text */
+body,
+p {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+/* Secondary Text */
+.text-secondary,
+small {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* Caption */
+.caption {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+/* ============================================================================
+   BUTTONS
+   ============================================================================ */
+
+/* Primary Button */
+.btn-primary,
+button:not(.btn-secondary):not(.btn-tertiary) {
   background-color: var(--primary);
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-weight: 500;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  font-family: 'Inter', sans-serif;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
 }
 
-button:hover {
+.btn-primary:hover:not(:disabled),
+button:not(.btn-secondary):not(.btn-tertiary):hover:not(:disabled) {
   background-color: var(--primary-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(79, 70, 229, 0.4);
 }
 
-button:disabled {
+.btn-primary:active:not(:disabled),
+button:not(.btn-secondary):not(.btn-tertiary):active:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled,
+button:not(.btn-secondary):not(.btn-tertiary):disabled {
   background-color: var(--border);
   cursor: not-allowed;
   opacity: 0.6;
 }
 
-/* Cards */
+/* Secondary Button */
+.btn-secondary {
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--bg-surface);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-secondary:active:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.btn-secondary:disabled {
+  border-color: var(--border);
+  color: var(--text-secondary);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ============================================================================
+   CARDS
+   ============================================================================ */
+
 .card {
   background-color: var(--bg-default);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: var(--spacing-lg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
 }
 
 .card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
 }
 
-/* Input Fields */
+/* ============================================================================
+   INPUT FIELDS & FORMS
+   ============================================================================ */
+
 input,
 textarea,
 select {
@@ -44,8 +179,14 @@ select {
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 10px 12px;
-  font-family: inherit;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
   transition: all 0.3s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-secondary);
 }
 
 input:focus,
@@ -54,48 +195,64 @@ select:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-}
-
-input::placeholder {
-  color: var(--text-secondary);
+  background-color: var(--bg-default);
 }
 
 /* Error States */
-.error-input {
+.input-error,
+input.error,
+textarea.error {
   border-color: var(--error) !important;
 }
 
-.error-input:focus {
+.input-error:focus,
+input.error:focus,
+textarea.error:focus {
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
 }
 
 .error-message {
   color: var(--error);
   font-size: 12px;
-  margin-top: 4px;
+  margin-top: var(--spacing-sm);
+  font-weight: 500;
 }
 
 /* Success States */
 .success-message {
   color: var(--success);
   font-size: 12px;
-  margin-top: 4px;
+  margin-top: var(--spacing-sm);
+  font-weight: 500;
 }
 
 /* Warning States */
 .warning-message {
   color: var(--warning);
   font-size: 12px;
-  margin-top: 4px;
+  margin-top: var(--spacing-sm);
+  font-weight: 500;
 }
 
-/* Badges */
+/* Form Groups */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+/* ============================================================================
+   BADGES
+   ============================================================================ */
+
 .badge {
   display: inline-block;
   padding: 4px 12px;
   border-radius: 12px;
   font-size: 12px;
   font-weight: 600;
+  font-family: 'Inter', sans-serif;
 }
 
 .badge-primary {
@@ -118,7 +275,10 @@ input::placeholder {
   color: var(--warning);
 }
 
-/* Tables */
+/* ============================================================================
+   TABLES
+   ============================================================================ */
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -133,25 +293,33 @@ thead {
 th {
   color: var(--text-primary);
   font-weight: 600;
-  padding: 12px;
+  padding: 14px 12px;
   text-align: left;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 td {
   color: var(--text-primary);
-  padding: 12px;
+  padding: 14px 12px;
   border-bottom: 1px solid var(--border);
+  font-size: 14px;
 }
 
 tbody tr:hover {
   background-color: var(--bg-surface);
 }
 
-/* Links */
+/* ============================================================================
+   LINKS
+   ============================================================================ */
+
 a {
   color: var(--primary);
   text-decoration: none;
   transition: color 0.3s ease;
+  font-weight: 500;
 }
 
 a:hover {
@@ -159,48 +327,63 @@ a:hover {
   text-decoration: underline;
 }
 
-/* Dividers */
+a:active {
+  color: var(--primary-hover);
+}
+
+/* ============================================================================
+   DIVIDERS
+   ============================================================================ */
+
 hr {
   border: none;
   border-top: 1px solid var(--border);
-  margin: 16px 0;
+  margin: var(--spacing-lg) 0;
 }
 
-/* Notifications */
+/* ============================================================================
+   NOTIFICATIONS
+   ============================================================================ */
+
 .notification {
   padding: 12px 16px;
   border-radius: 6px;
-  margin-bottom: 16px;
+  margin-bottom: var(--spacing-lg);
   display: flex;
   align-items: center;
   gap: 12px;
+  font-size: 14px;
+  border-left: 4px solid;
 }
 
 .notification-success {
   background-color: rgba(16, 185, 129, 0.1);
   color: var(--success);
-  border-left: 4px solid var(--success);
+  border-left-color: var(--success);
 }
 
 .notification-error {
   background-color: rgba(239, 68, 68, 0.1);
   color: var(--error);
-  border-left: 4px solid var(--error);
+  border-left-color: var(--error);
 }
 
 .notification-warning {
   background-color: rgba(245, 158, 11, 0.1);
   color: var(--warning);
-  border-left: 4px solid var(--warning);
+  border-left-color: var(--warning);
 }
 
 .notification-info {
   background-color: rgba(79, 70, 229, 0.1);
   color: var(--primary);
-  border-left: 4px solid var(--primary);
+  border-left-color: var(--primary);
 }
 
-/* Skeleton Loading */
+/* ============================================================================
+   SKELETON LOADING
+   ============================================================================ */
+
 .skeleton {
   background: linear-gradient(90deg, var(--bg-surface) 25%, var(--border) 50%, var(--bg-surface) 75%);
   background-size: 200% 100%;
@@ -216,7 +399,10 @@ hr {
   }
 }
 
-/* Text Utilities */
+/* ============================================================================
+   TEXT UTILITIES
+   ============================================================================ */
+
 .text-primary {
   color: var(--text-primary);
 }
@@ -237,7 +423,10 @@ hr {
   color: var(--warning);
 }
 
-/* Background Utilities */
+/* ============================================================================
+   BACKGROUND UTILITIES
+   ============================================================================ */
+
 .bg-default {
   background-color: var(--bg-default);
 }
@@ -246,7 +435,14 @@ hr {
   background-color: var(--bg-surface);
 }
 
-/* Border Utilities */
+.bg-tertiary {
+  background-color: var(--bg-tertiary);
+}
+
+/* ============================================================================
+   BORDER UTILITIES
+   ============================================================================ */
+
 .border {
   border: 1px solid var(--border);
 }
@@ -257,4 +453,74 @@ hr {
 
 .border-bottom {
   border-bottom: 1px solid var(--border);
+}
+
+/* ============================================================================
+   SPACING UTILITIES
+   ============================================================================ */
+
+.p-xs { padding: var(--spacing-xs); }
+.p-sm { padding: var(--spacing-sm); }
+.p-md { padding: var(--spacing-md); }
+.p-lg { padding: var(--spacing-lg); }
+.p-xl { padding: var(--spacing-xl); }
+
+.m-xs { margin: var(--spacing-xs); }
+.m-sm { margin: var(--spacing-sm); }
+.m-md { margin: var(--spacing-md); }
+.m-lg { margin: var(--spacing-lg); }
+.m-xl { margin: var(--spacing-xl); }
+
+.gap-xs { gap: var(--spacing-xs); }
+.gap-sm { gap: var(--spacing-sm); }
+.gap-md { gap: var(--spacing-md); }
+.gap-lg { gap: var(--spacing-lg); }
+.gap-xl { gap: var(--spacing-xl); }
+
+/* ============================================================================
+   RESPONSIVE UTILITIES
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 28px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  h3 {
+    font-size: 18px;
+  }
+
+  body,
+  p {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 24px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  h3 {
+    font-size: 16px;
+  }
+
+  body,
+  p {
+    font-size: 13px;
+  }
+
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
 }
