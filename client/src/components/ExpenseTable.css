@@ -181,11 +181,12 @@
 }
 
 .btn-edit {
-  background: var(--primary);
+  background: #10B981;
+  color: #FFFFFF;
 }
 
 .btn-edit:hover {
-  background: var(--primary-hover);
+  background: #059669;
   transform: translateY(-1px);
 }
 
