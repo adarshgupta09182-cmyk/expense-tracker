@@ -105,7 +105,7 @@ const ChartsSection = ({ expenses }) => {
 
   const barOptions = useMemo(() => {
     const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
-    const labelColor = isDarkMode ? '#E0E8FF' : 'inherit';
+    const labelColor = isDarkMode ? '#E0E8FF' : '#6B7280';
     const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : '#E5E7EB';
     
     return {
@@ -156,7 +156,7 @@ const ChartsSection = ({ expenses }) => {
 
   const pieOptions = useMemo(() => {
     const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
-    const labelColor = isDarkMode ? '#E0E8FF' : 'inherit';
+    const labelColor = isDarkMode ? '#E0E8FF' : '#6B7280';
     
     return {
       responsive: true,
