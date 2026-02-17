@@ -210,6 +210,9 @@ app.use((req, res, next) => {
   next();
 });
 
+// Trust proxy (for Railway and other reverse proxies)
+app.set('trust proxy', 1);
+
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -217,7 +220,8 @@ const limiter = rateLimit({
   message: {
     success: false,
     message: 'Too many requests from this IP, please try again later.'
-  }
+  },
+  skip: (req) => process.env.NODE_ENV !== 'production'
 });
 app.use(limiter);
 
@@ -336,7 +340,12 @@ const sendVerificationEmail = async (email, verificationToken) => {
       `
     });
     
-    logger.info('Verification email sent successfully', { email, messageId: response.id });
+    if (response.error) {
+      logger.error('Email sending failed:', { error: response.error, email });
+      return false;
+    }
+    
+    logger.info('Verification email sent successfully', { email, messageId: response.id || 'sent' });
     return true;
   } catch (error) {
     logger.error('Email sending failed:', { error: error.message, email });
@@ -581,6 +590,47 @@ app.post('/api/auth/test-email', [
       message: error.message,
       details: 'Check server logs for more info'
     });
+  }
+});
+
+// DELETE USER ENDPOINT - For testing/admin purposes (remove in production)
+app.post('/api/auth/delete-user', [
+  body('email').trim().notEmpty().isEmail().normalizeEmail()
+], async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    logger.info('Attempting to delete user', { email });
+
+    // Find user first
+    const findResult = await pool.query(
+      'SELECT * FROM users WHERE email = $1',
+      [email]
+    );
+
+    if (findResult.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Delete user
+    const deleteResult = await pool.query(
+      'DELETE FROM users WHERE email = $1 RETURNING id, email, name',
+      [email]
+    );
+
+    logger.info('User deleted successfully', { email, userId: deleteResult.rows[0].id });
+
+    res.json({
+      success: true,
+      message: 'User deleted successfully',
+      deletedUser: deleteResult.rows[0]
+    });
+  } catch (error) {
+    logger.error('Delete user error', error);
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
