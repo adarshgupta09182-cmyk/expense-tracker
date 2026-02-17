@@ -34,7 +34,7 @@
     "dotenv": "^16.3.1",
     "swagger-ui-express": "^5.0.0",
     "swagger-jsdoc": "^6.2.8",
-    "nodemailer": "^6.9.7"
+    "resend": "^3.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

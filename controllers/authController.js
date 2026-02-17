@@ -2,18 +2,10 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const asyncHandler = require('../utils/asyncHandler');
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-// Initialize email transporter
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  secure: process.env.SMTP_PORT === '465',
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS
-  }
-});
+// Initialize Resend
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Generate JWT token
 const generateToken = (id) => {
@@ -26,27 +18,27 @@ const generateToken = (id) => {
 const sendVerificationEmail = async (email, verificationToken) => {
   const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/verify-email?token=${verificationToken}`;
   
-  const mailOptions = {
-    from: process.env.EMAIL_FROM || 'noreply@expensetracker.com',
-    to: email,
-    subject: 'Verify Your Email - Expense Tracker',
-    html: `
-      <h2>Welcome to Expense Tracker!</h2>
-      <p>Please verify your email address to complete your registration.</p>
-      <p>
-        <a href="${verificationUrl}" style="background-color: #4F46E5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
-          Verify Email
-        </a>
-      </p>
-      <p>Or copy and paste this link in your browser:</p>
-      <p>${verificationUrl}</p>
-      <p>This link will expire in 24 hours.</p>
-      <p>If you didn't create this account, please ignore this email.</p>
-    `
-  };
-
   try {
-    await transporter.sendMail(mailOptions);
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'noreply@expensetracker.com',
+      to: email,
+      subject: 'Verify Your Email - Expense Tracker',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #4F46E5;">Welcome to Expense Tracker!</h2>
+          <p style="color: #333; font-size: 16px;">Please verify your email address to complete your registration.</p>
+          <div style="margin: 30px 0;">
+            <a href="${verificationUrl}" style="background-color: #4F46E5; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+              Verify Email
+            </a>
+          </div>
+          <p style="color: #666; font-size: 14px;">Or copy and paste this link in your browser:</p>
+          <p style="color: #666; font-size: 14px; word-break: break-all;">${verificationUrl}</p>
+          <p style="color: #999; font-size: 12px;">This link will expire in 24 hours.</p>
+          <p style="color: #999; font-size: 12px;">If you didn't create this account, please ignore this email.</p>
+        </div>
+      `
+    });
     return true;
   } catch (error) {
     console.error('Email sending failed:', error);

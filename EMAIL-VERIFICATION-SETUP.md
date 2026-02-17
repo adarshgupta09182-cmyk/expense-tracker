@@ -3,51 +3,51 @@
 ## Overview
 Email verification has been implemented to prevent fake registrations. Users must verify their email before they can login.
 
-## Environment Variables Required
+## Using Resend (Recommended)
 
-Add these to your Railway environment variables:
+Resend is a modern email API that's simpler and more reliable than SMTP.
+
+### Setup Instructions
+
+1. **Create Resend Account**
+   - Go to [resend.com](https://resend.com)
+   - Sign up for a free account
+   - Verify your email
+
+2. **Get API Key**
+   - Go to [Resend Dashboard](https://dashboard.resend.com)
+   - Click "API Keys" in the sidebar
+   - Copy your API key (starts with `re_`)
+
+3. **Verify Sender Email**
+   - In Resend Dashboard, go to "Domains"
+   - Add your domain or use the default Resend domain
+   - For development, you can use `onboarding@resend.dev` (test email)
+   - For production, verify your domain
+
+4. **Add to Railway**
+   - Go to your Railway project dashboard
+   - Select your backend service
+   - Go to "Variables" tab
+   - Add these environment variables:
+     - `RESEND_API_KEY`: your-api-key-from-resend
+     - `EMAIL_FROM`: noreply@expensetracker.com (or your verified domain)
+     - `FRONTEND_URL`: https://expense-tracker-rho-brown.vercel.app
+   - Click "Deploy" to apply changes
+
+5. **Test Email Verification**
+   - Register a new account with a valid email
+   - Check your email inbox for verification link
+   - Click the link to verify
+   - You should now be able to login
+
+## Environment Variables
 
 ```
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your-email@gmail.com
-SMTP_PASS=your-app-password
+RESEND_API_KEY=re_your_api_key_here
 EMAIL_FROM=noreply@expensetracker.com
 FRONTEND_URL=https://expense-tracker-rho-brown.vercel.app
 ```
-
-## Setup Instructions
-
-### 1. Gmail Configuration (Recommended)
-
-1. Go to [Google Account Security](https://myaccount.google.com/security)
-2. Enable 2-Step Verification if not already enabled
-3. Go to [App Passwords](https://myaccount.google.com/apppasswords)
-4. Select "Mail" and "Windows Computer" (or your device)
-5. Google will generate a 16-character password
-6. Use this password as `SMTP_PASS`
-
-### 2. Add to Railway
-
-1. Go to your Railway project dashboard
-2. Select your backend service
-3. Go to "Variables" tab
-4. Add the following environment variables:
-   - `SMTP_HOST`: smtp.gmail.com
-   - `SMTP_PORT`: 587
-   - `SMTP_USER`: your-gmail@gmail.com
-   - `SMTP_PASS`: your-16-char-app-password
-   - `EMAIL_FROM`: noreply@expensetracker.com
-   - `FRONTEND_URL`: https://expense-tracker-rho-brown.vercel.app
-
-5. Click "Deploy" to apply changes
-
-### 3. Test Email Verification
-
-1. Register a new account with a valid email
-2. Check your email inbox for verification link
-3. Click the link to verify
-4. You should now be able to login
 
 ## How It Works
 
@@ -55,7 +55,7 @@ FRONTEND_URL=https://expense-tracker-rho-brown.vercel.app
 1. User fills registration form
 2. Backend creates user with `isVerified: false`
 3. Generates secure verification token
-4. Sends email with verification link
+4. Sends email via Resend with verification link
 5. User clicks link → email verified
 6. User can now login
 
@@ -81,10 +81,10 @@ https://expense-tracker-rho-brown.vercel.app/verify-email?token=<UNIQUE_TOKEN>
 ## Troubleshooting
 
 ### Emails not sending?
-- Check SMTP credentials are correct
-- Verify Gmail app password (not regular password)
-- Check 2-Step Verification is enabled on Gmail
-- Check firewall/network allows SMTP port 587
+- Check RESEND_API_KEY is correct
+- Verify EMAIL_FROM domain is verified in Resend
+- Check Resend dashboard for email logs
+- For development, use `onboarding@resend.dev` as EMAIL_FROM
 
 ### Verification link not working?
 - Token may have expired (24 hour limit)
@@ -95,17 +95,21 @@ https://expense-tracker-rho-brown.vercel.app/verify-email?token=<UNIQUE_TOKEN>
 - They can register again with same email
 - Previous unverified account will be replaced
 
-## Alternative Email Providers
+## Resend Benefits
 
-If not using Gmail, you can use:
-- **SendGrid**: SMTP_HOST=smtp.sendgrid.net, SMTP_PORT=587
-- **Resend**: SMTP_HOST=smtp.resend.com, SMTP_PORT=587
-- **AWS SES**: SMTP_HOST=email-smtp.region.amazonaws.com, SMTP_PORT=587
+✅ No SMTP configuration needed
+✅ Better deliverability
+✅ Free tier: 100 emails/day
+✅ Simple API
+✅ Built-in email templates
+✅ Detailed analytics
+✅ Webhook support
 
 ## Security Notes
 
 - Never commit .env file to git
-- Use app-specific passwords, not main account password
+- Keep RESEND_API_KEY secret
 - Tokens are hashed before storage
 - Verification links expire after 24 hours
 - Email addresses are case-insensitive and normalized
+
