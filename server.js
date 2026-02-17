@@ -316,7 +316,7 @@ const sendVerificationEmail = async (email, verificationToken) => {
     }
 
     const response = await resend.emails.send({
-      from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
+      from: 'onboarding@resend.dev',
       to: email,
       subject: 'Verify Your Email - Expense Tracker',
       html: `
