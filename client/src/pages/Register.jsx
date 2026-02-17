@@ -100,9 +100,9 @@ const Register = () => {
     try {
       console.log('Attempting registration...');
       await register(formData.name, formData.email, formData.password);
-      console.log('Registration successful, navigating to login');
-      setSuccessMessage('Registration successful! Redirecting to login...');
-      setTimeout(() => navigate('/login'), 1500);
+      console.log('Registration successful');
+      setSuccessMessage('Registration successful! Check your email to verify your account.');
+      setTimeout(() => navigate('/login'), 3000);
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Registration failed';
       console.log('Registration error caught:', errorMsg);

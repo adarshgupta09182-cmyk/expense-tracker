@@ -7,6 +7,7 @@ import AnimatedPage from './components/AnimatedPage'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import ForgotPassword from './pages/ForgotPassword'
+import VerifyEmail from './pages/VerifyEmail'
 import Dashboard from './pages/Dashboard'
 import './App.css'
 
@@ -19,6 +20,7 @@ function App() {
             <Routes>
               <Route path="/login" element={<AnimatedPage><Login /></AnimatedPage>} />
               <Route path="/register" element={<AnimatedPage><Register /></AnimatedPage>} />
+              <Route path="/verify-email" element={<AnimatedPage><VerifyEmail /></AnimatedPage>} />
               <Route path="/forgot-password" element={<AnimatedPage><ForgotPassword /></AnimatedPage>} />
               <Route
                 path="/dashboard"

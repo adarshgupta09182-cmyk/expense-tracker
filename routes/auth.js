@@ -6,12 +6,14 @@ const {
 const {
   register,
   login,
-  resetPassword
+  resetPassword,
+  verifyEmail
 } = require('../controllers/authController');
 
 const router = express.Router();
 
 router.post('/register', registerValidator, register);
+router.get('/verify-email', verifyEmail);
 router.post('/login', loginValidator, login);
 router.post('/reset-password', resetPassword);
 
