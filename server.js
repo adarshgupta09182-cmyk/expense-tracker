@@ -7,8 +7,10 @@ const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { body, param, query, validationResult } = require('express-validator');
 const { Pool } = require('pg');
+const { Resend } = require('resend');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -24,6 +26,9 @@ const pool = new Pool({
 pool.on('error', (err) => {
   logger.error('Unexpected error on idle client', err);
 });
+
+// Initialize Resend
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // ============================================================================
 // LOGGING UTILITY
@@ -55,10 +60,21 @@ async function initializeDatabase() {
         email VARCHAR(255) UNIQUE NOT NULL,
         password VARCHAR(255) NOT NULL,
         role VARCHAR(50) DEFAULT 'user',
+        is_verified BOOLEAN DEFAULT false,
+        verification_token VARCHAR(255),
+        verification_token_expires TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
     logger.info('✓ Users table ready');
+
+    // Add verification columns if they don't exist (for existing tables)
+    await pool.query(`
+      ALTER TABLE users
+      ADD COLUMN IF NOT EXISTS is_verified BOOLEAN DEFAULT false,
+      ADD COLUMN IF NOT EXISTS verification_token VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS verification_token_expires TIMESTAMP;
+    `).catch(() => {}); // Ignore error if columns already exist
 
     // Create expenses table
     await pool.query(`
@@ -287,6 +303,41 @@ app.get('/health', async (req, res) => {
 });
 
 // ============================================================================
+// EMAIL VERIFICATION HELPER
+// ============================================================================
+
+const sendVerificationEmail = async (email, verificationToken) => {
+  const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/verify-email?token=${verificationToken}`;
+  
+  try {
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'noreply@expensetracker.com',
+      to: email,
+      subject: 'Verify Your Email - Expense Tracker',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #4F46E5;">Welcome to Expense Tracker!</h2>
+          <p style="color: #333; font-size: 16px;">Please verify your email address to complete your registration.</p>
+          <div style="margin: 30px 0;">
+            <a href="${verificationUrl}" style="background-color: #4F46E5; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+              Verify Email
+            </a>
+          </div>
+          <p style="color: #666; font-size: 14px;">Or copy and paste this link in your browser:</p>
+          <p style="color: #666; font-size: 14px; word-break: break-all;">${verificationUrl}</p>
+          <p style="color: #999; font-size: 12px;">This link will expire in 24 hours.</p>
+          <p style="color: #999; font-size: 12px;">If you didn't create this account, please ignore this email.</p>
+        </div>
+      `
+    });
+    return true;
+  } catch (error) {
+    logger.error('Email sending failed:', error);
+    return false;
+  }
+};
+
+// ============================================================================
 // AUTH ROUTES
 // ============================================================================
 
@@ -312,17 +363,27 @@ app.post('/api/auth/register', [
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
+    // Generate verification token
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const hashedToken = crypto.createHash('sha256').update(verificationToken).digest('hex');
+    const tokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    // Create user with verification fields
     const result = await pool.query(
-      'INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING id, name, email, role',
-      [name, email, hashedPassword, 'user']
+      'INSERT INTO users (name, email, password, role, is_verified, verification_token, verification_token_expires) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, name, email, role, is_verified',
+      [name, email, hashedPassword, 'user', false, hashedToken, tokenExpires]
     );
+
+    // Send verification email
+    const emailSent = await sendVerificationEmail(email, verificationToken);
 
     logger.info('Registration successful', { email, userId: result.rows[0].id });
 
     res.status(201).json({
       success: true,
-      message: 'Registration successful. Please login.',
+      message: emailSent 
+        ? 'Registration successful. Please check your email to verify your account.' 
+        : 'Registration successful. Please contact support to verify your account.',
       user: result.rows[0]
     });
   } catch (error) {
@@ -360,6 +421,15 @@ app.post('/api/auth/login', [
       return res.status(401).json({ success: false, message: 'Invalid username or password' });
     }
 
+    // Check if email is verified
+    if (!user.is_verified) {
+      logger.warn('Login failed: email not verified', { email });
+      return res.status(403).json({ 
+        success: false, 
+        message: 'Please verify your email first. Check your inbox for the verification link.' 
+      });
+    }
+
     logger.info('Login successful', { email, userId: user.id });
 
     const token = generateToken(user.id);
@@ -371,6 +441,57 @@ app.post('/api/auth/login', [
     });
   } catch (error) {
     logger.error('Login error', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Verify Email
+app.get('/api/auth/verify-email', [
+  query('token').notEmpty()
+], async (req, res) => {
+  const { token } = req.query;
+
+  try {
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: 'Verification token is required'
+      });
+    }
+
+    // Hash the token to match with stored hash
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+    // Find user by hashed token
+    const result = await pool.query(
+      'SELECT * FROM users WHERE verification_token = $1 AND verification_token_expires > NOW()',
+      [hashedToken]
+    );
+
+    if (result.rows.length === 0) {
+      logger.warn('Email verification failed: invalid or expired token');
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid or expired verification token'
+      });
+    }
+
+    const user = result.rows[0];
+
+    // Mark user as verified
+    await pool.query(
+      'UPDATE users SET is_verified = true, verification_token = NULL, verification_token_expires = NULL WHERE id = $1',
+      [user.id]
+    );
+
+    logger.info('Email verified successfully', { email: user.email, userId: user.id });
+
+    res.json({
+      success: true,
+      message: 'Email verified successfully. You can now login.'
+    });
+  } catch (error) {
+    logger.error('Email verification error', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
