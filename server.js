@@ -310,8 +310,13 @@ const sendVerificationEmail = async (email, verificationToken) => {
   const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/verify-email?token=${verificationToken}`;
   
   try {
-    await resend.emails.send({
-      from: process.env.EMAIL_FROM || 'noreply@expensetracker.com',
+    if (!process.env.RESEND_API_KEY) {
+      logger.warn('RESEND_API_KEY not configured, email verification skipped');
+      return false;
+    }
+
+    const response = await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
       to: email,
       subject: 'Verify Your Email - Expense Tracker',
       html: `
@@ -330,9 +335,11 @@ const sendVerificationEmail = async (email, verificationToken) => {
         </div>
       `
     });
+    
+    logger.info('Verification email sent successfully', { email, messageId: response.id });
     return true;
   } catch (error) {
-    logger.error('Email sending failed:', error);
+    logger.error('Email sending failed:', { error: error.message, email });
     return false;
   }
 };
@@ -492,6 +499,46 @@ app.get('/api/auth/verify-email', [
     });
   } catch (error) {
     logger.error('Email verification error', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// TEST ENDPOINT - Auto-verify user by email (for testing only, remove in production)
+app.post('/api/auth/test-verify', [
+  body('email').trim().notEmpty().isEmail().normalizeEmail()
+], async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    // Find user by email
+    const result = await pool.query(
+      'SELECT * FROM users WHERE email = $1',
+      [email]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    const user = result.rows[0];
+
+    // Mark user as verified
+    await pool.query(
+      'UPDATE users SET is_verified = true, verification_token = NULL, verification_token_expires = NULL WHERE id = $1',
+      [user.id]
+    );
+
+    logger.info('Test: User auto-verified', { email, userId: user.id });
+
+    res.json({
+      success: true,
+      message: 'User verified successfully for testing'
+    });
+  } catch (error) {
+    logger.error('Test verification error', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
