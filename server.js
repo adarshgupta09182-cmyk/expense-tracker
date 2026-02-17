@@ -543,6 +543,47 @@ app.post('/api/auth/test-verify', [
   }
 });
 
+// DEBUG ENDPOINT - Test Resend email sending
+app.post('/api/auth/test-email', [
+  body('email').trim().notEmpty().isEmail().normalizeEmail()
+], async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    logger.info('Testing Resend email', { 
+      email,
+      apiKeyExists: !!process.env.RESEND_API_KEY,
+      apiKeyLength: process.env.RESEND_API_KEY?.length || 0
+    });
+
+    const response = await resend.emails.send({
+      from: 'onboarding@resend.dev',
+      to: email,
+      subject: 'Test Email from Expense Tracker',
+      html: '<h1>Test Email</h1><p>If you received this, Resend is working!</p>'
+    });
+
+    logger.info('Test email sent successfully', { messageId: response.id });
+
+    res.json({
+      success: true,
+      message: 'Test email sent successfully',
+      messageId: response.id
+    });
+  } catch (error) {
+    logger.error('Test email failed:', { 
+      error: error.message,
+      statusCode: error.statusCode,
+      apiKeyExists: !!process.env.RESEND_API_KEY
+    });
+    res.status(500).json({ 
+      success: false, 
+      message: error.message,
+      details: 'Check server logs for more info'
+    });
+  }
+});
+
 // Reset Password
 app.post('/api/auth/reset-password', [
   body('email').trim().notEmpty().isEmail().normalizeEmail(),
