@@ -58,8 +58,9 @@ self.addEventListener('fetch', (event) => {
       fetch(request)
         .then((response) => {
           if (response.ok) {
-            const cache = caches.open(API_CACHE);
-            cache.then((c) => c.put(request, response.clone()));
+            caches.open(API_CACHE).then((cache) => {
+              cache.put(request, response.clone());
+            });
           }
           return response;
         })
@@ -86,8 +87,9 @@ self.addEventListener('fetch', (event) => {
       caches.match(request).then((response) => {
         return response || fetch(request).then((response) => {
           if (response.ok) {
-            const cache = caches.open(RUNTIME_CACHE);
-            cache.then((c) => c.put(request, response.clone()));
+            caches.open(RUNTIME_CACHE).then((cache) => {
+              cache.put(request, response.clone());
+            });
           }
           return response;
         });
@@ -102,8 +104,9 @@ self.addEventListener('fetch', (event) => {
       fetch(request)
         .then((response) => {
           if (response.ok) {
-            const cache = caches.open(RUNTIME_CACHE);
-            cache.then((c) => c.put(request, response.clone()));
+            caches.open(RUNTIME_CACHE).then((cache) => {
+              cache.put(request, response.clone());
+            });
           }
           return response;
         })
@@ -121,8 +124,9 @@ self.addEventListener('fetch', (event) => {
     fetch(request)
       .then((response) => {
         if (response.ok && request.destination !== '') {
-          const cache = caches.open(RUNTIME_CACHE);
-          cache.then((c) => c.put(request, response.clone()));
+          caches.open(RUNTIME_CACHE).then((cache) => {
+            cache.put(request, response.clone());
+          });
         }
         return response;
       })

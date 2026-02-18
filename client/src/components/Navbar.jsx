@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
+import PWAInstallPrompt from './PWAInstallPrompt';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -19,6 +20,7 @@ const Navbar = () => {
       <div className="navbar-container">
         <h1 className="navbar-logo">💰 Expense Tracker</h1>
         <div className="navbar-user">
+          <PWAInstallPrompt />
           <span className="user-name">{user?.name}</span>
           <span className="user-role">{user?.role}</span>
           <button 
