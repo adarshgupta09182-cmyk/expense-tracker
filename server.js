@@ -437,15 +437,6 @@ app.post('/api/auth/login', [
       return res.status(401).json({ success: false, message: 'Invalid username or password' });
     }
 
-    // Check if email is verified
-    if (!user.is_verified) {
-      logger.warn('Login failed: email not verified', { email });
-      return res.status(403).json({ 
-        success: false, 
-        message: 'Please verify your email first. Check your inbox for the verification link.' 
-      });
-    }
-
     logger.info('Login successful', { email, userId: user.id });
 
     const token = generateToken(user.id);
