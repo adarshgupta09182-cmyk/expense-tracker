@@ -1,0 +1,109 @@
+/* PWA Specific Styles */
+
+/* Standalone mode adjustments */
+html.pwa-standalone {
+  /* Add padding for notch on iOS */
+  padding-top: max(12px, env(safe-area-inset-top));
+  padding-left: max(12px, env(safe-area-inset-left));
+  padding-right: max(12px, env(safe-area-inset-right));
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+
+html.pwa-standalone body {
+  /* Prevent scrolling on iOS */
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Offline indicator */
+html.pwa-offline::before {
+  content: 'Offline Mode';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #ef4444;
+  color: white;
+  padding: 8px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  z-index: 9999;
+}
+
+/* Install button styles */
+#pwa-install-btn {
+  display: none;
+  padding: 8px 16px;
+  background: #4F46E5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+#pwa-install-btn:hover {
+  background: #4338ca;
+}
+
+#pwa-install-btn:active {
+  transform: scale(0.98);
+}
+
+/* Prevent zoom on iOS */
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+
+/* Full viewport height for mobile */
+@supports (height: 100dvh) {
+  html,
+  body {
+    height: 100dvh;
+  }
+}
+
+/* Prevent text selection on long press */
+body {
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+/* Allow text selection in inputs */
+input,
+textarea,
+[contenteditable] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Status bar styling for iOS */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+}
+
+/* Landscape mode adjustments */
+@media (orientation: landscape) {
+  html.pwa-standalone {
+    padding-top: max(12px, env(safe-area-inset-top));
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  html.pwa-offline::before {
+    background: #dc2626;
+  }
+}
