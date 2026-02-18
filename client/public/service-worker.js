@@ -1,6 +1,5 @@
 const CACHE_NAME = 'expense-tracker-v1';
 const RUNTIME_CACHE = 'expense-tracker-runtime-v1';
-const API_CACHE = 'expense-tracker-api-v1';
 
 const STATIC_ASSETS = [
   '/',
@@ -29,7 +28,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME && cacheName !== RUNTIME_CACHE && cacheName !== API_CACHE) {
+          if (cacheName !== CACHE_NAME && cacheName !== RUNTIME_CACHE) {
             console.log('[Service Worker] Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
@@ -50,30 +49,15 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // API requests - Network first, fallback to cache
+  // API requests - Network only (no caching to avoid clone issues)
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(
-      fetch(request)
-        .then((response) => {
-          // Clone before caching
-          if (response.ok) {
-            caches.open(API_CACHE).then((cache) => {
-              cache.put(request, response.clone());
-            });
-          }
-          return response;
-        })
-        .catch(() => {
-          return caches.match(request).then((cachedResponse) => {
-            if (cachedResponse) {
-              return cachedResponse;
-            }
-            return new Response(
-              JSON.stringify({ error: 'Offline - cached data unavailable' }),
-              { status: 503, headers: { 'Content-Type': 'application/json' } }
-            );
-          });
-        })
+      fetch(request).catch(() => {
+        return new Response(
+          JSON.stringify({ error: 'Offline - API unavailable' }),
+          { status: 503, headers: { 'Content-Type': 'application/json' } }
+        );
+      })
     );
     return;
   }
@@ -90,13 +74,8 @@ self.addEventListener('fetch', (event) => {
         if (cachedResponse) {
           return cachedResponse;
         }
-        return fetch(request).then((response) => {
-          if (response.ok) {
-            caches.open(RUNTIME_CACHE).then((cache) => {
-              cache.put(request, response.clone());
-            });
-          }
-          return response;
+        return fetch(request).catch(() => {
+          return new Response('Asset not found', { status: 404 });
         });
       })
     );
@@ -108,9 +87,11 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          if (response.ok) {
+          // Only cache successful responses
+          if (response && response.status === 200) {
+            const responseToCache = response.clone();
             caches.open(RUNTIME_CACHE).then((cache) => {
-              cache.put(request, response.clone());
+              cache.put(request, responseToCache);
             });
           }
           return response;
@@ -131,9 +112,10 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(request)
       .then((response) => {
-        if (response.ok && request.destination !== '') {
+        if (response && response.status === 200 && request.destination !== '') {
+          const responseToCache = response.clone();
           caches.open(RUNTIME_CACHE).then((cache) => {
-            cache.put(request, response.clone());
+            cache.put(request, responseToCache);
           });
         }
         return response;
