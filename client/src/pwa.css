@@ -10,11 +10,11 @@ html.pwa-standalone {
 }
 
 html.pwa-standalone body {
-  /* Prevent scrolling on iOS */
-  position: fixed;
+  /* Allow scrolling on mobile */
+  position: relative;
   width: 100%;
-  height: 100%;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* Offline indicator */
