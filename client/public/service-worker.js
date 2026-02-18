@@ -5,9 +5,7 @@ const API_CACHE = 'expense-tracker-api-v1';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
-  '/manifest.json',
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png'
+  '/manifest.json'
 ];
 
 // Install event - cache static assets
@@ -57,6 +55,7 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
+          // Clone before caching
           if (response.ok) {
             caches.open(API_CACHE).then((cache) => {
               cache.put(request, response.clone());
@@ -65,8 +64,11 @@ self.addEventListener('fetch', (event) => {
           return response;
         })
         .catch(() => {
-          return caches.match(request).then((response) => {
-            return response || new Response(
+          return caches.match(request).then((cachedResponse) => {
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+            return new Response(
               JSON.stringify({ error: 'Offline - cached data unavailable' }),
               { status: 503, headers: { 'Content-Type': 'application/json' } }
             );
@@ -84,8 +86,11 @@ self.addEventListener('fetch', (event) => {
     request.destination === 'font'
   ) {
     event.respondWith(
-      caches.match(request).then((response) => {
-        return response || fetch(request).then((response) => {
+      caches.match(request).then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        return fetch(request).then((response) => {
           if (response.ok) {
             caches.open(RUNTIME_CACHE).then((cache) => {
               cache.put(request, response.clone());
@@ -111,8 +116,11 @@ self.addEventListener('fetch', (event) => {
           return response;
         })
         .catch(() => {
-          return caches.match(request).then((response) => {
-            return response || caches.match('/index.html');
+          return caches.match(request).then((cachedResponse) => {
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+            return caches.match('/index.html');
           });
         })
     );
