@@ -73,37 +73,88 @@
 }
 
 /* Frequency Options */
-.frequency-buttons {
+.frequency-group {
+  grid-column: 1 / -1;
+}
+
+.frequency-options {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
-.freq-btn {
-  flex: 1;
-  min-width: 120px;
-  padding: 12px 16px;
+.frequency-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
   border: 2px solid var(--border-color);
   border-radius: 8px;
   background: var(--bg-default);
-  color: var(--text-primary);
-  font-size: 14px;
-  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-family: inherit;
+  flex: 1;
+  min-width: 140px;
+  position: relative;
 }
 
-.freq-btn:hover {
+.frequency-label input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+}
+
+.frequency-label .radio-custom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  background: var(--bg-default);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.frequency-label .radio-custom::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.frequency-label input[type="radio"]:checked + .radio-custom {
+  border-color: var(--primary-color);
+  background: rgba(79, 70, 229, 0.1);
+}
+
+.frequency-label input[type="radio"]:checked + .radio-custom::after {
+  opacity: 1;
+}
+
+.frequency-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  user-select: none;
+}
+
+.frequency-label:hover {
   border-color: var(--primary-color);
   background: rgba(79, 70, 229, 0.05);
 }
 
-.freq-btn.active {
-  border-color: var(--primary-color);
-  background: rgba(79, 70, 229, 0.1);
-  color: var(--primary-color);
+.frequency-label input[type="radio"]:checked ~ .frequency-text {
   font-weight: 600;
+  color: var(--primary-color);
 }
 
 /* Submit Button */

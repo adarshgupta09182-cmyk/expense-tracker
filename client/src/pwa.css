@@ -88,7 +88,10 @@ textarea,
 }
 
 input[type="radio"],
-input[type="checkbox"] {
+input[type="checkbox"],
+button,
+button[type="button"],
+button[type="submit"] {
   pointer-events: auto;
   cursor: pointer;
 }

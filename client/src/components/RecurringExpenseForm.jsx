@@ -143,30 +143,42 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
         </div>
 
         {/* Frequency */}
-        <div className="form-group">
+        <div className="form-group frequency-group">
           <label>Frequency</label>
-          <div className="frequency-buttons">
-            <button
-              type="button"
-              className={`freq-btn ${formData.frequency === 'weekly' ? 'active' : ''}`}
-              onClick={() => setFormData(prev => ({ ...prev, frequency: 'weekly' }))}
-            >
-              📅 Weekly
-            </button>
-            <button
-              type="button"
-              className={`freq-btn ${formData.frequency === 'monthly' ? 'active' : ''}`}
-              onClick={() => setFormData(prev => ({ ...prev, frequency: 'monthly' }))}
-            >
-              📆 Monthly
-            </button>
-            <button
-              type="button"
-              className={`freq-btn ${formData.frequency === 'custom' ? 'active' : ''}`}
-              onClick={() => setFormData(prev => ({ ...prev, frequency: 'custom' }))}
-            >
-              ⚙️ Custom
-            </button>
+          <div className="frequency-options">
+            <label className="frequency-label">
+              <input
+                type="radio"
+                name="frequency"
+                value="weekly"
+                checked={formData.frequency === 'weekly'}
+                onChange={handleChange}
+              />
+              <span className="radio-custom"></span>
+              <span className="frequency-text">📅 Weekly</span>
+            </label>
+            <label className="frequency-label">
+              <input
+                type="radio"
+                name="frequency"
+                value="monthly"
+                checked={formData.frequency === 'monthly'}
+                onChange={handleChange}
+              />
+              <span className="radio-custom"></span>
+              <span className="frequency-text">📆 Monthly</span>
+            </label>
+            <label className="frequency-label">
+              <input
+                type="radio"
+                name="frequency"
+                value="custom"
+                checked={formData.frequency === 'custom'}
+                onChange={handleChange}
+              />
+              <span className="radio-custom"></span>
+              <span className="frequency-text">⚙️ Custom</span>
+            </label>
           </div>
         </div>
 
