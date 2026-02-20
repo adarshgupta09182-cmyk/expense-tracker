@@ -143,26 +143,32 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
         </div>
 
         {/* Frequency */}
-        <fieldset className="form-group frequency-fieldset">
-          <legend>Frequency</legend>
-          <div className="frequency-options">
-            {FREQUENCIES.map(freq => (
-              <div key={freq.value} className="frequency-option">
-                <input
-                  id={`frequency-${freq.value}`}
-                  type="radio"
-                  name="frequency"
-                  value={freq.value}
-                  checked={formData.frequency === freq.value}
-                  onChange={handleChange}
-                />
-                <label htmlFor={`frequency-${freq.value}`} className="frequency-label">
-                  {freq.label}
-                </label>
-              </div>
-            ))}
+        <div className="form-group">
+          <label>Frequency</label>
+          <div className="frequency-buttons">
+            <button
+              type="button"
+              className={`freq-btn ${formData.frequency === 'weekly' ? 'active' : ''}`}
+              onClick={() => setFormData(prev => ({ ...prev, frequency: 'weekly' }))}
+            >
+              📅 Weekly
+            </button>
+            <button
+              type="button"
+              className={`freq-btn ${formData.frequency === 'monthly' ? 'active' : ''}`}
+              onClick={() => setFormData(prev => ({ ...prev, frequency: 'monthly' }))}
+            >
+              📆 Monthly
+            </button>
+            <button
+              type="button"
+              className={`freq-btn ${formData.frequency === 'custom' ? 'active' : ''}`}
+              onClick={() => setFormData(prev => ({ ...prev, frequency: 'custom' }))}
+            >
+              ⚙️ Custom
+            </button>
           </div>
-        </fieldset>
+        </div>
 
         {/* Custom Days */}
         {formData.frequency === 'custom' && (

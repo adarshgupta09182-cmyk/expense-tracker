@@ -73,73 +73,37 @@
 }
 
 /* Frequency Options */
-.frequency-options {
+.frequency-buttons {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
 }
 
-.frequency-option {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.freq-btn {
   flex: 1;
-  min-width: 140px;
-}
-
-.frequency-option input[type="radio"] {
-  width: 18px;
-  height: 18px;
-  margin: 0;
-  padding: 0;
-  cursor: pointer;
-  accent-color: var(--primary-color);
-  flex-shrink: 0;
-  z-index: 2;
-  position: relative;
-}
-
-.frequency-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
+  min-width: 120px;
+  padding: 12px 16px;
   border: 2px solid var(--border-color);
   border-radius: 8px;
+  background: var(--bg-default);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: var(--bg-default);
-  flex: 1;
-  font-size: 14px;
-  color: var(--text-primary);
-  margin: 0;
-  pointer-events: none;
+  font-family: inherit;
 }
 
-.frequency-option input[type="radio"]:checked + .frequency-label {
+.freq-btn:hover {
   border-color: var(--primary-color);
-  background: rgba(79, 70, 229, 0.08);
+  background: rgba(79, 70, 229, 0.05);
+}
+
+.freq-btn.active {
+  border-color: var(--primary-color);
+  background: rgba(79, 70, 229, 0.1);
   color: var(--primary-color);
   font-weight: 600;
-}
-
-.frequency-label:hover {
-  border-color: var(--primary-color);
-}
-
-.frequency-fieldset {
-  border: none;
-  padding: 0;
-  margin: 0;
-}
-
-.frequency-fieldset legend {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
-  padding: 0;
-  margin-bottom: 8px;
-  display: block;
 }
 
 /* Submit Button */
