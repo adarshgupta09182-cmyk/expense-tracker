@@ -103,6 +103,26 @@ async function initializeDatabase() {
     `);
     logger.info('✓ Budgets table ready');
 
+    // Create recurring expenses table
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS recurring_expenses (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        description VARCHAR(255) NOT NULL,
+        amount DECIMAL(10, 2) NOT NULL,
+        category VARCHAR(100) NOT NULL,
+        frequency VARCHAR(50) NOT NULL,
+        custom_days INTEGER,
+        start_date DATE NOT NULL,
+        end_date DATE,
+        last_generated_date DATE,
+        is_active BOOLEAN DEFAULT true,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+    logger.info('✓ Recurring expenses table ready');
+
     // Migrate data from JSON if it exists
     await migrateFromJSON();
 
@@ -792,6 +812,192 @@ app.delete('/api/expenses/:id', [authenticate, param('id').notEmpty(), validate]
     res.json({ success: true, message: 'Expense deleted successfully' });
   } catch (error) {
     logger.error('Delete expense error', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// ============================================================================
+// RECURRING EXPENSES ROUTES
+// ============================================================================
+
+// Get all recurring expenses
+app.get('/api/recurring-expenses', authenticate, async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM recurring_expenses WHERE user_id = $1 ORDER BY created_at DESC',
+      [req.user.id]
+    );
+    res.json({ success: true, data: result.rows });
+  } catch (error) {
+    logger.error('Get recurring expenses error', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Create recurring expense
+app.post('/api/recurring-expenses', [
+  authenticate,
+  body('description').trim().notEmpty().isLength({ min: 3, max: 200 }).escape(),
+  body('amount').isFloat({ min: 0.01 }).toFloat(),
+  body('category').trim().notEmpty().escape(),
+  body('frequency').isIn(['weekly', 'monthly', 'custom']),
+  body('customDays').optional().isInt({ min: 1, max: 365 }).toInt(),
+  body('startDate').isISO8601().toDate(),
+  body('endDate').optional().isISO8601().toDate()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
+  }
+
+  try {
+    const { description, amount, category, frequency, customDays, startDate, endDate } = req.body;
+
+    const result = await pool.query(
+      `INSERT INTO recurring_expenses 
+       (user_id, description, amount, category, frequency, custom_days, start_date, end_date, last_generated_date, is_active)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, true)
+       RETURNING *`,
+      [req.user.id, description, amount, category, frequency, customDays || null, startDate, endDate || null, startDate]
+    );
+
+    res.status(201).json({ success: true, data: result.rows[0] });
+  } catch (error) {
+    logger.error('Create recurring expense error', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Update recurring expense
+app.put('/api/recurring-expenses/:id', [
+  authenticate,
+  body('description').optional().trim().isLength({ min: 3, max: 200 }).escape(),
+  body('amount').optional().isFloat({ min: 0.01 }).toFloat(),
+  body('category').optional().trim().escape(),
+  body('frequency').optional().isIn(['weekly', 'monthly', 'custom']),
+  body('customDays').optional().isInt({ min: 1, max: 365 }).toInt(),
+  body('isActive').optional().isBoolean().toBoolean()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
+  }
+
+  try {
+    const { id } = req.params;
+    const { description, amount, category, frequency, customDays, isActive } = req.body;
+
+    const updates = [];
+    const values = [id, req.user.id];
+    let paramCount = 2;
+
+    if (description !== undefined) {
+      updates.push(`description = $${++paramCount}`);
+      values.push(description);
+    }
+    if (amount !== undefined) {
+      updates.push(`amount = $${++paramCount}`);
+      values.push(amount);
+    }
+    if (category !== undefined) {
+      updates.push(`category = $${++paramCount}`);
+      values.push(category);
+    }
+    if (frequency !== undefined) {
+      updates.push(`frequency = $${++paramCount}`);
+      values.push(frequency);
+    }
+    if (customDays !== undefined) {
+      updates.push(`custom_days = $${++paramCount}`);
+      values.push(customDays);
+    }
+    if (isActive !== undefined) {
+      updates.push(`is_active = $${++paramCount}`);
+      values.push(isActive);
+    }
+
+    updates.push(`updated_at = CURRENT_TIMESTAMP`);
+
+    const result = await pool.query(
+      `UPDATE recurring_expenses SET ${updates.join(', ')} WHERE id = $1 AND user_id = $2 RETURNING *`,
+      values
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Recurring expense not found' });
+    }
+
+    res.json({ success: true, data: result.rows[0] });
+  } catch (error) {
+    logger.error('Update recurring expense error', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Delete recurring expense
+app.delete('/api/recurring-expenses/:id', authenticate, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await pool.query(
+      'DELETE FROM recurring_expenses WHERE id = $1 AND user_id = $2 RETURNING id',
+      [id, req.user.id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Recurring expense not found' });
+    }
+
+    res.json({ success: true, message: 'Recurring expense deleted successfully' });
+  } catch (error) {
+    logger.error('Delete recurring expense error', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Generate recurring expenses (called periodically)
+app.post('/api/recurring-expenses/generate', authenticate, async (req, res) => {
+  try {
+    const recurringExpenses = await pool.query(
+      `SELECT * FROM recurring_expenses 
+       WHERE user_id = $1 AND is_active = true 
+       AND (end_date IS NULL OR end_date >= CURRENT_DATE)`,
+      [req.user.id]
+    );
+
+    let generatedCount = 0;
+
+    for (const recurring of recurringExpenses.rows) {
+      let nextDate = new Date(recurring.last_generated_date);
+      const today = new Date();
+
+      if (recurring.frequency === 'weekly') {
+        nextDate.setDate(nextDate.getDate() + 7);
+      } else if (recurring.frequency === 'monthly') {
+        nextDate.setMonth(nextDate.getMonth() + 1);
+      } else if (recurring.frequency === 'custom' && recurring.custom_days) {
+        nextDate.setDate(nextDate.getDate() + recurring.custom_days);
+      }
+
+      if (nextDate <= today) {
+        await pool.query(
+          `INSERT INTO expenses (user_id, description, amount, category, date)
+           VALUES ($1, $2, $3, $4, CURRENT_DATE)`,
+          [req.user.id, recurring.description, recurring.amount, recurring.category]
+        );
+
+        await pool.query(
+          `UPDATE recurring_expenses SET last_generated_date = CURRENT_DATE WHERE id = $1`,
+          [recurring.id]
+        );
+
+        generatedCount++;
+      }
+    }
+
+    res.json({ success: true, message: `Generated ${generatedCount} recurring expenses` });
+  } catch (error) {
+    logger.error('Generate recurring expenses error', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
