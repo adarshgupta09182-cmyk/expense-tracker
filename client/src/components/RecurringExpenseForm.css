@@ -79,6 +79,21 @@
   flex-wrap: wrap;
 }
 
+.frequency-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.frequency-fieldset legend {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  padding: 0;
+  margin-bottom: 8px;
+  display: block;
+}
+
 .frequency-label {
   display: flex;
   align-items: center;

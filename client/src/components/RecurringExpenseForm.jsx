@@ -145,8 +145,8 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
         </div>
 
         {/* Frequency */}
-        <div className="form-group">
-          <label>Frequency</label>
+        <fieldset className="form-group frequency-fieldset">
+          <legend>Frequency</legend>
           <div className="frequency-options">
             {FREQUENCIES.map(freq => (
               <label key={freq.value} className="frequency-label" htmlFor={`frequency-${freq.value}`}>
@@ -162,7 +162,7 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
               </label>
             ))}
           </div>
-        </div>
+        </fieldset>
 
         {/* Custom Days */}
         {formData.frequency === 'custom' && (
