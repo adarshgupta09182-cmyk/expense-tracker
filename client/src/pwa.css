@@ -84,6 +84,13 @@ textarea,
 [contenteditable] {
   -webkit-user-select: text;
   user-select: text;
+  pointer-events: auto;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 /* Status bar styling for iOS */
