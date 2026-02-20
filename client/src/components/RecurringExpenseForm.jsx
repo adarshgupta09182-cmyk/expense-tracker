@@ -1,5 +1,7 @@
 import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import { useToast } from '../hooks/useToast';
+import LoadingSpinner from './LoadingSpinner';
 import './RecurringExpenseForm.css';
 
 const CATEGORIES = ['Food', 'Transport', 'Travelling', 'Entertainment', 'Shopping', 'Bills', 'Other'];
@@ -21,6 +23,7 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
   });
 
   const [errors, setErrors] = useState({});
+  const { success, error: showError } = useToast();
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -65,6 +68,7 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
   const handleSubmit = useCallback((e) => {
     e.preventDefault();
     if (validateForm()) {
+      success('Recurring expense created successfully!');
       onSubmit({
         ...formData,
         amount: parseFloat(formData.amount),
@@ -79,8 +83,10 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
         startDate: new Date().toISOString().split('T')[0],
         endDate: ''
       });
+    } else {
+      showError('Please fix the errors in the form');
     }
-  }, [formData, validateForm, onSubmit]);
+  }, [formData, validateForm, onSubmit, success, showError]);
 
   return (
     <motion.div
@@ -218,7 +224,14 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
-          {isLoading ? 'Creating...' : '✨ Create Recurring Expense'}
+          {isLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
+              <LoadingSpinner size="sm" />
+              Creating...
+            </span>
+          ) : (
+            '✨ Create Recurring Expense'
+          )}
         </motion.button>
       </form>
     </motion.div>
