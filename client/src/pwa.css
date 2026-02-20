@@ -55,13 +55,12 @@ html.pwa-offline::before {
   transform: scale(0.98);
 }
 
-/* Prevent autofill color changes - ULTIMATE FIX */
-input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0 1000px var(--bg-default) inset !important;
-  -webkit-text-fill-color: var(--text-primary) !important;
+/* Prevent zoom on iOS */
+input,
+select,
+textarea {
+  font-size: 16px;
 }
-
-
 
 /* Full viewport height for mobile */
 @supports (height: 100dvh) {
@@ -84,16 +83,6 @@ textarea,
 [contenteditable] {
   -webkit-user-select: text;
   user-select: text;
-  pointer-events: auto;
-}
-
-input[type="radio"],
-input[type="checkbox"],
-button,
-button[type="button"],
-button[type="submit"] {
-  pointer-events: auto;
-  cursor: pointer;
 }
 
 /* Status bar styling for iOS */

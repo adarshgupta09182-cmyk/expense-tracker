@@ -1,17 +1,9 @@
 import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { useToast } from '../hooks/useToast';
-import LoadingSpinner from './LoadingSpinner';
+import axios from '../utils/axios';
 import './RecurringExpenseForm.css';
 
-const CATEGORIES = ['Food', 'Transport', 'Travelling', 'Entertainment', 'Shopping', 'Bills', 'Other'];
-const FREQUENCIES = [
-  { value: 'weekly', label: '📅 Weekly' },
-  { value: 'monthly', label: '📆 Monthly' },
-  { value: 'custom', label: '⚙️ Custom' }
-];
-
-const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
+const RecurringExpenseForm = ({ onSuccess, onCancel }) => {
   const [formData, setFormData] = useState({
     description: '',
     amount: '',
@@ -21,9 +13,8 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
     startDate: new Date().toISOString().split('T')[0],
     endDate: ''
   });
-
-  const [errors, setErrors] = useState({});
-  const { success, error: showError } = useToast();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -31,49 +22,24 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
       ...prev,
       [name]: value
     }));
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
-    }
-  }, [errors]);
+  }, []);
 
-  const validateForm = useCallback(() => {
-    const newErrors = {};
-
-    if (!formData.description.trim()) {
-      newErrors.description = 'Description is required';
-    }
-    if (!formData.amount || parseFloat(formData.amount) <= 0) {
-      newErrors.amount = 'Amount must be greater than 0';
-    }
-    if (!formData.category) {
-      newErrors.category = 'Category is required';
-    }
-    if (!formData.startDate) {
-      newErrors.startDate = 'Start date is required';
-    }
-    if (formData.frequency === 'custom' && (!formData.customDays || parseInt(formData.customDays) <= 0)) {
-      newErrors.customDays = 'Custom days must be greater than 0';
-    }
-    if (formData.endDate && new Date(formData.endDate) < new Date(formData.startDate)) {
-      newErrors.endDate = 'End date must be after start date';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  }, [formData]);
-
-  const handleSubmit = useCallback((e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      success('Recurring expense created successfully!');
-      onSubmit({
-        ...formData,
+    setLoading(true);
+    setError('');
+
+    try {
+      await axios.post('/recurring-expenses', {
+        description: formData.description,
         amount: parseFloat(formData.amount),
-        customDays: formData.frequency === 'custom' ? parseInt(formData.customDays) : null
+        category: formData.category,
+        frequency: formData.frequency,
+        customDays: formData.frequency === 'custom' ? parseInt(formData.customDays) : null,
+        startDate: formData.startDate,
+        endDate: formData.endDate || null
       });
+
       setFormData({
         description: '',
         amount: '',
@@ -83,25 +49,34 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
         startDate: new Date().toISOString().split('T')[0],
         endDate: ''
       });
-    } else {
-      showError('Please fix the errors in the form');
+
+      onSuccess?.();
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to create recurring expense');
+    } finally {
+      setLoading(false);
     }
-  }, [formData, validateForm, onSubmit, success, showError]);
+  }, [formData, onSuccess]);
 
   return (
     <motion.div
       className="recurring-expense-form"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      exit={{ opacity: 0, y: -20 }}
     >
       <div className="form-header">
-        <h3>🔄 Add Recurring Expense</h3>
-        <p>Set up automatic expenses that repeat on a schedule</p>
+        <h3>Add Recurring Expense</h3>
+        <p className="form-subtitle">Set up automatic expenses that repeat</p>
       </div>
 
+      {error && (
+        <div className="form-error">
+          {error}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="form-content">
-        {/* Description */}
         <div className="form-group">
           <label htmlFor="description">Description</label>
           <input
@@ -110,66 +85,63 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
             name="description"
             value={formData.description}
             onChange={handleChange}
-            placeholder="e.g., Monthly Gym Membership"
-            className={errors.description ? 'error' : ''}
+            placeholder="e.g., Netflix subscription"
+            required
+            minLength="3"
+            maxLength="200"
           />
-          {errors.description && <span className="error-text">{errors.description}</span>}
         </div>
 
-        {/* Amount */}
-        <div className="form-group">
-          <label htmlFor="amount">Amount (₹)</label>
-          <input
-            type="number"
-            id="amount"
-            name="amount"
-            value={formData.amount}
-            onChange={handleChange}
-            placeholder="0.00"
-            step="0.01"
-            min="0"
-            className={errors.amount ? 'error' : ''}
-          />
-          {errors.amount && <span className="error-text">{errors.amount}</span>}
-        </div>
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="amount">Amount (₹)</label>
+            <input
+              type="number"
+              id="amount"
+              name="amount"
+              value={formData.amount}
+              onChange={handleChange}
+              placeholder="0.00"
+              required
+              step="0.01"
+              min="0"
+            />
+          </div>
 
-        {/* Category */}
-        <div className="form-group">
-          <label htmlFor="category">Category</label>
-          <select
-            id="category"
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            className={errors.category ? 'error' : ''}
-          >
-            {CATEGORIES.map(cat => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
-          {errors.category && <span className="error-text">{errors.category}</span>}
-        </div>
-
-        {/* Frequency */}
-        <div className="form-group">
-          <label>Frequency</label>
-          <div className="frequency-options">
-            {FREQUENCIES.map(freq => (
-              <label key={freq.value} className="frequency-label">
-                <input
-                  type="radio"
-                  name="frequency"
-                  value={freq.value}
-                  checked={formData.frequency === freq.value}
-                  onChange={handleChange}
-                />
-                <span>{freq.label}</span>
-              </label>
-            ))}
+          <div className="form-group">
+            <label htmlFor="category">Category</label>
+            <select
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              required
+            >
+              <option value="Food">Food</option>
+              <option value="Travelling">Travelling</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Bills">Bills</option>
+              <option value="Other">Other</option>
+            </select>
           </div>
         </div>
 
-        {/* Custom Days */}
+        <div className="form-group">
+          <label htmlFor="frequency">Frequency</label>
+          <select
+            id="frequency"
+            name="frequency"
+            value={formData.frequency}
+            onChange={handleChange}
+            required
+          >
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="custom">Custom (days)</option>
+          </select>
+        </div>
+
         {formData.frequency === 'custom' && (
           <div className="form-group">
             <label htmlFor="customDays">Repeat every (days)</label>
@@ -180,59 +152,56 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
               value={formData.customDays}
               onChange={handleChange}
               placeholder="e.g., 15"
+              required
               min="1"
               max="365"
-              className={errors.customDays ? 'error' : ''}
             />
-            {errors.customDays && <span className="error-text">{errors.customDays}</span>}
           </div>
         )}
 
-        {/* Start Date */}
-        <div className="form-group">
-          <label htmlFor="startDate">Start Date</label>
-          <input
-            type="date"
-            id="startDate"
-            name="startDate"
-            value={formData.startDate}
-            onChange={handleChange}
-            className={errors.startDate ? 'error' : ''}
-          />
-          {errors.startDate && <span className="error-text">{errors.startDate}</span>}
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="startDate">Start Date</label>
+            <input
+              type="date"
+              id="startDate"
+              name="startDate"
+              value={formData.startDate}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="endDate">End Date (Optional)</label>
+            <input
+              type="date"
+              id="endDate"
+              name="endDate"
+              value={formData.endDate}
+              onChange={handleChange}
+              min={formData.startDate}
+            />
+          </div>
         </div>
 
-        {/* End Date */}
-        <div className="form-group">
-          <label htmlFor="endDate">End Date (Optional)</label>
-          <input
-            type="date"
-            id="endDate"
-            name="endDate"
-            value={formData.endDate}
-            onChange={handleChange}
-            className={errors.endDate ? 'error' : ''}
-          />
-          {errors.endDate && <span className="error-text">{errors.endDate}</span>}
+        <div className="form-actions">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="btn-cancel"
+            disabled={loading}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="btn-submit"
+            disabled={loading}
+          >
+            {loading ? 'Creating...' : 'Create Recurring Expense'}
+          </button>
         </div>
-
-        {/* Submit Button */}
-        <motion.button
-          type="submit"
-          className="btn-submit"
-          disabled={isLoading}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          {isLoading ? (
-            <span style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
-              <LoadingSpinner size="sm" />
-              Creating...
-            </span>
-          ) : (
-            '✨ Create Recurring Expense'
-          )}
-        </motion.button>
       </form>
     </motion.div>
   );
