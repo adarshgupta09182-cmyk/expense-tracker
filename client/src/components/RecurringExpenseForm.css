@@ -89,19 +89,34 @@
   cursor: pointer;
   transition: all 0.3s ease;
   background: var(--bg-default);
+  flex: 1;
+  min-width: 140px;
 }
 
 .frequency-label input[type="radio"] {
   cursor: pointer;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   margin: 0;
   padding: 0;
-  border: none;
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  accent-color: var(--primary-color);
+  background: transparent;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.frequency-label input[type="radio"]:hover {
+  border-color: var(--primary-color);
+}
+
+.frequency-label input[type="radio"]:checked {
+  border-color: var(--primary-color);
+  background: var(--primary-color);
+  box-shadow: inset 0 0 0 3px var(--bg-default);
 }
 
 .frequency-label input[type="radio"]:checked + span {
