@@ -23,7 +23,7 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
   const [errors, setErrors] = useState({});
 
   const handleChange = useCallback((e) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -31,6 +31,13 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
     setErrors(prev => ({
       ...prev,
       [name]: ''
+    }));
+  }, []);
+
+  const handleFrequencyChange = useCallback((e) => {
+    setFormData(prev => ({
+      ...prev,
+      frequency: e.target.value
     }));
   }, []);
 
@@ -152,7 +159,7 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
                 name="frequency"
                 value="weekly"
                 checked={formData.frequency === 'weekly'}
-                onChange={handleChange}
+                onChange={handleFrequencyChange}
               />
               <span className="radio-custom"></span>
               <span className="frequency-text">📅 Weekly</span>
@@ -163,7 +170,7 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
                 name="frequency"
                 value="monthly"
                 checked={formData.frequency === 'monthly'}
-                onChange={handleChange}
+                onChange={handleFrequencyChange}
               />
               <span className="radio-custom"></span>
               <span className="frequency-text">📆 Monthly</span>
@@ -174,7 +181,7 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
                 name="frequency"
                 value="custom"
                 checked={formData.frequency === 'custom'}
-                onChange={handleChange}
+                onChange={handleFrequencyChange}
               />
               <span className="radio-custom"></span>
               <span className="frequency-text">⚙️ Custom</span>
