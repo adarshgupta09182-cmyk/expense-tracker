@@ -79,19 +79,21 @@
   flex-wrap: wrap;
 }
 
-.frequency-fieldset {
-  border: none;
-  padding: 0;
-  margin: 0;
+.frequency-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 140px;
 }
 
-.frequency-fieldset legend {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
+.frequency-option input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
   padding: 0;
-  margin-bottom: 8px;
-  display: block;
+  cursor: pointer;
+  accent-color: var(--primary-color);
 }
 
 .frequency-label {
@@ -105,53 +107,35 @@
   transition: all 0.3s ease;
   background: var(--bg-default);
   flex: 1;
-  min-width: 140px;
-}
-
-.frequency-label input[type="radio"] {
-  cursor: pointer;
-  width: 18px;
-  height: 18px;
+  font-size: 14px;
+  color: var(--text-primary);
   margin: 0;
-  padding: 0;
-  border: 2px solid var(--border-color);
-  border-radius: 50%;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background: transparent;
-  flex-shrink: 0;
-  transition: all 0.3s ease;
 }
 
-.frequency-label input[type="radio"]:hover {
-  border-color: var(--primary-color);
-}
-
-.frequency-label input[type="radio"]:checked {
-  border-color: var(--primary-color);
-  background: var(--primary-color);
-  box-shadow: inset 0 0 0 3px var(--bg-default);
-}
-
-.frequency-label input[type="radio"]:checked + span {
-  color: var(--primary-color);
-  font-weight: 600;
-}
-
-.frequency-label:has(input[type="radio"]:checked) {
+.frequency-option input[type="radio"]:checked + .frequency-label {
   border-color: var(--primary-color);
   background: rgba(79, 70, 229, 0.08);
+  color: var(--primary-color);
+  font-weight: 600;
 }
 
 .frequency-label:hover {
   border-color: var(--primary-color);
 }
 
-.frequency-label span {
+.frequency-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.frequency-fieldset legend {
   font-size: 14px;
+  font-weight: 600;
   color: var(--text-primary);
-  transition: all 0.3s ease;
+  padding: 0;
+  margin-bottom: 8px;
+  display: block;
 }
 
 /* Submit Button */
