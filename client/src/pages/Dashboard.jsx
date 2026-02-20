@@ -13,6 +13,8 @@ import ChartsSection from '../components/ChartsSection';
 import FilterBar from '../components/FilterBar';
 import StatisticsInsights from '../components/StatisticsInsights';
 import LoadingSkeleton from '../components/LoadingSkeleton';
+import RecurringExpenseForm from '../components/RecurringExpenseForm';
+import RecurringExpensesList from '../components/RecurringExpensesList';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -24,6 +26,8 @@ const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [budgetData, setBudgetData] = useState(null);
   const [budgetLoading, setBudgetLoading] = useState(false);
+  const [recurringExpenses, setRecurringExpenses] = useState([]);
+  const [showRecurringForm, setShowRecurringForm] = useState(false);
   const [filters, setFilters] = useState({
     category: '',
     startDate: '',
@@ -35,6 +39,7 @@ const Dashboard = () => {
   useEffect(() => {
     fetchExpenses();
     fetchBudget();
+    fetchRecurringExpenses();
   }, []);
 
   useEffect(() => {
@@ -66,6 +71,17 @@ const Dashboard = () => {
       console.error('Failed to load budget:', err);
     } finally {
       setBudgetLoading(false);
+    }
+  }, []);
+
+  const fetchRecurringExpenses = useCallback(async () => {
+    try {
+      const response = await axios.get('/recurring-expenses');
+      if (response.data.success) {
+        setRecurringExpenses(response.data.data);
+      }
+    } catch (err) {
+      console.error('Failed to load recurring expenses:', err);
     }
   }, []);
 
@@ -149,6 +165,25 @@ const Dashboard = () => {
     fetchBudget();
   }, [fetchBudget]);
 
+  const handleRecurringExpenseSuccess = useCallback(() => {
+    fetchRecurringExpenses();
+    fetchExpenses();
+    setShowRecurringForm(false);
+  }, [fetchRecurringExpenses, fetchExpenses]);
+
+  const handleDeleteRecurringExpense = useCallback(async (id) => {
+    if (!window.confirm('Are you sure you want to delete this recurring expense?')) {
+      return;
+    }
+
+    try {
+      await axios.delete(`/recurring-expenses/${id}`);
+      await fetchRecurringExpenses();
+    } catch (err) {
+      setError('Failed to delete recurring expense');
+    }
+  }, [fetchRecurringExpenses]);
+
   // Pagination - memoized to prevent unnecessary recalculations
   const paginationData = useMemo(() => {
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -222,6 +257,32 @@ const Dashboard = () => {
           editingExpense={editingExpense}
           onCancel={handleCancelEdit}
         />
+        
+        <div className="recurring-section">
+          <div className="section-header">
+            <h2>Recurring Expenses</h2>
+            <button 
+              onClick={() => setShowRecurringForm(!showRecurringForm)}
+              className="btn-toggle-form"
+            >
+              {showRecurringForm ? '✕ Cancel' : '+ Add Recurring'}
+            </button>
+          </div>
+
+          {showRecurringForm && (
+            <RecurringExpenseForm
+              onSuccess={handleRecurringExpenseSuccess}
+              onCancel={() => setShowRecurringForm(false)}
+            />
+          )}
+
+          {recurringExpenses.length > 0 && (
+            <RecurringExpensesList
+              recurringExpenses={recurringExpenses}
+              onDelete={handleDeleteRecurringExpense}
+            />
+          )}
+        </div>
         
         <ChartsSection expenses={filteredExpenses} />
         
