@@ -28,13 +28,11 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
       ...prev,
       [name]: value
     }));
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
-    }
-  }, [errors]);
+    setErrors(prev => ({
+      ...prev,
+      [name]: ''
+    }));
+  }, []);
 
   const validateForm = useCallback(() => {
     const newErrors = {};
