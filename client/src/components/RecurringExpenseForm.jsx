@@ -14,12 +14,12 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
     description: '',
     amount: '',
     category: 'Food',
+    frequency: 'monthly',
     customDays: '',
     startDate: new Date().toISOString().split('T')[0],
     endDate: ''
   });
 
-  const [frequency, setFrequency] = useState('monthly');
   const [errors, setErrors] = useState({});
 
   const handleChange = useCallback((e) => {
@@ -28,11 +28,13 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
       ...prev,
       [name]: value
     }));
-    setErrors(prev => ({
-      ...prev,
-      [name]: ''
-    }));
-  }, []);
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  }, [errors]);
 
   const validateForm = useCallback(() => {
     const newErrors = {};
@@ -49,7 +51,7 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
     if (!formData.startDate) {
       newErrors.startDate = 'Start date is required';
     }
-    if (frequency === 'custom' && (!formData.customDays || parseInt(formData.customDays) <= 0)) {
+    if (formData.frequency === 'custom' && (!formData.customDays || parseInt(formData.customDays) <= 0)) {
       newErrors.customDays = 'Custom days must be greater than 0';
     }
     if (formData.endDate && new Date(formData.endDate) < new Date(formData.startDate)) {
@@ -58,28 +60,27 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  }, [formData, frequency]);
+  }, [formData]);
 
   const handleSubmit = useCallback((e) => {
     e.preventDefault();
     if (validateForm()) {
       onSubmit({
         ...formData,
-        frequency,
         amount: parseFloat(formData.amount),
-        customDays: frequency === 'custom' ? parseInt(formData.customDays) : null
+        customDays: formData.frequency === 'custom' ? parseInt(formData.customDays) : null
       });
       setFormData({
         description: '',
         amount: '',
         category: 'Food',
+        frequency: 'monthly',
         customDays: '',
         startDate: new Date().toISOString().split('T')[0],
         endDate: ''
       });
-      setFrequency('monthly');
     }
-  }, [formData, frequency, validateForm, onSubmit]);
+  }, [formData, validateForm, onSubmit]);
 
   return (
     <motion.div
@@ -144,47 +145,26 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
         </div>
 
         {/* Frequency */}
-        <div className="form-group frequency-group">
+        <div className="form-group">
           <label>Frequency</label>
           <div className="frequency-options">
-            <label className="frequency-label">
-              <input
-                type="radio"
-                name="frequency"
-                value="weekly"
-                checked={frequency === 'weekly'}
-                onChange={(e) => setFrequency(e.target.value)}
-              />
-              <span className="radio-custom"></span>
-              <span className="frequency-text">📅 Weekly</span>
-            </label>
-            <label className="frequency-label">
-              <input
-                type="radio"
-                name="frequency"
-                value="monthly"
-                checked={frequency === 'monthly'}
-                onChange={(e) => setFrequency(e.target.value)}
-              />
-              <span className="radio-custom"></span>
-              <span className="frequency-text">📆 Monthly</span>
-            </label>
-            <label className="frequency-label">
-              <input
-                type="radio"
-                name="frequency"
-                value="custom"
-                checked={frequency === 'custom'}
-                onChange={(e) => setFrequency(e.target.value)}
-              />
-              <span className="radio-custom"></span>
-              <span className="frequency-text">⚙️ Custom</span>
-            </label>
+            {FREQUENCIES.map(freq => (
+              <label key={freq.value} className="frequency-label">
+                <input
+                  type="radio"
+                  name="frequency"
+                  value={freq.value}
+                  checked={formData.frequency === freq.value}
+                  onChange={handleChange}
+                />
+                <span>{freq.label}</span>
+              </label>
+            ))}
           </div>
         </div>
 
         {/* Custom Days */}
-        {frequency === 'custom' && (
+        {formData.frequency === 'custom' && (
           <div className="form-group">
             <label htmlFor="customDays">Repeat every (days)</label>
             <input

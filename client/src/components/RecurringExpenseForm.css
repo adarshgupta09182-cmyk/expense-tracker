@@ -73,88 +73,51 @@
 }
 
 /* Frequency Options */
-.frequency-group {
-  grid-column: 1 / -1;
-}
-
 .frequency-options {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .frequency-label {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 18px;
+  gap: 8px;
+  padding: 10px 14px;
   border: 2px solid var(--border-color);
   border-radius: 8px;
-  background: var(--bg-default);
   cursor: pointer;
   transition: all 0.3s ease;
-  flex: 1;
-  min-width: 140px;
-  position: relative;
+  background: var(--bg-default);
 }
 
 .frequency-label input[type="radio"] {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
   cursor: pointer;
+  width: 16px;
+  height: 16px;
   margin: 0;
   padding: 0;
+  border: none;
 }
 
-.frequency-label .radio-custom {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--border-color);
-  border-radius: 50%;
-  background: var(--bg-default);
-  transition: all 0.3s ease;
-  flex-shrink: 0;
+.frequency-label input[type="radio"]:checked + span {
+  color: var(--primary-color);
+  font-weight: 600;
 }
 
-.frequency-label .radio-custom::after {
-  content: '';
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--primary-color);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.frequency-label input[type="radio"]:checked + .radio-custom {
+.frequency-label:has(input[type="radio"]:checked) {
   border-color: var(--primary-color);
-  background: rgba(79, 70, 229, 0.1);
-}
-
-.frequency-label input[type="radio"]:checked + .radio-custom::after {
-  opacity: 1;
-}
-
-.frequency-text {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-primary);
-  user-select: none;
+  background: rgba(79, 70, 229, 0.08);
 }
 
 .frequency-label:hover {
   border-color: var(--primary-color);
-  background: rgba(79, 70, 229, 0.05);
 }
 
-.frequency-label input[type="radio"]:checked ~ .frequency-text {
-  font-weight: 600;
-  color: var(--primary-color);
+.frequency-label span {
+  font-size: 14px;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
 }
 
 /* Submit Button */
@@ -242,39 +205,4 @@
   .frequency-label {
     width: 100%;
   }
-}
-
-/* Autofill Fix */
-.form-group input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0 1000px var(--bg-default) inset !important;
-  -webkit-text-fill-color: var(--text-primary) !important;
-  color: var(--text-primary) !important;
-  caret-color: var(--text-primary) !important;
-}
-
-.form-group input:-webkit-autofill:hover {
-  -webkit-box-shadow: 0 0 0 1000px var(--bg-default) inset !important;
-  -webkit-text-fill-color: var(--text-primary) !important;
-}
-
-.form-group input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 1000px var(--bg-default) inset !important;
-  -webkit-text-fill-color: var(--text-primary) !important;
-}
-
-/* Dark Mode Autofill */
-[data-theme="dark"] .form-group input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.05) inset !important;
-  -webkit-text-fill-color: #E0E8FF !important;
-  color: #E0E8FF !important;
-}
-
-[data-theme="dark"] .form-group input:-webkit-autofill:hover {
-  -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.05) inset !important;
-  -webkit-text-fill-color: #E0E8FF !important;
-}
-
-[data-theme="dark"] .form-group input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.05) inset !important;
-  -webkit-text-fill-color: #E0E8FF !important;
 }
