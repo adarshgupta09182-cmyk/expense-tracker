@@ -327,3 +327,121 @@
     font-size: 12px;
   }
 }
+
+
+/* Mobile Card Layout */
+.expense-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.expense-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .expense-card {
+  background: linear-gradient(135deg, #1a2332 0%, #2a3f5f 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.expense-card:active {
+  transform: scale(0.98);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.card-date {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card-amount {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-description {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+  word-break: break-word;
+}
+
+.card-category {
+  display: flex;
+  gap: 8px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-color);
+}
+
+.card-actions .btn-edit,
+.card-actions .btn-delete {
+  flex: 1;
+  padding: 10px 12px;
+  font-size: 13px;
+  border-radius: 8px;
+}
+
+.no-data-mobile {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 40px 20px;
+  font-size: 15px;
+}
+
+/* Tailwind-like utility classes for responsive display */
+.hidden {
+  display: none;
+}
+
+.block {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .hidden.md\:block {
+    display: block;
+  }
+  
+  .block.md\:hidden {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .hidden.md\:block {
+    display: none;
+  }
+  
+  .block.md\:hidden {
+    display: block;
+  }
+}

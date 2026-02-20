@@ -31,55 +31,110 @@ const ExpenseTable = ({ expenses, onEdit, onDelete, currentPage, totalPages, onP
         </div>
       </div>
       
-      <div className="table-wrapper">
-        <table className="expense-table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Description</th>
-              <th>Category</th>
-              <th>Amount</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <AnimatePresence mode="popLayout">
-              {expenses.length === 0 ? (
-                <tr key="no-data">
-                  <td colSpan="5" className="no-data">No expenses found</td>
-                </tr>
-              ) : (
-                expenses.map((expense) => (
-                  <motion.tr
-                    key={expense._id}
-                    variants={listItemVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                    layout
-                  >
-                    <td>{new Date(expense.date).toLocaleDateString()}</td>
-                    <td className="description-cell">{expense.description}</td>
-                    <td>
+      {/* Desktop Table View */}
+      <div className="hidden md:block">
+        <div className="table-wrapper">
+          <table className="expense-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <AnimatePresence mode="popLayout">
+                {expenses.length === 0 ? (
+                  <tr key="no-data">
+                    <td colSpan="5" className="no-data">No expenses found</td>
+                  </tr>
+                ) : (
+                  expenses.map((expense) => (
+                    <motion.tr
+                      key={expense._id}
+                      variants={listItemVariants}
+                      initial="initial"
+                      animate="animate"
+                      exit="exit"
+                      layout
+                    >
+                      <td>{new Date(expense.date).toLocaleDateString()}</td>
+                      <td className="description-cell">{expense.description}</td>
+                      <td>
+                        <span className={`category-badge ${expense.category.toLowerCase()}`}>
+                          {expense.category}
+                        </span>
+                      </td>
+                      <td className="amount text-negative">₹{expense.amount.toFixed(2)}</td>
+                      <td className="actions">
+                        <button onClick={() => onEdit(expense)} className="btn-edit">
+                          Edit
+                        </button>
+                        <button onClick={() => onDelete(expense._id)} className="btn-delete">
+                          Delete
+                        </button>
+                      </td>
+                    </motion.tr>
+                  ))
+                )}
+              </AnimatePresence>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="block md:hidden">
+        <AnimatePresence mode="popLayout">
+          {expenses.length === 0 ? (
+            <div key="no-data" className="no-data-mobile">No expenses found</div>
+          ) : (
+            <div className="expense-cards">
+              {expenses.map((expense) => (
+                <motion.div
+                  key={expense._id}
+                  variants={listItemVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  layout
+                  className="expense-card"
+                >
+                  <div className="card-header">
+                    <div className="card-date">
+                      {new Date(expense.date).toLocaleDateString('en-IN', { 
+                        day: 'numeric', 
+                        month: 'short', 
+                        year: 'numeric' 
+                      })}
+                    </div>
+                    <div className="card-amount">₹{expense.amount.toFixed(2)}</div>
+                  </div>
+
+                  <div className="card-body">
+                    <div className="card-description">{expense.description}</div>
+                    <div className="card-category">
                       <span className={`category-badge ${expense.category.toLowerCase()}`}>
                         {expense.category}
                       </span>
-                    </td>
-                    <td className="amount text-negative">₹{expense.amount.toFixed(2)}</td>
-                    <td className="actions">
-                      <button onClick={() => onEdit(expense)} className="btn-edit">
-                        Edit
-                      </button>
-                      <button onClick={() => onDelete(expense._id)} className="btn-delete">
-                        Delete
-                      </button>
-                    </td>
-                  </motion.tr>
-                ))
-              )}
-            </AnimatePresence>
-          </tbody>
-        </table>
+                    </div>
+                  </div>
+
+                  <div className="card-actions">
+                    <button onClick={() => onEdit(expense)} className="btn-edit">
+                      Edit
+                    </button>
+                    <button onClick={() => onDelete(expense._id)} className="btn-delete">
+                      Delete
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </AnimatePresence>
       </div>
 
       {totalPages > 1 && (
