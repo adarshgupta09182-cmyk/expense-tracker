@@ -146,11 +146,12 @@ const RecurringExpenseForm = ({ onSubmit, isLoading }) => {
 
         {/* Frequency */}
         <div className="form-group">
-          <label>Frequency</label>
-          <div className="frequency-options">
+          <label htmlFor="frequency-group">Frequency</label>
+          <div className="frequency-options" id="frequency-group">
             {FREQUENCIES.map(freq => (
-              <label key={freq.value} className="frequency-label">
+              <label key={freq.value} className="frequency-label" htmlFor={`frequency-${freq.value}`}>
                 <input
+                  id={`frequency-${freq.value}`}
                   type="radio"
                   name="frequency"
                   value={freq.value}
