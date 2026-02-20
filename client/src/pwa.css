@@ -55,12 +55,56 @@ html.pwa-offline::before {
   transform: scale(0.98);
 }
 
-/* Prevent zoom on iOS */
-input,
-select,
-textarea {
-  font-size: 16px;
+/* Prevent autofill color changes */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--bg-default) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
 }
+
+input:-webkit-autofill {
+  -webkit-transition: background-color 5000s ease-in-out 0s;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* For date inputs */
+input[type="date"]:-webkit-autofill,
+input[type="date"]:-webkit-autofill:hover,
+input[type="date"]:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 30px var(--bg-default) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+}
+
+/* For number inputs */
+input[type="number"]:-webkit-autofill,
+input[type="number"]:-webkit-autofill:hover,
+input[type="number"]:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 30px var(--bg-default) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+}
+
+/* For email inputs */
+input[type="email"]:-webkit-autofill,
+input[type="email"]:-webkit-autofill:hover,
+input[type="email"]:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 30px var(--bg-default) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+}
+
+@keyframes autofill {
+  to {
+    background: var(--bg-default);
+    color: var(--text-primary);
+  }
+}
+
+input:-webkit-autofill {
+  animation: autofill 0s forwards;
+}
+
+
 
 /* Full viewport height for mobile */
 @supports (height: 100dvh) {
