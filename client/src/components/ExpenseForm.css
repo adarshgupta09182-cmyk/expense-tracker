@@ -244,3 +244,39 @@
   background: #FFFFFF !important;
   color: #111827 !important;
 }
+
+/* Autofill Fix for Expense Form - Dark Mode */
+[data-theme="dark"] .expense-form input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px rgba(26, 35, 50, 0.6) inset !important;
+  -webkit-text-fill-color: #E0E8FF !important;
+  color: #E0E8FF !important;
+  caret-color: #E0E8FF !important;
+}
+
+[data-theme="dark"] .expense-form input:-webkit-autofill:hover {
+  -webkit-box-shadow: 0 0 0 1000px rgba(26, 35, 50, 0.6) inset !important;
+  -webkit-text-fill-color: #E0E8FF !important;
+}
+
+[data-theme="dark"] .expense-form input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px rgba(26, 35, 50, 0.6) inset !important;
+  -webkit-text-fill-color: #E0E8FF !important;
+}
+
+/* Autofill Fix for Expense Form - Light Mode */
+[data-theme="light"] .expense-form input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+  -webkit-text-fill-color: #111827 !important;
+  color: #111827 !important;
+  caret-color: #111827 !important;
+}
+
+[data-theme="light"] .expense-form input:-webkit-autofill:hover {
+  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+[data-theme="light"] .expense-form input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+  -webkit-text-fill-color: #111827 !important;
+}

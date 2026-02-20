@@ -402,3 +402,45 @@
 [data-theme="light"] .btn-save:hover:not(:disabled) {
   background: #4338CA;
 }
+
+/* Autofill Fix - Dark Mode */
+.form-group input[type="number"]:-webkit-autofill,
+.form-group input[type="text"]:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px rgba(42, 63, 95, 0.3) inset !important;
+  -webkit-text-fill-color: #d0d8e8 !important;
+  color: #d0d8e8 !important;
+  caret-color: #d0d8e8 !important;
+}
+
+.form-group input[type="number"]:-webkit-autofill:hover,
+.form-group input[type="text"]:-webkit-autofill:hover {
+  -webkit-box-shadow: 0 0 0 1000px rgba(42, 63, 95, 0.3) inset !important;
+  -webkit-text-fill-color: #d0d8e8 !important;
+}
+
+.form-group input[type="number"]:-webkit-autofill:focus,
+.form-group input[type="text"]:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px rgba(42, 63, 95, 0.3) inset !important;
+  -webkit-text-fill-color: #d0d8e8 !important;
+}
+
+/* Autofill Fix - Light Mode */
+[data-theme="light"] .form-group input[type="number"]:-webkit-autofill,
+[data-theme="light"] .form-group input[type="text"]:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #F1F5F9 inset !important;
+  -webkit-text-fill-color: #111827 !important;
+  color: #111827 !important;
+  caret-color: #111827 !important;
+}
+
+[data-theme="light"] .form-group input[type="number"]:-webkit-autofill:hover,
+[data-theme="light"] .form-group input[type="text"]:-webkit-autofill:hover {
+  -webkit-box-shadow: 0 0 0 1000px #F1F5F9 inset !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+[data-theme="light"] .form-group input[type="number"]:-webkit-autofill:focus,
+[data-theme="light"] .form-group input[type="text"]:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #F1F5F9 inset !important;
+  -webkit-text-fill-color: #111827 !important;
+}

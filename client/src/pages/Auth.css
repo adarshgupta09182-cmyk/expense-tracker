@@ -415,27 +415,18 @@
 }
 
 .input-wrapper input:-webkit-autofill {
-  -webkit-box-shadow: none !important;
-  -webkit-text-fill-color: #E0E8FF !important;
-  -webkit-autofill-background-color: transparent !important;
-  background-color: transparent !important;
-  background-image: none !important;
-  border: none !important;
-  transition: background-color 5000s ease-in-out 0s !important;
+  -webkit-box-shadow: 0 0 0 1000px var(--bg-default) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
 }
 
 .input-wrapper input:-webkit-autofill:hover {
-  -webkit-box-shadow: none !important;
-  -webkit-text-fill-color: #E0E8FF !important;
-  background-color: transparent !important;
-  border: none !important;
+  -webkit-box-shadow: 0 0 0 1000px var(--bg-default) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
 }
 
 .input-wrapper input:-webkit-autofill:focus {
-  -webkit-box-shadow: none !important;
-  -webkit-text-fill-color: #E0E8FF !important;
-  background-color: transparent !important;
-  border: none !important;
+  -webkit-box-shadow: 0 0 0 1000px var(--bg-default) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
 }
 
 .input-error {

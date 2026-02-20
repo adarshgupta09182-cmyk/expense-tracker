@@ -62,6 +62,7 @@
 /* Dark Mode - Jellyfish Theme */
 [data-theme="dark"] {
   /* Backgrounds */
+  --bg-default: #0F1419;
   --bg-primary: #0F1419;
   --bg-secondary: #1A2332;
   --bg-tertiary: #2D3E50;

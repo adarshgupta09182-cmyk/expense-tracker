@@ -206,3 +206,38 @@
     width: 100%;
   }
 }
+
+/* Autofill Fix */
+.form-group input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--bg-default) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  color: var(--text-primary) !important;
+  caret-color: var(--text-primary) !important;
+}
+
+.form-group input:-webkit-autofill:hover {
+  -webkit-box-shadow: 0 0 0 1000px var(--bg-default) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+}
+
+.form-group input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--bg-default) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+}
+
+/* Dark Mode Autofill */
+[data-theme="dark"] .form-group input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.05) inset !important;
+  -webkit-text-fill-color: #E0E8FF !important;
+  color: #E0E8FF !important;
+}
+
+[data-theme="dark"] .form-group input:-webkit-autofill:hover {
+  -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.05) inset !important;
+  -webkit-text-fill-color: #E0E8FF !important;
+}
+
+[data-theme="dark"] .form-group input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.05) inset !important;
+  -webkit-text-fill-color: #E0E8FF !important;
+}

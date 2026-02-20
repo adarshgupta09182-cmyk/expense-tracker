@@ -328,3 +328,39 @@
     padding: 5px 10px;
   }
 }
+
+/* Autofill Fix - Dark Mode */
+[data-theme="dark"] .filter-input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px rgba(26, 35, 50, 0.6) inset !important;
+  -webkit-text-fill-color: #E0E8FF !important;
+  color: #E0E8FF !important;
+  caret-color: #E0E8FF !important;
+}
+
+[data-theme="dark"] .filter-input:-webkit-autofill:hover {
+  -webkit-box-shadow: 0 0 0 1000px rgba(26, 35, 50, 0.6) inset !important;
+  -webkit-text-fill-color: #E0E8FF !important;
+}
+
+[data-theme="dark"] .filter-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px rgba(26, 35, 50, 0.6) inset !important;
+  -webkit-text-fill-color: #E0E8FF !important;
+}
+
+/* Autofill Fix - Light Mode */
+[data-theme="light"] .filter-input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+  -webkit-text-fill-color: #111827 !important;
+  color: #111827 !important;
+  caret-color: #111827 !important;
+}
+
+[data-theme="light"] .filter-input:-webkit-autofill:hover {
+  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+[data-theme="light"] .filter-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+  -webkit-text-fill-color: #111827 !important;
+}
