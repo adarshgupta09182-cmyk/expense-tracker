@@ -58,12 +58,19 @@ html.pwa-offline::before {
 /* Prevent autofill color changes */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px var(--bg-default) inset !important;
+input:-webkit-autofill:focus {
   -webkit-text-fill-color: var(--text-primary) !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  background-color: var(--bg-default) !important;
+  border-color: var(--border-color) !important;
 }
 
+input:-webkit-autofill::first-line {
+  color: var(--text-primary);
+}
+
+/* Delay the autofill styling */
 input:-webkit-autofill {
   -webkit-transition: background-color 5000s ease-in-out 0s;
   transition: background-color 5000s ease-in-out 0s;
@@ -73,35 +80,44 @@ input:-webkit-autofill {
 input[type="date"]:-webkit-autofill,
 input[type="date"]:-webkit-autofill:hover,
 input[type="date"]:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 30px var(--bg-default) inset !important;
   -webkit-text-fill-color: var(--text-primary) !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  background-color: var(--bg-default) !important;
+  border-color: var(--border-color) !important;
 }
 
 /* For number inputs */
 input[type="number"]:-webkit-autofill,
 input[type="number"]:-webkit-autofill:hover,
 input[type="number"]:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 30px var(--bg-default) inset !important;
   -webkit-text-fill-color: var(--text-primary) !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  background-color: var(--bg-default) !important;
+  border-color: var(--border-color) !important;
 }
 
 /* For email inputs */
 input[type="email"]:-webkit-autofill,
 input[type="email"]:-webkit-autofill:hover,
 input[type="email"]:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 30px var(--bg-default) inset !important;
   -webkit-text-fill-color: var(--text-primary) !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  background-color: var(--bg-default) !important;
+  border-color: var(--border-color) !important;
 }
 
-@keyframes autofill {
-  to {
-    background: var(--bg-default);
-    color: var(--text-primary);
-  }
-}
-
-input:-webkit-autofill {
-  animation: autofill 0s forwards;
+/* For text inputs */
+input[type="text"]:-webkit-autofill,
+input[type="text"]:-webkit-autofill:hover,
+input[type="text"]:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text-primary) !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  background-color: var(--bg-default) !important;
+  border-color: var(--border-color) !important;
 }
 
 
