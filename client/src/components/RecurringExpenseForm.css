@@ -98,6 +98,10 @@
   margin: 0;
   padding: 0;
   border: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  accent-color: var(--primary-color);
 }
 
 .frequency-label input[type="radio"]:checked + span {
