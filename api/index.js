@@ -245,6 +245,25 @@ async function handleLogin(req, res) {
   }
 }
 
+// Parse request body
+const parseBody = (req) => {
+  return new Promise((resolve) => {
+    if (req.body && typeof req.body === 'object') {
+      return resolve(req.body); // already parsed
+    }
+    let data = '';
+    req.on('data', chunk => { data += chunk; });
+    req.on('end', () => {
+      try {
+        resolve(data ? JSON.parse(data) : {});
+      } catch {
+        resolve({});
+      }
+    });
+    req.on('error', () => resolve({}));
+  });
+};
+
 // Main handler
 module.exports = async (req, res) => {
   // Set CORS headers
@@ -256,6 +275,9 @@ module.exports = async (req, res) => {
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
+
+  // Parse body
+  req.body = await parseBody(req);
 
   try {
     // Parse URL and method
