@@ -12,8 +12,8 @@ const pool = new Pool({
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const logger = {
-  info: (msg, data = {}) => console.log(`[INFO] ${new Date().toISOString()} - ${msg}`, data),
-  error: (msg, err = {}) => console.error(`[ERROR] ${new Date().toISOString()} - ${msg}`, err.message || err)
+  info: (msg, data = {}) => console.log('[INFO] ' + new Date().toISOString() + ' - ' + msg, data),
+  error: (msg, err = {}) => console.error('[ERROR] ' + new Date().toISOString() + ' - ' + msg, err.message || err)
 };
 
 const generateToken = (userId) => jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -69,19 +69,12 @@ async function initializeDatabase() {
 }
 
 async function sendVerificationEmail(email, verificationToken) {
-  const verificationUrl = `${process.env.FRONTEND_URL || 'https://expense-tracker-rho-brown.vercel.app'}/verify-email?token=${verificationToken}`;
+  const verificationUrl = (process.env.FRONTEND_URL || 'https://expense-tracker-rho-brown.vercel.app') + '/verify-email?token=' + verificationToken;
   await resend.emails.send({
     from: process.env.EMAIL_FROM || 'noreply@expensetracker.com',
     to: [email],
     subject: 'Verify Your Email - Expense Tracker',
-    html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto">
-      <h2 style="color:#4F46E5">Welcome to Expense Tracker!</h2>
-      <p>Please verify your email by clicking below:</p>
-      <div style="text-align:center;margin:30px 0">
-        <a href="${verificationUrl}" style="background:#4F46E5;color:white;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block">Verify Email</a>
-      </div>
-      <p style="color:#6B7280;font-size:14px">Link expires in 24 hours.</p>
-    </div>`
+    html: '<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto"><h2 style="color:#4F46E5">Welcome to Expense Tracker!</h2><p>Please verify your email by clicking below:</p><div style="text-align:center;margin:30px 0"><a href="' + verificationUrl + '" style="background:#4F46E5;color:white;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block">Verify Email</a></div><p style="color:#6B7280;font-size:14px">Link expires in 24 hours.</p></div>'
   });
 }
 
@@ -100,8 +93,7 @@ async function handleRegister(req, res) {
     const tokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
     const result = await pool.query(
-      `INSERT INTO users (name, email, password, verification_token, verification_token_expires)
-       VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, is_verified, created_at`,
+      'INSERT INTO users (name, email, password, verification_token, verification_token_expires) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, is_verified, created_at',
       [name, email, hashedPassword, hashedToken, tokenExpires]
     );
     const user = result.rows[0];
@@ -146,7 +138,6 @@ async function handleLogin(req, res) {
 async function handleExpenses(req, res, userId) {
   const method = req.method;
   const pathParts = req.url.split('?')[0].split('/').filter(Boolean);
-  // pathParts after /api/expenses: could be [], ['summary'], [':id']
   const segment = pathParts[2] || null;
   const expenseId = segment && segment !== 'summary' ? segment : null;
   const isSummary = segment === 'summary';
@@ -154,9 +145,7 @@ async function handleExpenses(req, res, userId) {
   try {
     if (isSummary) {
       const result = await pool.query(
-        `SELECT EXTRACT(YEAR FROM date) as year, EXTRACT(MONTH FROM date) as month,
-         category, SUM(amount) as total_amount, COUNT(*) as count
-         FROM expenses WHERE user_id = $1 GROUP BY year, month, category ORDER BY year DESC, month DESC`,
+        'SELECT EXTRACT(YEAR FROM date) as year, EXTRACT(MONTH FROM date) as month, category, SUM(amount) as total_amount, COUNT(*) as count FROM expenses WHERE user_id = $1 GROUP BY year, month, category ORDER BY year DESC, month DESC',
         [userId]
       );
       return res.json({ success: true, data: result.rows });
@@ -170,9 +159,9 @@ async function handleExpenses(req, res, userId) {
         const category = params.get('category');
         let query = 'SELECT * FROM expenses WHERE user_id = $1';
         const values = [userId];
-        if (startDate) { values.push(startDate); query += ` AND date >= $${values.length}`; }
-        if (endDate) { values.push(endDate); query += ` AND date <= $${values.length}`; }
-        if (category) { values.push(category); query += ` AND category = $${values.length}`; }
+        if (startDate) { values.push(startDate); query += ' AND date >= $' + values.length; }
+        if (endDate) { values.push(endDate); query += ' AND date <= $' + values.length; }
+        if (category) { values.push(category); query += ' AND category = $' + values.length; }
         query += ' ORDER BY date DESC';
         const result = await pool.query(query, values);
         return res.json({ success: true, count: result.rows.length, data: result.rows.map(toNum) });
@@ -220,7 +209,7 @@ async function handleBudget(req, res, userId) {
       const userResult = await pool.query('SELECT monthly_budget, budget_warning_threshold FROM users WHERE id=$1', [userId]);
       if (!userResult.rows.length) return res.status(404).json({ success: false, message: 'User not found' });
       const budget = parseFloat(userResult.rows[0].monthly_budget) || 0;
-      const threshold = userResult.rows[0].budget_warning_threshold || 80;
+      const threshold = parseInt(userResult.rows[0].budget_warning_threshold) || 80;
       const now = new Date();
       const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
       const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
@@ -228,12 +217,13 @@ async function handleBudget(req, res, userId) {
         'SELECT COALESCE(SUM(amount), 0) as total FROM expenses WHERE user_id=$1 AND date >= $2 AND date <= $3',
         [userId, startOfMonth, endOfMonth]
       );
-      const totalSpent = parseFloat(spentResult.rows[0].total);
+      const totalSpent = parseFloat(spentResult.rows[0].total) || 0;
       const percentageUsed = budget > 0 ? (totalSpent / budget) * 100 : 0;
       return res.json({
         success: true,
         data: {
-          budget, totalSpent,
+          budget,
+          totalSpent,
           remaining: budget - totalSpent,
           percentageUsed: Math.round(percentageUsed * 100) / 100,
           isExceeded: totalSpent > budget,
@@ -300,22 +290,91 @@ async function handleRecurring(req, res, userId) {
   }
 }
 
-const parseBody = (req) => new Promise((resolve) => {
-  if (req.body && typeof req.body === 'object') return resolve(req.body);
-  let data = '';
-  req.on('data', chunk => { data += chunk; });
-  req.on('end', () => { try { resolve(data ? JSON.parse(data) : {}); } catch { resolve({}); } });
-  req.on('error', () => resolve({}));
-});
+async function handleExport(req, res, userId) {
+  try {
+    const url = req.url;
+    const params = new URLSearchParams(url.split('?')[1] || '');
+    const startDate = params.get('startDate');
+    const endDate = params.get('endDate');
+    const category = params.get('category');
 
-const authenticate = (req, res) => {
+    let query = 'SELECT * FROM expenses WHERE user_id = $1';
+    const values = [userId];
+    if (startDate) { values.push(startDate); query += ' AND date >= $' + values.length; }
+    if (endDate) { values.push(endDate); query += ' AND date <= $' + values.length; }
+    if (category) { values.push(category); query += ' AND category = $' + values.length; }
+    query += ' ORDER BY date DESC';
+
+    const result = await pool.query(query, values);
+    const expenses = result.rows.map(toNum);
+    const filename = 'expenses_' + new Date().toISOString().split('T')[0] + '.csv';
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename="' + filename + '"');
+    res.setHeader('Cache-Control', 'no-cache');
+
+    if (url.includes('/export/monthly-summary')) {
+      const summaryResult = await pool.query(
+        'SELECT EXTRACT(YEAR FROM date) as year, EXTRACT(MONTH FROM date) as month, SUM(amount) as total, COUNT(*) as count FROM expenses WHERE user_id = $1 GROUP BY year, month ORDER BY year DESC, month DESC',
+        [userId]
+      );
+      let csv = 'MONTHLY EXPENSE SUMMARY\n\nMonth,Total (Rs),Transactions\n';
+      summaryResult.rows.forEach(function(r) {
+        const monthName = new Date(r.year, r.month - 1).toLocaleString('en-IN', { month: 'long', year: 'numeric' });
+        csv += monthName + ',' + parseFloat(r.total).toFixed(2) + ',' + r.count + '\n';
+      });
+      return res.send(csv);
+    }
+
+    if (url.includes('/export/expenses-with-budget')) {
+      const userResult = await pool.query('SELECT name, email, monthly_budget FROM users WHERE id=$1', [userId]);
+      const user = userResult.rows[0];
+      const budget = parseFloat(user.monthly_budget) || 0;
+      const totalSpent = expenses.reduce(function(s, e) { return s + e.amount; }, 0);
+      let csv = 'EXPENSE REPORT\nGenerated: ' + new Date().toLocaleString('en-IN') + '\nUser: ' + user.name + ' (' + user.email + ')\n\n';
+      if (budget > 0) {
+        csv += 'BUDGET SUMMARY\nMonthly Budget,Rs' + budget.toFixed(2) + '\nTotal Spent,Rs' + totalSpent.toFixed(2) + '\nRemaining,Rs' + (budget - totalSpent).toFixed(2) + '\nUsage,' + ((totalSpent / budget) * 100).toFixed(2) + '%\n\n';
+      }
+      csv += 'EXPENSES\nDate,Description,Category,Amount (Rs)\n';
+      expenses.forEach(function(e) {
+        csv += new Date(e.date).toLocaleDateString('en-IN') + ',"' + e.description.replace(/"/g, '""') + '",' + e.category + ',' + e.amount.toFixed(2) + '\n';
+      });
+      return res.send(csv);
+    }
+
+    // Default: /export/expenses
+    let csv = 'Date,Description,Category,Amount (Rs)\n';
+    expenses.forEach(function(e) {
+      csv += new Date(e.date).toLocaleDateString('en-IN') + ',"' + e.description.replace(/"/g, '""') + '",' + e.category + ',' + e.amount.toFixed(2) + '\n';
+    });
+    const total = expenses.reduce(function(s, e) { return s + e.amount; }, 0);
+    csv += '\nTotal,,,' + total.toFixed(2);
+    return res.send(csv);
+
+  } catch (error) {
+    logger.error('Export handler failed', error);
+    res.status(500).json({ success: false, message: 'Export failed', error: error.message });
+  }
+}
+
+const parseBody = function(req) {
+  return new Promise(function(resolve) {
+    if (req.body && typeof req.body === 'object') return resolve(req.body);
+    let data = '';
+    req.on('data', function(chunk) { data += chunk; });
+    req.on('end', function() { try { resolve(data ? JSON.parse(data) : {}); } catch (e) { resolve({}); } });
+    req.on('error', function() { resolve({}); });
+  });
+};
+
+const authenticate = function(req, res) {
   const token = (req.headers['authorization'] || '').split(' ')[1];
   if (!token) { res.status(401).json({ success: false, message: 'No token provided' }); return null; }
   try { return jwt.verify(token, process.env.JWT_SECRET).userId; }
-  catch { res.status(401).json({ success: false, message: 'Invalid token' }); return null; }
+  catch (e) { res.status(401).json({ success: false, message: 'Invalid token' }); return null; }
 };
 
-module.exports = async (req, res) => {
+module.exports = async function(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -326,7 +385,7 @@ module.exports = async (req, res) => {
   try {
     const url = req.url || '';
     const method = req.method;
-    logger.info('Request', { url, method });
+    logger.info('Request', { url: url, method: method });
 
     if (url === '/' || url.includes('/health')) {
       const dbUrl = process.env.DATABASE_URL;
@@ -350,11 +409,13 @@ module.exports = async (req, res) => {
     const userId = authenticate(req, res);
     if (!userId) return;
 
+    // NOTE: /export must be checked before /expenses to avoid false match
+    if (url.includes('/export')) return await handleExport(req, res, userId);
     if (url.includes('/expenses')) return await handleExpenses(req, res, userId);
     if (url.includes('/budget')) return await handleBudget(req, res, userId);
     if (url.includes('/recurring-expenses')) return await handleRecurring(req, res, userId);
 
-    res.status(404).json({ success: false, message: `Not found: ${method} ${url}` });
+    res.status(404).json({ success: false, message: 'Not found: ' + method + ' ' + url });
 
   } catch (error) {
     logger.error('Handler failed', error);
