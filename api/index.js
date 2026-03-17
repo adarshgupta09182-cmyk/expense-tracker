@@ -266,13 +266,21 @@ module.exports = async (req, res) => {
     
     // Health check endpoint (no database required)
     if (url === '/' || url === '/health' || url.includes('/health')) {
+      const dbUrl = process.env.DATABASE_URL;
       return res.status(200).json({
         success: true,
         message: 'API is running',
         timestamp: new Date().toISOString(),
         url,
         method,
-        version: '1.0.0'
+        version: '1.0.0',
+        env: {
+          hasDbUrl: !!dbUrl,
+          dbUrlPrefix: dbUrl ? dbUrl.substring(0, 30) + '...' : 'NOT SET',
+          hasJwtSecret: !!process.env.JWT_SECRET,
+          hasResendKey: !!process.env.RESEND_API_KEY,
+          nodeEnv: process.env.NODE_ENV
+        }
       });
     }
     
