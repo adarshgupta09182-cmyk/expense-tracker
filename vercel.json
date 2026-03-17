@@ -1,42 +1,26 @@
 {
   "version": 2,
-  "buildCommand": "cd client && npm run build",
-  "outputDirectory": "client/dist",
-  "functions": {
-    "api/index.js": {
-      "memory": 1024,
-      "maxDuration": 60,
-      "runtime": "nodejs18.x"
+  "builds": [
+    {
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
     }
-  },
+  ],
   "routes": [
     {
-      "src": "/api/.*",
-      "dest": "/api/index.js"
-    },
-    {
-      "src": "/auth/.*",
-      "dest": "/api/index.js"
-    },
-    {
-      "src": "/budget.*",
-      "dest": "/api/index.js"
-    },
-    {
-      "src": "/expenses.*",
-      "dest": "/api/index.js"
-    },
-    {
-      "src": "/recurring-expenses.*",
-      "dest": "/api/index.js"
-    },
-    {
-      "src": "/export.*",
+      "src": "/api/(.*)",
       "dest": "/api/index.js"
     },
     {
       "src": "/(.*)",
-      "dest": "/client/dist/$1"
+      "dest": "/client/$1"
     }
   ],
   "env": {
