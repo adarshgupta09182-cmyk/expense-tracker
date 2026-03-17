@@ -300,14 +300,27 @@ module.exports = async (req, res) => {
   }
 
   try {
-    // Initialize database on first request
-    await initializeDatabase();
-    
     // Parse URL and method
     const url = req.url || '';
     const method = req.method;
     
     logger.info('API Request', { url, method });
+    
+    // Health check endpoint (no database required)
+    if (url === '/' || url === '/health') {
+      return res.status(200).json({
+        success: true,
+        message: 'API is running',
+        timestamp: new Date().toISOString(),
+        url,
+        method
+      });
+    }
+    
+    // Initialize database only for auth routes
+    if (url.includes('/auth/')) {
+      await initializeDatabase();
+    }
     
     // Route handling
     if (url.includes('/auth/register') && method === 'POST') {
@@ -318,20 +331,16 @@ module.exports = async (req, res) => {
       return await handleLogin(req, res);
     }
     
-    // Health check endpoint
-    if (url === '/' || url === '/health') {
-      return res.status(200).json({
-        success: true,
-        message: 'API is running',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
     // Default response for unmatched routes
     logger.info('Unmatched route', { url, method });
     res.status(404).json({
       success: false,
-      message: `Endpoint not found: ${method} ${url}`
+      message: `Endpoint not found: ${method} ${url}`,
+      availableEndpoints: [
+        'GET /api/health',
+        'POST /api/auth/register',
+        'POST /api/auth/login'
+      ]
     });
     
   } catch (error) {
@@ -339,7 +348,8 @@ module.exports = async (req, res) => {
     
     res.status(500).json({
       success: false,
-      message: 'Internal server error'
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 };
