@@ -36,7 +36,7 @@ const RecurringExpensesList = ({ recurringExpenses, onDelete, onEdit }) => {
         <div className="recurring-cards">
           {recurringExpenses.map((expense) => (
             <motion.div
-              key={expense._id}
+              key={expense.id}
               className="recurring-card"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -71,7 +71,7 @@ const RecurringExpensesList = ({ recurringExpenses, onDelete, onEdit }) => {
                     ✎
                   </button>
                   <button
-                    onClick={() => onDelete?.(expense._id)}
+                    onClick={() => onDelete?.(expense.id)}
                     className="btn-small btn-delete"
                     title="Delete"
                   >

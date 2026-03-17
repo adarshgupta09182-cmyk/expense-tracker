@@ -113,7 +113,7 @@ const Dashboard = () => {
   const handleAddExpense = useCallback(async (formData) => {
     try {
       if (editingExpense) {
-        await axios.put(`/expenses/${editingExpense._id}`, formData);
+        await axios.put(`/expenses/${editingExpense.id}`, formData);
         setEditingExpense(null);
       } else {
         await axios.post('/expenses', formData);

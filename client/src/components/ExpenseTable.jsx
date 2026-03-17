@@ -69,7 +69,7 @@ const ExpenseTable = ({ expenses, onEdit, onDelete, currentPage, totalPages, onP
               <AnimatePresence mode="popLayout">
                 {expenses.map((expense) => (
                   <motion.tr
-                    key={expense._id}
+                    key={expense.id}
                     variants={listItemVariants}
                     initial="initial"
                     animate="animate"
@@ -88,7 +88,7 @@ const ExpenseTable = ({ expenses, onEdit, onDelete, currentPage, totalPages, onP
                       <button onClick={() => onEdit(expense)} className="btn-edit">
                         Edit
                       </button>
-                      <button onClick={() => onDelete(expense._id)} className="btn-delete">
+                      <button onClick={() => onDelete(expense.id)} className="btn-delete">
                         Delete
                       </button>
                     </td>
@@ -106,7 +106,7 @@ const ExpenseTable = ({ expenses, onEdit, onDelete, currentPage, totalPages, onP
           <div className="expense-cards">
             {expenses.map((expense) => (
               <motion.div
-                key={expense._id}
+                key={expense.id}
                 variants={listItemVariants}
                 initial="initial"
                 animate="animate"
@@ -138,7 +138,7 @@ const ExpenseTable = ({ expenses, onEdit, onDelete, currentPage, totalPages, onP
                   <button onClick={() => onEdit(expense)} className="btn-edit">
                     Edit
                   </button>
-                  <button onClick={() => onDelete(expense._id)} className="btn-delete">
+                  <button onClick={() => onDelete(expense.id)} className="btn-delete">
                     Delete
                   </button>
                 </div>
