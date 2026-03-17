@@ -20,7 +20,17 @@ const generateToken = (userId) => jwt.sign({ userId }, process.env.JWT_SECRET, {
 
 const toNum = (r) => ({ ...r, amount: parseFloat(r.amount) });
 
-async function initializeDatabase() {
+let dbInitPromise = null;
+
+function initializeDatabase() {
+  if (!dbInitPromise) dbInitPromise = _doInitDb();
+  return dbInitPromise;
+}
+
+// Kick off DB init immediately on cold start so first request doesn't wait
+initializeDatabase();
+
+async function _doInitDb() {
   try {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users (
