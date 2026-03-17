@@ -284,7 +284,7 @@ module.exports = async (req, res) => {
     const url = req.url || '';
     const method = req.method;
     
-    logger.info('API Request received', { url, method, timestamp: new Date().toISOString() });
+    logger.info('API Request received', { url, method, body: req.body, timestamp: new Date().toISOString() });
     
     // Health check endpoint (no database required)
     if (url === '/' || url === '/health' || url.includes('/health')) {
@@ -310,7 +310,6 @@ module.exports = async (req, res) => {
     if (url.includes('/auth/')) {
       await initializeDatabase();
     }
-    
     // Route handling
     if (url.includes('/auth/register') && method === 'POST') {
       return await handleRegister(req, res);
@@ -335,12 +334,13 @@ module.exports = async (req, res) => {
     
   } catch (error) {
     logger.error('API handler failed', error);
+    console.error('Full error:', error);
     
     res.status(500).json({
       success: false,
       message: 'Internal server error',
-      timestamp: new Date().toISOString(),
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: error.message,
+      timestamp: new Date().toISOString()
     });
   }
 };
