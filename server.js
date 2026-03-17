@@ -1299,21 +1299,28 @@ async function startServer() {
     // Initialize database
     await initializeDatabase();
 
-    // Start server
-    app.listen(PORT, () => {
-      logger.info(`Server started on port ${PORT}`, { 
-        environment: process.env.NODE_ENV || 'development',
-        database: 'PostgreSQL',
-        corsOrigin: process.env.CORS_ORIGIN
+    // Only listen if not in Vercel environment
+    if (process.env.VERCEL !== '1') {
+      app.listen(PORT, () => {
+        logger.info(`Server started on port ${PORT}`, { 
+          environment: process.env.NODE_ENV || 'development',
+          database: 'PostgreSQL',
+          corsOrigin: process.env.CORS_ORIGIN
+        });
       });
-    });
+    }
   } catch (err) {
     logger.error('Failed to start server', err);
-    process.exit(1);
+    if (process.env.VERCEL !== '1') {
+      process.exit(1);
+    }
   }
 }
 
-startServer();
+// Only start server if not in Vercel environment
+if (process.env.VERCEL !== '1') {
+  startServer();
+}
 
 // Graceful shutdown
 process.on('SIGTERM', async () => {
