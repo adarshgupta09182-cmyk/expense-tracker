@@ -1,13 +1,16 @@
 import axios from 'axios';
 
 // Use environment variable for API URL in production
-// If VITE_API_URL is set, use it as-is (it already includes /api)
-// Otherwise, use /api for development
-const API_URL = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : '/api';
+// VITE_API_URL should be the base domain (e.g., https://expense-tracker-rho-brown.vercel.app)
+// We add /api to it for the API base URL
+const API_URL = import.meta.env.VITE_API_URL 
+  ? `${import.meta.env.VITE_API_URL}/api` 
+  : '/api';
 
 // Log the API URL for debugging
 console.log('API_URL configured as:', API_URL);
 console.log('VITE_API_URL env var:', import.meta.env.VITE_API_URL);
+console.log('Environment:', import.meta.env.MODE);
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
