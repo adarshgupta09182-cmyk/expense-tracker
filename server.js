@@ -1320,6 +1320,11 @@ async function startServer() {
 // Only start server if not in Vercel environment
 if (process.env.VERCEL !== '1') {
   startServer();
+} else {
+  // For Vercel, initialize database on first request
+  initializeDatabase().catch(err => {
+    logger.error('Failed to initialize database on Vercel startup', err);
+  });
 }
 
 // Graceful shutdown
