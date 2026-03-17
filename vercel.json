@@ -7,22 +7,20 @@
       "config": {
         "distDir": "dist"
       }
-    },
-    {
-      "src": "api/index.js",
-      "use": "@vercel/node"
     }
   ],
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/index.js"
-    },
     {
       "src": "/(.*)",
       "dest": "/client/$1"
     }
   ],
+  "functions": {
+    "api/**/*.js": {
+      "memory": 1024,
+      "maxDuration": 60
+    }
+  },
   "env": {
     "DATABASE_URL": "@database_url",
     "JWT_SECRET": "@jwt_secret",
