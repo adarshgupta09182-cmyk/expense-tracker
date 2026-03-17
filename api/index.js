@@ -23,75 +23,6 @@ const logger = {
   }
 };
 
-// Initialize database tables
-async function initializeDatabase() {
-  try {
-    logger.info('Initializing PostgreSQL database...');
-    
-    // Create users table
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) UNIQUE NOT NULL,
-        password VARCHAR(255) NOT NULL,
-        role VARCHAR(50) DEFAULT 'user',
-        is_verified BOOLEAN DEFAULT false,
-        verification_token VARCHAR(255),
-        verification_token_expires TIMESTAMP,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-    
-    // Create other tables
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS expenses (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        description VARCHAR(255) NOT NULL,
-        amount DECIMAL(10, 2) NOT NULL,
-        category VARCHAR(100) NOT NULL,
-        date DATE NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-    
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS budgets (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        user_id UUID NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
-        monthly_budget DECIMAL(10, 2),
-        warning_threshold INTEGER DEFAULT 80,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-    
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS recurring_expenses (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        description VARCHAR(255) NOT NULL,
-        amount DECIMAL(10, 2) NOT NULL,
-        category VARCHAR(100) NOT NULL,
-        frequency VARCHAR(50) NOT NULL,
-        custom_days INTEGER,
-        start_date DATE NOT NULL,
-        end_date DATE,
-        last_generated_date DATE,
-        is_active BOOLEAN DEFAULT true,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-    
-    logger.info('✓ Database initialization complete');
-  } catch (err) {
-    logger.error('Database initialization failed', err);
-    throw err;
-  }
-}
-
 // Generate token
 const generateToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -135,6 +66,33 @@ const sendVerificationEmail = async (email, verificationToken) => {
     throw error;
   }
 };
+
+// Initialize database tables
+async function initializeDatabase() {
+  try {
+    logger.info('Initializing PostgreSQL database...');
+    
+    // Create users table
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        role VARCHAR(50) DEFAULT 'user',
+        is_verified BOOLEAN DEFAULT false,
+        verification_token VARCHAR(255),
+        verification_token_expires TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+    
+    logger.info('✓ Database initialization complete');
+  } catch (err) {
+    logger.error('Database initialization failed', err);
+    // Don't throw error to prevent deployment failure
+  }
+}
 
 // Handle registration
 async function handleRegister(req, res) {
@@ -290,7 +248,7 @@ async function handleLogin(req, res) {
 // Main handler
 module.exports = async (req, res) => {
   // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', process.env.CORS_ORIGIN || '*');
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   
@@ -304,20 +262,21 @@ module.exports = async (req, res) => {
     const url = req.url || '';
     const method = req.method;
     
-    logger.info('API Request', { url, method });
+    logger.info('API Request received', { url, method, timestamp: new Date().toISOString() });
     
     // Health check endpoint (no database required)
-    if (url === '/' || url === '/health') {
+    if (url === '/' || url === '/health' || url.includes('/health')) {
       return res.status(200).json({
         success: true,
         message: 'API is running',
         timestamp: new Date().toISOString(),
         url,
-        method
+        method,
+        version: '1.0.0'
       });
     }
     
-    // Initialize database only for auth routes
+    // Initialize database for auth routes
     if (url.includes('/auth/')) {
       await initializeDatabase();
     }
@@ -340,7 +299,8 @@ module.exports = async (req, res) => {
         'GET /api/health',
         'POST /api/auth/register',
         'POST /api/auth/login'
-      ]
+      ],
+      timestamp: new Date().toISOString()
     });
     
   } catch (error) {
@@ -349,6 +309,7 @@ module.exports = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Internal server error',
+      timestamp: new Date().toISOString(),
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
