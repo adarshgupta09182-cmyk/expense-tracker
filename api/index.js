@@ -72,7 +72,6 @@ async function initializeDatabase() {
   try {
     logger.info('Initializing PostgreSQL database...');
     
-    // Create users table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -83,6 +82,34 @@ async function initializeDatabase() {
         is_verified BOOLEAN DEFAULT false,
         verification_token VARCHAR(255),
         verification_token_expires TIMESTAMP,
+        monthly_budget NUMERIC(10,2) DEFAULT 0,
+        budget_warning_threshold INTEGER DEFAULT 80,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS expenses (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        description VARCHAR(500) NOT NULL,
+        amount NUMERIC(10,2) NOT NULL,
+        category VARCHAR(100) DEFAULT 'Other',
+        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS recurring_expenses (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        description VARCHAR(500) NOT NULL,
+        amount NUMERIC(10,2) NOT NULL,
+        category VARCHAR(100) DEFAULT 'Other',
+        frequency VARCHAR(50) DEFAULT 'monthly',
+        next_date TIMESTAMP,
+        is_active BOOLEAN DEFAULT true,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
@@ -90,7 +117,6 @@ async function initializeDatabase() {
     logger.info('✓ Database initialization complete');
   } catch (err) {
     logger.error('Database initialization failed', err);
-    // Don't throw error to prevent deployment failure
   }
 }
 
@@ -249,7 +275,7 @@ async function handleLogin(req, res) {
 const parseBody = (req) => {
   return new Promise((resolve) => {
     if (req.body && typeof req.body === 'object') {
-      return resolve(req.body); // already parsed
+      return resolve(req.body);
     }
     let data = '';
     req.on('data', chunk => { data += chunk; });
@@ -263,6 +289,174 @@ const parseBody = (req) => {
     req.on('error', () => resolve({}));
   });
 };
+
+// Auth middleware
+const authenticate = (req, res) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (!token) {
+    res.status(401).json({ success: false, message: 'No token provided' });
+    return null;
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    return decoded.userId;
+  } catch {
+    res.status(401).json({ success: false, message: 'Invalid token' });
+    return null;
+  }
+};
+
+// Handle expenses
+async function handleExpenses(req, res, userId) {
+  const method = req.method;
+  const urlParts = req.url.split('?')[0].split('/').filter(Boolean);
+  // urlParts: ['api', 'expenses'] or ['api', 'expenses', 'summary', 'monthly'] or ['api', 'expenses', ':id']
+  const expenseId = urlParts[2] && urlParts[2] !== 'summary' ? urlParts[2] : null;
+  const isSummary = urlParts[2] === 'summary';
+
+  if (isSummary && method === 'GET') {
+    const result = await pool.query(`
+      SELECT 
+        EXTRACT(YEAR FROM date) as year,
+        EXTRACT(MONTH FROM date) as month,
+        category,
+        SUM(amount) as total_amount,
+        COUNT(*) as count
+      FROM expenses WHERE user_id = $1
+      GROUP BY year, month, category
+      ORDER BY year DESC, month DESC
+    `, [userId]);
+    return res.json({ success: true, data: result.rows });
+  }
+
+  if (!expenseId) {
+    if (method === 'GET') {
+      const { startDate, endDate, category } = Object.fromEntries(
+        new URLSearchParams(req.url.split('?')[1] || '')
+      );
+      let query = 'SELECT * FROM expenses WHERE user_id = $1';
+      const params = [userId];
+      if (startDate) { params.push(startDate); query += ` AND date >= $${params.length}`; }
+      if (endDate) { params.push(endDate); query += ` AND date <= $${params.length}`; }
+      if (category) { params.push(category); query += ` AND category = $${params.length}`; }
+      query += ' ORDER BY date DESC';
+      const result = await pool.query(query, params);
+      return res.json({ success: true, count: result.rows.length, data: result.rows });
+    }
+    if (method === 'POST') {
+      const { description, amount, category, date } = req.body;
+      if (!description || !amount) return res.status(400).json({ success: false, message: 'Description and amount are required' });
+      const result = await pool.query(
+        'INSERT INTO expenses (user_id, description, amount, category, date) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+        [userId, description, amount, category || 'Other', date || new Date()]
+      );
+      return res.status(201).json({ success: true, data: result.rows[0] });
+    }
+  } else {
+    if (method === 'GET') {
+      const result = await pool.query('SELECT * FROM expenses WHERE id = $1 AND user_id = $2', [expenseId, userId]);
+      if (!result.rows.length) return res.status(404).json({ success: false, message: 'Expense not found' });
+      return res.json({ success: true, data: result.rows[0] });
+    }
+    if (method === 'PUT') {
+      const { description, amount, category, date } = req.body;
+      const result = await pool.query(
+        'UPDATE expenses SET description=$1, amount=$2, category=$3, date=$4 WHERE id=$5 AND user_id=$6 RETURNING *',
+        [description, amount, category, date, expenseId, userId]
+      );
+      if (!result.rows.length) return res.status(404).json({ success: false, message: 'Expense not found' });
+      return res.json({ success: true, data: result.rows[0] });
+    }
+    if (method === 'DELETE') {
+      const result = await pool.query('DELETE FROM expenses WHERE id=$1 AND user_id=$2 RETURNING id', [expenseId, userId]);
+      if (!result.rows.length) return res.status(404).json({ success: false, message: 'Expense not found' });
+      return res.json({ success: true, message: 'Expense deleted' });
+    }
+  }
+  res.status(405).json({ success: false, message: 'Method not allowed' });
+}
+
+// Handle budget
+async function handleBudget(req, res, userId) {
+  const method = req.method;
+  if (method === 'GET') {
+    const userResult = await pool.query('SELECT monthly_budget, budget_warning_threshold FROM users WHERE id = $1', [userId]);
+    if (!userResult.rows.length) return res.status(404).json({ success: false, message: 'User not found' });
+    const { monthly_budget: budget, budget_warning_threshold: threshold } = userResult.rows[0];
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const spentResult = await pool.query(
+      'SELECT COALESCE(SUM(amount), 0) as total FROM expenses WHERE user_id=$1 AND date >= $2 AND date <= $3',
+      [userId, startOfMonth, endOfMonth]
+    );
+    const totalSpent = parseFloat(spentResult.rows[0].total);
+    const percentageUsed = budget > 0 ? (totalSpent / budget) * 100 : 0;
+    return res.json({
+      success: true,
+      data: {
+        budget: parseFloat(budget),
+        totalSpent,
+        remaining: parseFloat(budget) - totalSpent,
+        percentageUsed: Math.round(percentageUsed * 100) / 100,
+        isExceeded: totalSpent > budget,
+        isWarning: percentageUsed >= threshold && totalSpent <= budget,
+        warningThreshold: threshold,
+        month: now.toLocaleString('en-US', { month: 'long', year: 'numeric' })
+      }
+    });
+  }
+  if (method === 'PUT') {
+    const { monthlyBudget, budgetWarningThreshold } = req.body;
+    if (monthlyBudget === undefined) return res.status(400).json({ success: false, message: 'Monthly budget is required' });
+    await pool.query(
+      'UPDATE users SET monthly_budget=$1, budget_warning_threshold=$2 WHERE id=$3',
+      [monthlyBudget, budgetWarningThreshold || 80, userId]
+    );
+    return res.json({ success: true, message: 'Budget updated', data: { monthlyBudget, budgetWarningThreshold } });
+  }
+  res.status(405).json({ success: false, message: 'Method not allowed' });
+}
+
+// Handle recurring expenses
+async function handleRecurring(req, res, userId) {
+  const method = req.method;
+  const urlParts = req.url.split('?')[0].split('/').filter(Boolean);
+  const recurringId = urlParts[2] || null;
+
+  if (!recurringId) {
+    if (method === 'GET') {
+      const result = await pool.query('SELECT * FROM recurring_expenses WHERE user_id=$1 ORDER BY created_at DESC', [userId]);
+      return res.json({ success: true, count: result.rows.length, data: result.rows });
+    }
+    if (method === 'POST') {
+      const { description, amount, category, frequency, next_date } = req.body;
+      if (!description || !amount) return res.status(400).json({ success: false, message: 'Description and amount are required' });
+      const result = await pool.query(
+        'INSERT INTO recurring_expenses (user_id, description, amount, category, frequency, next_date) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *',
+        [userId, description, amount, category || 'Other', frequency || 'monthly', next_date || null]
+      );
+      return res.status(201).json({ success: true, data: result.rows[0] });
+    }
+  } else {
+    if (method === 'PUT') {
+      const { description, amount, category, frequency, next_date, is_active } = req.body;
+      const result = await pool.query(
+        'UPDATE recurring_expenses SET description=$1, amount=$2, category=$3, frequency=$4, next_date=$5, is_active=$6 WHERE id=$7 AND user_id=$8 RETURNING *',
+        [description, amount, category, frequency, next_date, is_active, recurringId, userId]
+      );
+      if (!result.rows.length) return res.status(404).json({ success: false, message: 'Not found' });
+      return res.json({ success: true, data: result.rows[0] });
+    }
+    if (method === 'DELETE') {
+      const result = await pool.query('DELETE FROM recurring_expenses WHERE id=$1 AND user_id=$2 RETURNING id', [recurringId, userId]);
+      if (!result.rows.length) return res.status(404).json({ success: false, message: 'Not found' });
+      return res.json({ success: true, message: 'Deleted' });
+    }
+  }
+  res.status(405).json({ success: false, message: 'Method not allowed' });
+}
 
 // Main handler
 module.exports = async (req, res) => {
@@ -306,10 +500,9 @@ module.exports = async (req, res) => {
       });
     }
     
-    // Initialize database for auth routes
-    if (url.includes('/auth/')) {
-      await initializeDatabase();
-    }
+    // Initialize database for all routes
+    await initializeDatabase();
+
     // Route handling
     if (url.includes('/auth/register') && method === 'POST') {
       return await handleRegister(req, res);
@@ -317,6 +510,22 @@ module.exports = async (req, res) => {
     
     if (url.includes('/auth/login') && method === 'POST') {
       return await handleLogin(req, res);
+    }
+
+    // Protected routes - require auth
+    const userId = authenticate(req, res);
+    if (!userId) return;
+
+    if (url.includes('/expenses')) {
+      return await handleExpenses(req, res, userId);
+    }
+
+    if (url.includes('/budget')) {
+      return await handleBudget(req, res, userId);
+    }
+
+    if (url.includes('/recurring-expenses')) {
+      return await handleRecurring(req, res, userId);
     }
     
     // Default response for unmatched routes
