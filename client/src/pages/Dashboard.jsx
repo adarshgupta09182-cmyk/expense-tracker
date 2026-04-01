@@ -41,6 +41,11 @@ const Dashboard = () => {
       setExpenses(expRes.data.data || expRes.data);
       if (budgetRes.data.success) setBudgetData(budgetRes.data.data);
       if (recurringRes.data.success) setRecurringExpenses(recurringRes.data.data);
+      // After expenses load (which triggers recurring processing), refresh recurring list
+      // to pick up any updated next_date values
+      return axios.get('/recurring-expenses');
+    }).then((recurringRes) => {
+      if (recurringRes?.data?.success) setRecurringExpenses(recurringRes.data.data);
     }).catch((err) => {
       setError('Failed to load data');
       console.error(err);
