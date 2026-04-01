@@ -10,17 +10,19 @@ const CalendarIcon = () => (
   </svg>
 );
 
-const RecurringExpenseForm = ({ onSuccess, onCancel }) => {
+const RecurringExpenseForm = ({ onSuccess, onCancel, editingExpense }) => {
   const { isDark } = useTheme();
   const startDateRef = useRef(null);
   const endDateRef = useRef(null);
   const [formData, setFormData] = useState({
-    description: '',
-    amount: '',
-    category: 'Food',
-    frequency: 'monthly',
-    customDays: '',
-    startDate: new Date().toISOString().split('T')[0],
+    description: editingExpense?.description || '',
+    amount: editingExpense?.amount || '',
+    category: editingExpense?.category || 'Food',
+    frequency: editingExpense?.frequency || 'monthly',
+    customDays: editingExpense?.custom_days || '',
+    startDate: editingExpense?.next_date
+      ? new Date(editingExpense.next_date).toISOString().split('T')[0]
+      : new Date().toISOString().split('T')[0],
     endDate: ''
   });
   const [loading, setLoading] = useState(false);
@@ -40,14 +42,20 @@ const RecurringExpenseForm = ({ onSuccess, onCancel }) => {
     setError('');
 
     try {
-      await axios.post('/recurring-expenses', {
+      const payload = {
         description: formData.description,
         amount: parseFloat(formData.amount),
         category: formData.category,
         frequency: formData.frequency,
         customDays: formData.frequency === 'custom' ? parseInt(formData.customDays) : null,
         next_date: formData.startDate || null
-      });
+      };
+
+      if (editingExpense) {
+        await axios.put('/recurring-expenses/' + editingExpense.id, payload);
+      } else {
+        await axios.post('/recurring-expenses', payload);
+      }
 
       setFormData({
         description: '',
@@ -75,7 +83,7 @@ const RecurringExpenseForm = ({ onSuccess, onCancel }) => {
       exit={{ opacity: 0, y: -20 }}
     >
       <div className="form-header">
-        <h3>Add Recurring Expense</h3>
+        <h3>{editingExpense ? 'Edit Recurring Expense' : 'Add Recurring Expense'}</h3>
         <p className="form-subtitle">Set up automatic expenses that repeat</p>
       </div>
 
@@ -224,7 +232,7 @@ const RecurringExpenseForm = ({ onSuccess, onCancel }) => {
             className="btn-submit"
             disabled={loading}
           >
-            {loading ? 'Creating...' : 'Create Recurring Expense'}
+            {loading ? 'Saving...' : editingExpense ? 'Update Recurring Expense' : 'Create Recurring Expense'}
           </button>
         </div>
       </form>

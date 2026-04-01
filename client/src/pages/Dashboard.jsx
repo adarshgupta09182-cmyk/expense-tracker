@@ -27,6 +27,7 @@ const Dashboard = () => {
   const [budgetData, setBudgetData] = useState(null);
   const [recurringExpenses, setRecurringExpenses] = useState([]);
   const [showRecurringForm, setShowRecurringForm] = useState(false);
+  const [editingRecurring, setEditingRecurring] = useState(null);
   const [filters, setFilters] = useState({ category: '', startDate: '', endDate: '', search: '' });
   const itemsPerPage = 10;
 
@@ -106,6 +107,7 @@ const Dashboard = () => {
 
   const handleRecurringExpenseSuccess = useCallback(() => {
     setShowRecurringForm(false);
+    setEditingRecurring(null);
     Promise.all([
       axios.get('/recurring-expenses'),
       axios.get('/expenses')
@@ -113,6 +115,12 @@ const Dashboard = () => {
       if (rr.data.success) setRecurringExpenses(rr.data.data);
       setExpenses(er.data.data || er.data);
     }).catch(() => {});
+  }, []);
+
+  const handleEditRecurringExpense = useCallback((expense) => {
+    setEditingRecurring(expense);
+    setShowRecurringForm(true);
+    window.scrollTo({ top: document.querySelector('.recurring-section')?.offsetTop - 20 || 0, behavior: 'smooth' });
   }, []);
 
   const handleDeleteRecurringExpense = useCallback(async (id) => {
@@ -186,15 +194,23 @@ const Dashboard = () => {
         <div className="recurring-section">
           <div className="section-header">
             <h2>Recurring Expenses</h2>
-            <button onClick={() => setShowRecurringForm(!showRecurringForm)} className="btn-toggle-form">
+            <button onClick={() => { setShowRecurringForm(!showRecurringForm); setEditingRecurring(null); }} className="btn-toggle-form">
               {showRecurringForm ? '✕ Cancel' : '+ Add Recurring'}
             </button>
           </div>
           {showRecurringForm && (
-            <RecurringExpenseForm onSuccess={handleRecurringExpenseSuccess} onCancel={() => setShowRecurringForm(false)} />
+            <RecurringExpenseForm
+              editingExpense={editingRecurring}
+              onSuccess={handleRecurringExpenseSuccess}
+              onCancel={() => { setShowRecurringForm(false); setEditingRecurring(null); }}
+            />
           )}
           {recurringExpenses.length > 0 && (
-            <RecurringExpensesList recurringExpenses={recurringExpenses} onDelete={handleDeleteRecurringExpense} />
+            <RecurringExpensesList
+              recurringExpenses={recurringExpenses}
+              onDelete={handleDeleteRecurringExpense}
+              onEdit={handleEditRecurringExpense}
+            />
           )}
         </div>
 

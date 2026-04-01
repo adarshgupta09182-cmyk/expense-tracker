@@ -282,7 +282,7 @@ async function handleRecurring(req, res, userId) {
         const { description, amount, category, frequency, next_date, is_active } = req.body;
         const result = await pool.query(
           'UPDATE recurring_expenses SET description=$1, amount=$2, category=$3, frequency=$4, next_date=$5, is_active=$6 WHERE id=$7 AND user_id=$8 RETURNING *',
-          [description, amount, category, frequency, next_date, is_active, recurringId, userId]
+          [description, amount, category, frequency, next_date, is_active !== undefined ? is_active : true, recurringId, userId]
         );
         if (!result.rows.length) return res.status(404).json({ success: false, message: 'Not found' });
         return res.json({ success: true, data: toNum(result.rows[0]) });
