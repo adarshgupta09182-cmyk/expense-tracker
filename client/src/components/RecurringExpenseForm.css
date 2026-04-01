@@ -197,11 +197,17 @@
 /* Light calendar icon for date inputs in dark mode */
 [data-theme="dark"] .form-group input[type="date"] {
   color-scheme: dark;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='%23E0E8FF'%3E%3Cpath d='M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px 16px;
 }
 
-[data-theme="dark"] .form-group input[type="date"]::-webkit-calendar-picker-indicator,
-[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1) brightness(2) !important;
+[data-theme="dark"] .form-group input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
-  opacity: 1 !important;
+  position: absolute;
+  right: 8px;
 }
