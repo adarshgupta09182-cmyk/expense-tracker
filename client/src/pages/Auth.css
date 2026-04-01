@@ -354,9 +354,9 @@
 }
 
 .input-wrapper.focused {
-  border-color: #667EEA;
+  border-color: rgba(102, 126, 234, 0.6);
   background: rgba(26, 35, 50, 0.9);
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.05);
 }
 
 .input-wrapper.error {
@@ -417,7 +417,7 @@
 .input-wrapper input:-webkit-autofill,
 .input-wrapper input:-webkit-autofill:hover,
 .input-wrapper input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 1000px #1a2332 inset !important;
+  -webkit-box-shadow: 0 0 0 1000px #111c2b inset !important;
   -webkit-text-fill-color: #E0E8FF !important;
   transition: background-color 9999s ease-in-out 0s !important;
 }
