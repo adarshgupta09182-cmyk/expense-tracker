@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import AnimatedButton from '../components/AnimatedButton';
+import PWAInstallPrompt from '../components/PWAInstallPrompt';
 import './Auth.css';
 
 const Login = () => {
@@ -50,6 +51,7 @@ const Login = () => {
 
   return (
     <div className="auth-container">
+      <PWAInstallPrompt />
       <div className="auth-wrapper">
         {/* Left Side - Hero */}
         <div className="auth-hero">

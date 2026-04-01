@@ -1,49 +1,46 @@
 import { useEffect, useState } from 'react';
 import './PWAInstallPrompt.css';
 
+const isMobile = () => /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+
 const PWAInstallPrompt = () => {
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showPrompt, setShowPrompt] = useState(false);
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   useEffect(() => {
-    // Listen for beforeinstallprompt event
-    const handleBeforeInstallPrompt = (e) => {
+    // Don't show if already installed or user dismissed before
+    if (window.matchMedia('(display-mode: standalone)').matches) return;
+    if (localStorage.getItem('pwa-prompt-dismissed')) return;
+    if (!isMobile()) return;
+
+    const handler = (e) => {
       e.preventDefault();
+      setDeferredPrompt(e);
       setShowPrompt(true);
     };
 
-    // Listen for app installed event
-    const handleAppInstalled = () => {
-      setShowPrompt(false);
-    };
+    window.addEventListener('beforeinstallprompt', handler);
+    window.addEventListener('appinstalled', () => setShowPrompt(false));
 
-    // Listen for online/offline status
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    window.addEventListener('appinstalled', handleAppInstalled);
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-      window.removeEventListener('appinstalled', handleAppInstalled);
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
+    return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
 
-  const handleInstall = () => {
-    if (window.PWA && window.PWA.showInstallPrompt) {
-      window.PWA.showInstallPrompt();
+  const handleInstall = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
       setShowPrompt(false);
     }
+    setDeferredPrompt(null);
   };
 
-  if (!showPrompt) {
-    return null;
-  }
+  const handleLater = () => {
+    localStorage.setItem('pwa-prompt-dismissed', '1');
+    setShowPrompt(false);
+  };
+
+  if (!showPrompt) return null;
 
   return (
     <div className="pwa-install-prompt">
@@ -54,18 +51,8 @@ const PWAInstallPrompt = () => {
           <p>Add Expense Tracker to your home screen for quick access</p>
         </div>
         <div className="pwa-install-actions">
-          <button 
-            className="pwa-install-btn-primary"
-            onClick={handleInstall}
-          >
-            Install
-          </button>
-          <button 
-            className="pwa-install-btn-secondary"
-            onClick={() => setShowPrompt(false)}
-          >
-            Later
-          </button>
+          <button className="pwa-install-btn-primary" onClick={handleInstall}>Install</button>
+          <button className="pwa-install-btn-secondary" onClick={handleLater}>Later</button>
         </div>
       </div>
     </div>
