@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import AnimatedButton from '../components/AnimatedButton';
@@ -26,6 +26,25 @@ const Login = () => {
   const [focusedField, setFocusedField] = useState(null);
   const { login, error: authError, clearError } = useAuth();
   const navigate = useNavigate();
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+
+  // Detect autofill and override background via inline style on the wrapper
+  useEffect(() => {
+    const inputs = [emailRef.current, passwordRef.current].filter(Boolean);
+    const handleAnimationStart = (e) => {
+      if (e.animationName === 'onAutoFillStart') {
+        const wrapper = e.target.closest('.input-wrapper');
+        if (wrapper) wrapper.classList.add('autofilled');
+      }
+      if (e.animationName === 'onAutoFillCancel') {
+        const wrapper = e.target.closest('.input-wrapper');
+        if (wrapper) wrapper.classList.remove('autofilled');
+      }
+    };
+    inputs.forEach(input => input.addEventListener('animationstart', handleAnimationStart));
+    return () => inputs.forEach(input => input.removeEventListener('animationstart', handleAnimationStart));
+  }, []);
 
   // Debug: Log when localError changes
   useEffect(() => {
@@ -202,6 +221,7 @@ const Login = () => {
               <div className="form-group">
                 <div className={`input-wrapper ${focusedField === 'email' ? 'focused' : ''} ${errors.email ? 'error' : ''}`}>
                   <input
+                    ref={emailRef}
                     type="email"
                     name="email"
                     placeholder="Email"
@@ -221,6 +241,7 @@ const Login = () => {
               <div className="form-group">
                 <div className={`input-wrapper ${focusedField === 'password' ? 'focused' : ''} ${errors.password ? 'error' : ''}`}>
                   <input
+                    ref={passwordRef}
                     type="password"
                     name="password"
                     placeholder="Password"

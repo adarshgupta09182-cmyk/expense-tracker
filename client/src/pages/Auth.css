@@ -328,6 +328,10 @@
   box-sizing: border-box;
 }
 
+/* Autofill detection keyframes */
+@keyframes onAutoFillStart { from { opacity: 1; } to { opacity: 1; } }
+@keyframes onAutoFillCancel { from { opacity: 1; } to { opacity: 1; } }
+
 .input-wrapper input {
   flex: 1;
   background: transparent;
@@ -341,6 +345,16 @@
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+}
+
+/* Trigger JS autofill detection */
+.input-wrapper input:-webkit-autofill { animation-name: onAutoFillStart; }
+.input-wrapper input:not(:-webkit-autofill) { animation-name: onAutoFillCancel; }
+
+/* JS adds .autofilled class — lock wrapper bg and border */
+.input-wrapper.autofilled {
+  background: #111c2b !important;
+  border-color: rgba(102, 126, 234, 0.3) !important;
 }
 
 .input-wrapper input:-webkit-autofill,
@@ -422,12 +436,6 @@
   opacity: 0.5;
 }
 
-
-/* Keep border subtle when autofilled */
-.input-wrapper:has(input:-webkit-autofill) {
-  border-color: rgba(102, 126, 234, 0.3);
-  background: #111c2b;
-}
 
 .input-error {
   border-color: var(--danger-color) !important;
