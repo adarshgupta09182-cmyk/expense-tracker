@@ -29,21 +29,26 @@ const Login = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
 
-  // Detect autofill and override background via inline style on the wrapper
+  // Break Chrome autofill styling by re-setting the value after autofill fires
   useEffect(() => {
     const inputs = [emailRef.current, passwordRef.current].filter(Boolean);
-    const handleAnimationStart = (e) => {
-      if (e.animationName === 'onAutoFillStart') {
-        const wrapper = e.target.closest('.input-wrapper');
-        if (wrapper) wrapper.classList.add('autofilled');
-      }
-      if (e.animationName === 'onAutoFillCancel') {
-        const wrapper = e.target.closest('.input-wrapper');
-        if (wrapper) wrapper.classList.remove('autofilled');
-      }
+    const onAnimStart = (e) => {
+      if (e.animationName !== 'onAutoFillStart') return;
+      const input = e.target;
+      setTimeout(() => {
+        const val = input.value;
+        if (!val) return;
+        // Temporarily clear then restore — breaks Chrome's autofill background lock
+        input.value = '';
+        // Force a reflow
+        void input.offsetHeight;
+        input.value = val;
+        // Sync React state
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      }, 100);
     };
-    inputs.forEach(input => input.addEventListener('animationstart', handleAnimationStart));
-    return () => inputs.forEach(input => input.removeEventListener('animationstart', handleAnimationStart));
+    inputs.forEach(i => i.addEventListener('animationstart', onAnimStart));
+    return () => inputs.forEach(i => i.removeEventListener('animationstart', onAnimStart));
   }, []);
 
   // Debug: Log when localError changes
