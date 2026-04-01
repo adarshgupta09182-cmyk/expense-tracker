@@ -328,13 +328,9 @@
   box-sizing: border-box;
 }
 
-/* Autofill detection keyframes */
-@keyframes onAutoFillStart { from { opacity: 1; } to { opacity: 1; } }
-@keyframes onAutoFillCancel { from { opacity: 1; } to { opacity: 1; } }
-
 .input-wrapper input {
   flex: 1;
-  background: transparent;
+  background: transparent !important;
   border: none !important;
   outline: none !important;
   color: #E0E8FF;
@@ -342,28 +338,10 @@
   font-size: 14px;
   padding: 0 !important;
   margin: 0 !important;
+  box-shadow: none !important;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-}
-
-/* Trigger JS autofill detection */
-.input-wrapper input:-webkit-autofill { animation-name: onAutoFillStart; }
-.input-wrapper input:not(:-webkit-autofill) { animation-name: onAutoFillCancel; }
-
-/* JS adds .autofilled class ΓÇö lock wrapper bg and border */
-.input-wrapper.autofilled {
-  background: #111c2b !important;
-  border-color: rgba(102, 126, 234, 0.3) !important;
-}
-
-.input-wrapper input:-webkit-autofill,
-.input-wrapper input:-webkit-autofill:hover,
-.input-wrapper input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 1000px #111c2b inset !important;
-  -webkit-text-fill-color: #E0E8FF !important;
-  caret-color: #E0E8FF !important;
-  transition: background-color 9999s ease-in-out 0s !important;
 }
 
 .input-wrapper input::placeholder {
@@ -376,9 +354,9 @@
 }
 
 .input-wrapper.focused {
-  border-color: rgba(102, 126, 234, 0.6);
+  border-color: #667EEA;
   background: rgba(26, 35, 50, 0.9);
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.05);
 }
 
 .input-wrapper.error {
@@ -436,6 +414,19 @@
   opacity: 0.5;
 }
 
+.input-wrapper input:-webkit-autofill,
+.input-wrapper input:-webkit-autofill:hover,
+.input-wrapper input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #1a2332 inset !important;
+  -webkit-text-fill-color: #E0E8FF !important;
+  transition: background-color 9999s ease-in-out 0s !important;
+}
+
+/* Lock wrapper background when input is autofilled */
+.input-wrapper:has(input:-webkit-autofill) {
+  background: #1a2332 !important;
+  border-color: rgba(102, 126, 234, 0.3) !important;
+}
 
 .input-error {
   border-color: var(--danger-color) !important;
