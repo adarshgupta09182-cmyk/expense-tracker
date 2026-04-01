@@ -10,6 +10,7 @@ import {
   Legend,
   ArcElement
 } from 'chart.js';
+import { useTheme } from '../context/ThemeContext';
 import './ChartsSection.css';
 
 ChartJS.register(
@@ -23,7 +24,7 @@ ChartJS.register(
 );
 
 const ChartsSection = ({ expenses }) => {
-  const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+  const { isDark } = useTheme();
   // Get theme colors from CSS variables
   const getThemeColors = () => {
     const root = document.documentElement;
@@ -105,9 +106,8 @@ const ChartsSection = ({ expenses }) => {
   }, [expenses]);
 
   const barOptions = useMemo(() => {
-    const isDarkMode = theme === 'dark';
-    const labelColor = isDarkMode ? '#E0E8FF' : '#000000';
-    const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : '#E5E7EB';
+    const labelColor = isDark ? '#E0E8FF' : '#000000';
+    const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : '#E5E7EB';
     
     return {
       responsive: true,
@@ -153,11 +153,10 @@ const ChartsSection = ({ expenses }) => {
         }
       }
     };
-  }, [theme]);
+  }, [isDark]);
 
   const pieOptions = useMemo(() => {
-    const isDarkMode = theme === 'dark';
-    const labelColor = isDarkMode ? '#E0E8FF' : '#000000';
+    const labelColor = isDark ? '#E0E8FF' : '#000000';
     
     return {
       responsive: true,
@@ -186,7 +185,7 @@ const ChartsSection = ({ expenses }) => {
         }
       },
     };
-  }, [theme]);
+  }, [isDark]);
 
   if (expenses.length === 0) {
     return (
