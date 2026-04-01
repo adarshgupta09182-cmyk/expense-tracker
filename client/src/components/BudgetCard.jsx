@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import AnimatedCard from './AnimatedCard';
 import './BudgetCard.css';
 
-const BudgetCard = ({ budget, totalSpent, isWarning, isExceeded }) => {
+const BudgetCard = ({ budget, totalSpent, isWarning, isExceeded, month, isCurrentMonth, onPrevMonth, onNextMonth }) => {
   const budgetData = useMemo(() => {
     if (!budget || budget === 0) {
       return {
@@ -61,6 +61,11 @@ const BudgetCard = ({ budget, totalSpent, isWarning, isExceeded }) => {
       <AnimatedCard className="budget-card no-budget">
         <div className="budget-header">
           <h3>Monthly Budget</h3>
+          <div className="budget-month-nav">
+            <button className="month-nav-btn" onClick={onPrevMonth}>‹</button>
+            <span className="budget-month-label">{month}</span>
+            <button className="month-nav-btn" onClick={onNextMonth} disabled={isCurrentMonth}>›</button>
+          </div>
           <span className="budget-status">Not Set</span>
         </div>
         <p className="no-budget-message">Set a monthly budget to track your spending</p>
@@ -72,6 +77,11 @@ const BudgetCard = ({ budget, totalSpent, isWarning, isExceeded }) => {
     <AnimatedCard className={`budget-card ${budgetData.status}`}>
       <div className="budget-header">
         <h3>Monthly Budget</h3>
+        <div className="budget-month-nav">
+          <button className="month-nav-btn" onClick={onPrevMonth}>‹</button>
+          <span className="budget-month-label">{month}</span>
+          <button className="month-nav-btn" onClick={onNextMonth} disabled={isCurrentMonth}>›</button>
+        </div>
         <span className={`budget-status ${budgetData.status}`}>
           {budgetData.status === 'exceeded' && '⚠️ Exceeded'}
           {budgetData.status === 'warning' && '⚠️ Warning'}

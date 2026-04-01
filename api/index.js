@@ -259,19 +259,28 @@ async function handleExpenses(req, res, userId) {
 async function handleBudget(req, res, userId) {
   try {
     if (req.method === 'GET') {
+      const params = new URLSearchParams(req.url.split('?')[1] || '');
+      const now = new Date();
+      const year = parseInt(params.get('year')) || now.getFullYear();
+      const month = parseInt(params.get('month')) || (now.getMonth() + 1);
+
       const userResult = await pool.query('SELECT monthly_budget, budget_warning_threshold FROM users WHERE id=$1', [userId]);
       if (!userResult.rows.length) return res.status(404).json({ success: false, message: 'User not found' });
       const budget = parseFloat(userResult.rows[0].monthly_budget) || 0;
       const threshold = parseInt(userResult.rows[0].budget_warning_threshold) || 80;
-      const now = new Date();
-      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+      const startOfMonth = new Date(year, month - 1, 1);
+      const endOfMonth = new Date(year, month, 0, 23, 59, 59);
+
       const spentResult = await pool.query(
         'SELECT COALESCE(SUM(amount), 0) as total FROM expenses WHERE user_id=$1 AND date >= $2 AND date <= $3',
         [userId, startOfMonth, endOfMonth]
       );
       const totalSpent = parseFloat(spentResult.rows[0].total) || 0;
       const percentageUsed = budget > 0 ? (totalSpent / budget) * 100 : 0;
+      const monthLabel = new Date(year, month - 1).toLocaleString('en-US', { month: 'long', year: 'numeric' });
+      const isCurrentMonth = year === now.getFullYear() && month === (now.getMonth() + 1);
+
       return res.json({
         success: true,
         data: {
@@ -282,7 +291,10 @@ async function handleBudget(req, res, userId) {
           isExceeded: totalSpent > budget,
           isWarning: percentageUsed >= threshold && totalSpent <= budget,
           warningThreshold: threshold,
-          month: now.toLocaleString('en-US', { month: 'long', year: 'numeric' })
+          month: monthLabel,
+          year,
+          monthNumber: month,
+          isCurrentMonth
         }
       });
     }

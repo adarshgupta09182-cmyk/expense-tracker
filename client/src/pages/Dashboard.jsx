@@ -25,6 +25,10 @@ const Dashboard = () => {
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [budgetData, setBudgetData] = useState(null);
+  const [budgetMonth, setBudgetMonth] = useState(() => {
+    const now = new Date();
+    return { year: now.getFullYear(), month: now.getMonth() + 1 };
+  });
   const [recurringExpenses, setRecurringExpenses] = useState([]);
   const [showRecurringForm, setShowRecurringForm] = useState(false);
   const [editingRecurring, setEditingRecurring] = useState(null);
@@ -64,8 +68,31 @@ const Dashboard = () => {
     setCurrentPage(1);
   }, [expenses, filters]);
 
-  const refreshBudget = useCallback(() => {
-    axios.get('/budget').then(r => { if (r.data.success) setBudgetData(r.data.data); }).catch(() => {});
+  const refreshBudget = useCallback((year, month) => {
+    const now = new Date();
+    const y = year || budgetMonth.year;
+    const m = month || budgetMonth.month;
+    axios.get('/budget?year=' + y + '&month=' + m)
+      .then(r => { if (r.data.success) setBudgetData(r.data.data); })
+      .catch(() => {});
+  }, [budgetMonth]);
+
+  const handleBudgetMonthChange = useCallback((direction) => {
+    setBudgetMonth(prev => {
+      let { year, month } = prev;
+      month += direction;
+      if (month > 12) { month = 1; year++; }
+      if (month < 1) { month = 12; year--; }
+      // Don't go into the future
+      const now = new Date();
+      if (year > now.getFullYear() || (year === now.getFullYear() && month > now.getMonth() + 1)) {
+        return prev;
+      }
+      axios.get('/budget?year=' + year + '&month=' + month)
+        .then(r => { if (r.data.success) setBudgetData(r.data.data); })
+        .catch(() => {});
+      return { year, month };
+    });
   }, []);
 
   const handleAddExpense = useCallback(async (formData) => {
@@ -108,7 +135,7 @@ const Dashboard = () => {
   const handleCancelEdit = useCallback(() => setEditingExpense(null), []);
   const handleFilterChange = useCallback((f) => setFilters(f), []);
   const handleClearFilters = useCallback(() => setFilters({ category: '', startDate: '', endDate: '', search: '' }), []);
-  const handleBudgetUpdate = useCallback(() => refreshBudget(), [refreshBudget]);
+  const handleBudgetUpdate = useCallback(() => refreshBudget(budgetMonth.year, budgetMonth.month), [refreshBudget, budgetMonth]);
 
   const handleRecurringExpenseSuccess = useCallback(() => {
     setShowRecurringForm(false);
@@ -188,6 +215,10 @@ const Dashboard = () => {
             totalSpent={budgetData.totalSpent}
             isWarning={budgetData.isWarning}
             isExceeded={budgetData.isExceeded}
+            month={budgetData.month}
+            isCurrentMonth={budgetData.isCurrentMonth}
+            onPrevMonth={() => handleBudgetMonthChange(-1)}
+            onNextMonth={() => handleBudgetMonthChange(1)}
           />
         )}
 
