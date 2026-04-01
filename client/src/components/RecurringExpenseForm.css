@@ -71,8 +71,14 @@
 
 [data-theme="dark"] .form-group input,
 [data-theme="dark"] .form-group select {
-  background: rgba(255, 255, 255, 0.05);
+  background: #1a2332;
   border-color: rgba(255, 255, 255, 0.1);
+  color: #E0E8FF;
+}
+
+[data-theme="dark"] .form-group select option {
+  background: #1a2332;
+  color: #E0E8FF;
 }
 
 .form-group input:focus,
