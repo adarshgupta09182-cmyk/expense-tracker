@@ -420,12 +420,19 @@
   -webkit-box-shadow: 0 0 0 1000px #1a2332 inset !important;
   -webkit-text-fill-color: #E0E8FF !important;
   transition: background-color 9999s ease-in-out 0s !important;
+  color-scheme: dark !important;
 }
 
 /* Lock wrapper background when input is autofilled */
 .input-wrapper:has(input:-webkit-autofill) {
   background: #1a2332 !important;
   border-color: rgba(102, 126, 234, 0.3) !important;
+}
+
+/* Force dark color scheme on auth inputs regardless of page theme */
+.auth-container .input-wrapper input,
+.auth-wrapper .input-wrapper input {
+  color-scheme: dark;
 }
 
 .input-error {
