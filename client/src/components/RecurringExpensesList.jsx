@@ -10,21 +10,10 @@ const RecurringExpensesList = ({ recurringExpenses, onDelete, onEdit }) => {
   };
 
   const getNextDate = (expense) => {
-    // Use next_date if set, otherwise calculate from created_at
-    const baseDate = expense.next_date
+    const date = expense.next_date
       ? new Date(expense.next_date)
       : new Date(expense.created_at);
-
-    if (isNaN(baseDate.getTime())) return 'Not set';
-
-    const date = new Date(baseDate);
-    if (expense.frequency === 'weekly') {
-      date.setDate(date.getDate() + 7);
-    } else if (expense.frequency === 'monthly') {
-      date.setMonth(date.getMonth() + 1);
-    } else if (expense.frequency === 'custom' && expense.customDays) {
-      date.setDate(date.getDate() + expense.customDays);
-    }
+    if (isNaN(date.getTime())) return 'Not set';
     return date.toLocaleDateString();
   };
 
