@@ -199,8 +199,9 @@
   color-scheme: dark;
 }
 
-[data-theme="dark"] .form-group input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1) brightness(2);
+[data-theme="dark"] .form-group input[type="date"]::-webkit-calendar-picker-indicator,
+[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(2) !important;
   cursor: pointer;
-  opacity: 0.8;
+  opacity: 1 !important;
 }
