@@ -174,3 +174,22 @@
     width: 100%;
   }
 }
+
+/* Autofill fix - prevent browser from changing input background */
+[data-theme="dark"] .form-group input:-webkit-autofill,
+[data-theme="dark"] .form-group input:-webkit-autofill:hover,
+[data-theme="dark"] .form-group input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #1a2332 inset !important;
+  -webkit-text-fill-color: #E0E8FF !important;
+  caret-color: #E0E8FF !important;
+  transition: background-color 9999s ease-in-out 0s !important;
+}
+
+[data-theme="light"] .form-group input:-webkit-autofill,
+[data-theme="light"] .form-group input:-webkit-autofill:hover,
+[data-theme="light"] .form-group input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+  -webkit-text-fill-color: #000000 !important;
+  caret-color: #000000 !important;
+  transition: background-color 9999s ease-in-out 0s !important;
+}
