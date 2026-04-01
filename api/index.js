@@ -135,6 +135,10 @@ async function handleLogin(req, res) {
     if (!isValid) return res.status(401).json({ success: false, message: 'Invalid email or password' });
 
     const token = generateToken(user.id);
+
+    // Process any overdue recurring expenses in the background
+    processRecurringExpenses(user.id).catch(err => logger.error('Recurring processing failed', err));
+
     res.status(200).json({
       success: true, message: 'Login successful', token,
       user: { id: user.id, name: user.name, email: user.email, isVerified: user.is_verified }
@@ -142,6 +146,43 @@ async function handleLogin(req, res) {
   } catch (error) {
     logger.error('Login failed', error);
     res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+  }
+}
+
+async function processRecurringExpenses(userId) {
+  const now = new Date();
+  const overdue = await pool.query(
+    'SELECT * FROM recurring_expenses WHERE user_id = $1 AND is_active = true AND next_date IS NOT NULL AND next_date <= $2',
+    [userId, now]
+  );
+
+  for (const rec of overdue.rows) {
+    let nextDate = new Date(rec.next_date);
+
+    // Insert one expense per missed cycle
+    while (nextDate <= now) {
+      await pool.query(
+        'INSERT INTO expenses (user_id, description, amount, category, date) VALUES ($1, $2, $3, $4, $5)',
+        [userId, rec.description, rec.amount, rec.category, nextDate]
+      );
+
+      // Advance to next cycle
+      if (rec.frequency === 'weekly') {
+        nextDate.setDate(nextDate.getDate() + 7);
+      } else if (rec.frequency === 'monthly') {
+        nextDate.setMonth(nextDate.getMonth() + 1);
+      } else if (rec.frequency === 'custom' && rec.custom_days) {
+        nextDate.setDate(nextDate.getDate() + parseInt(rec.custom_days));
+      } else {
+        break; // unknown frequency, stop to avoid infinite loop
+      }
+    }
+
+    // Update next_date to the next future date
+    await pool.query(
+      'UPDATE recurring_expenses SET next_date = $1 WHERE id = $2',
+      [nextDate, rec.id]
+    );
   }
 }
 
@@ -163,6 +204,8 @@ async function handleExpenses(req, res, userId) {
 
     if (!expenseId) {
       if (method === 'GET') {
+        // Process any overdue recurring expenses before returning the list
+        processRecurringExpenses(userId).catch(err => logger.error('Recurring processing failed', err));
         const params = new URLSearchParams(req.url.split('?')[1] || '');
         const startDate = params.get('startDate');
         const endDate = params.get('endDate');
