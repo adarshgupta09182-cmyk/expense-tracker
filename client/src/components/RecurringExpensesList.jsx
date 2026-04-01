@@ -9,14 +9,21 @@ const RecurringExpensesList = ({ recurringExpenses, onDelete, onEdit }) => {
     return frequency;
   };
 
-  const getNextDate = (lastGenerated, frequency, customDays) => {
-    const date = new Date(lastGenerated);
-    if (frequency === 'weekly') {
+  const getNextDate = (expense) => {
+    // Use next_date if set, otherwise calculate from created_at
+    const baseDate = expense.next_date
+      ? new Date(expense.next_date)
+      : new Date(expense.created_at);
+
+    if (isNaN(baseDate.getTime())) return 'Not set';
+
+    const date = new Date(baseDate);
+    if (expense.frequency === 'weekly') {
       date.setDate(date.getDate() + 7);
-    } else if (frequency === 'monthly') {
+    } else if (expense.frequency === 'monthly') {
       date.setMonth(date.getMonth() + 1);
-    } else if (frequency === 'custom' && customDays) {
-      date.setDate(date.getDate() + customDays);
+    } else if (expense.frequency === 'custom' && expense.customDays) {
+      date.setDate(date.getDate() + expense.customDays);
     }
     return date.toLocaleDateString();
   };
@@ -60,7 +67,7 @@ const RecurringExpensesList = ({ recurringExpenses, onDelete, onEdit }) => {
 
               <div className="card-bottom">
                 <div className="next-date">
-                  Next: {getNextDate(expense.lastGeneratedDate || expense.startDate, expense.frequency, expense.customDays)}
+                  Next: {getNextDate(expense)}
                 </div>
                 <div className="card-actions">
                   <button

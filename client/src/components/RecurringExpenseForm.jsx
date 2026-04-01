@@ -46,8 +46,7 @@ const RecurringExpenseForm = ({ onSuccess, onCancel }) => {
         category: formData.category,
         frequency: formData.frequency,
         customDays: formData.frequency === 'custom' ? parseInt(formData.customDays) : null,
-        startDate: formData.startDate,
-        endDate: formData.endDate || null
+        next_date: formData.startDate || null
       });
 
       setFormData({
