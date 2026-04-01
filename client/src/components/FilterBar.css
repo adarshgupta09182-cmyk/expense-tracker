@@ -144,3 +144,44 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Date input wrapper with custom icon */
+.filter-date-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.filter-date-wrapper .filter-date {
+  width: 100%;
+  padding-right: 36px;
+}
+
+/* Hide native calendar icon in dark mode */
+[data-theme="dark"] .filter-date-wrapper input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  width: 36px;
+  height: 100%;
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+}
+
+[data-theme="dark"] .filter-date-wrapper input[type="date"] {
+  color-scheme: dark;
+}
+
+.filter-date-icon {
+  position: absolute;
+  right: 10px;
+  color: rgba(208, 216, 232, 0.7);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  pointer-events: all;
+  z-index: 1;
+}
+
+.filter-date-icon:hover {
+  color: #E0E8FF;
+}
