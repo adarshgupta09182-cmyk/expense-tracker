@@ -1,9 +1,19 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import axios from '../utils/axios';
+import { useTheme } from '../context/ThemeContext';
 import './RecurringExpenseForm.css';
 
+const CalendarIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+  </svg>
+);
+
 const RecurringExpenseForm = ({ onSuccess, onCancel }) => {
+  const { isDark } = useTheme();
+  const startDateRef = useRef(null);
+  const endDateRef = useRef(null);
   const [formData, setFormData] = useState({
     description: '',
     amount: '',
@@ -162,26 +172,42 @@ const RecurringExpenseForm = ({ onSuccess, onCancel }) => {
         <div className="form-row">
           <div className="form-group">
             <label htmlFor="startDate">Start Date</label>
-            <input
-              type="date"
-              id="startDate"
-              name="startDate"
-              value={formData.startDate}
-              onChange={handleChange}
-              required
-            />
+            <div className="date-input-wrapper">
+              <input
+                ref={startDateRef}
+                type="date"
+                id="startDate"
+                name="startDate"
+                value={formData.startDate}
+                onChange={handleChange}
+                required
+              />
+              {isDark && (
+                <span className="date-icon" onClick={() => startDateRef.current?.showPicker()}>
+                  <CalendarIcon />
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="form-group">
             <label htmlFor="endDate">End Date (Optional)</label>
-            <input
-              type="date"
-              id="endDate"
-              name="endDate"
-              value={formData.endDate}
-              onChange={handleChange}
-              min={formData.startDate}
-            />
+            <div className="date-input-wrapper">
+              <input
+                ref={endDateRef}
+                type="date"
+                id="endDate"
+                name="endDate"
+                value={formData.endDate}
+                onChange={handleChange}
+                min={formData.startDate}
+              />
+              {isDark && (
+                <span className="date-icon" onClick={() => endDateRef.current?.showPicker()}>
+                  <CalendarIcon />
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
