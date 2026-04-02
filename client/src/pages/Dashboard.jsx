@@ -29,6 +29,34 @@ const Dashboard = () => {
     const now = new Date();
     return { year: now.getFullYear(), month: now.getMonth() + 1 };
   });
+
+  // Compute budget card data locally from loaded expenses — no API call on month change
+  const computedBudgetData = useMemo(() => {
+    if (!budgetData) return null;
+    const { year, month } = budgetMonth;
+    const now = new Date();
+    const monthExpenses = expenses.filter(e => {
+      const d = new Date(e.date);
+      return d.getFullYear() === year && d.getMonth() + 1 === month;
+    });
+    const totalSpent = monthExpenses.reduce((s, e) => s + parseFloat(e.amount), 0);
+    const budget = budgetData.budget;
+    const threshold = budgetData.warningThreshold || 80;
+    const percentageUsed = budget > 0 ? (totalSpent / budget) * 100 : 0;
+    const monthLabel = new Date(year, month - 1).toLocaleString('en-US', { month: 'long', year: 'numeric' });
+    const isCurrentMonth = year === now.getFullYear() && month === now.getMonth() + 1;
+    return {
+      budget,
+      totalSpent,
+      remaining: budget - totalSpent,
+      percentageUsed: Math.round(percentageUsed * 100) / 100,
+      isExceeded: totalSpent > budget,
+      isWarning: percentageUsed >= threshold && totalSpent <= budget,
+      warningThreshold: threshold,
+      month: monthLabel,
+      isCurrentMonth
+    };
+  }, [budgetData, budgetMonth, expenses]);
   const [recurringExpenses, setRecurringExpenses] = useState([]);
   const [showRecurringForm, setShowRecurringForm] = useState(false);
   const [editingRecurring, setEditingRecurring] = useState(null);
@@ -68,29 +96,20 @@ const Dashboard = () => {
     setCurrentPage(1);
   }, [expenses, filters]);
 
-  const refreshBudget = useCallback((year, month) => {
-    const now = new Date();
-    const y = year || budgetMonth.year;
-    const m = month || budgetMonth.month;
-    axios.get('/budget?year=' + y + '&month=' + m)
-      .then(r => { if (r.data.success) setBudgetData(r.data.data); })
-      .catch(() => {});
-  }, [budgetMonth]);
+  const refreshBudget = useCallback(() => {
+    axios.get('/budget').then(r => { if (r.data.success) setBudgetData(r.data.data); }).catch(() => {});
+  }, []);
 
   const handleBudgetMonthChange = useCallback((direction) => {
+    const now = new Date();
     setBudgetMonth(prev => {
       let { year, month } = prev;
       month += direction;
       if (month > 12) { month = 1; year++; }
       if (month < 1) { month = 12; year--; }
-      // Don't go into the future
-      const now = new Date();
       if (year > now.getFullYear() || (year === now.getFullYear() && month > now.getMonth() + 1)) {
         return prev;
       }
-      axios.get('/budget?year=' + year + '&month=' + month)
-        .then(r => { if (r.data.success) setBudgetData(r.data.data); })
-        .catch(() => {});
       return { year, month };
     });
   }, []);
@@ -135,7 +154,7 @@ const Dashboard = () => {
   const handleCancelEdit = useCallback(() => setEditingExpense(null), []);
   const handleFilterChange = useCallback((f) => setFilters(f), []);
   const handleClearFilters = useCallback(() => setFilters({ category: '', startDate: '', endDate: '', search: '' }), []);
-  const handleBudgetUpdate = useCallback(() => refreshBudget(budgetMonth.year, budgetMonth.month), [refreshBudget, budgetMonth]);
+  const handleBudgetUpdate = useCallback(() => refreshBudget(), [refreshBudget]);
 
   const handleRecurringExpenseSuccess = useCallback(() => {
     setShowRecurringForm(false);
@@ -209,14 +228,14 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {budgetData && (
+        {computedBudgetData && (
           <BudgetCard
-            budget={budgetData.budget}
-            totalSpent={budgetData.totalSpent}
-            isWarning={budgetData.isWarning}
-            isExceeded={budgetData.isExceeded}
-            month={budgetData.month}
-            isCurrentMonth={budgetData.isCurrentMonth}
+            budget={computedBudgetData.budget}
+            totalSpent={computedBudgetData.totalSpent}
+            isWarning={computedBudgetData.isWarning}
+            isExceeded={computedBudgetData.isExceeded}
+            month={computedBudgetData.month}
+            isCurrentMonth={computedBudgetData.isCurrentMonth}
             onPrevMonth={() => handleBudgetMonthChange(-1)}
             onNextMonth={() => handleBudgetMonthChange(1)}
           />
