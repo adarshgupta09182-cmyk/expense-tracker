@@ -171,3 +171,64 @@
     padding: 16px;
   }
 }
+
+/* PDF/CSV format buttons */
+.export-option-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 12px;
+}
+
+.export-option-group:last-child {
+  border-bottom: none;
+}
+
+.export-option-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.export-format-btns {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.fmt-btn {
+  padding: 5px 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.3px;
+}
+
+.fmt-csv {
+  background: rgba(255,255,255,0.15);
+  color: #e0e8ff;
+}
+
+.fmt-csv:hover:not(:disabled) {
+  background: rgba(255,255,255,0.28);
+}
+
+.fmt-pdf {
+  background: rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+}
+
+.fmt-pdf:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.4);
+}
+
+.fmt-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
