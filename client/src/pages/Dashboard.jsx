@@ -220,9 +220,12 @@ const Dashboard = () => {
         <div className="dashboard-header">
           <h1>Dashboard</h1>
           <div className="dashboard-actions">
-            <ImportButton onImportSuccess={() => {
-              axios.get('/expenses').then(r => setExpenses(r.data.data || r.data)).catch(() => {});
-            }} />
+            <ImportButton
+              existingExpenses={expenses}
+              onImportSuccess={() => {
+                axios.get('/expenses').then(r => setExpenses(r.data.data || r.data)).catch(() => {});
+              }}
+            />
             <ExportButton filters={filters} />
             <BudgetSettings
               currentBudget={budgetData?.budget}

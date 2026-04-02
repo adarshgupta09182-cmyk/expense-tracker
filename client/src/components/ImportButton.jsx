@@ -1,20 +1,10 @@
 import { useState, useRef, useCallback } from 'react';
 import axios from '../utils/axios';
+import { getClassifier } from '../utils/categorizer';
 import './ImportButton.css';
 
-// Keyword-based auto-categorizer
-const categorize = (description) => {
-  const d = description.toLowerCase();
-  if (/swiggy|zomato|dominos|pizza|burger|kfc|mcdonalds|restaurant|cafe|food|eat|biryani|hotel/.test(d)) return 'Food';
-  if (/uber|ola|rapido|metro|bus|train|irctc|flight|indigo|spicejet|petrol|fuel|toll/.test(d)) return 'Travelling';
-  if (/netflix|amazon prime|hotstar|spotify|youtube|prime|zee5|sony|jio cinema|bookmyshow|pvr|inox/.test(d)) return 'Entertainment';
-  if (/amazon|flipkart|myntra|ajio|meesho|nykaa|shopping|mall|store|mart/.test(d)) return 'Shopping';
-  if (/electricity|water|gas|broadband|airtel|jio|vi|bsnl|recharge|bill|emi|loan|insurance/.test(d)) return 'Bills';
-  return 'Other';
-};
-
 // Try to parse common Indian bank CSV formats
-const parseCSV = (text) => {
+const parseCSV = (text, classifier) => {
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
   if (lines.length < 2) return [];
 
@@ -76,7 +66,8 @@ const parseCSV = (text) => {
       date: parsedDate.toISOString().split('T')[0],
       description,
       amount,
-      category: categorize(description),
+      category: classifier ? classifier.classify(description) : 'Other',
+      mlCategorized: classifier?.trained,
       selected: true
     });
   }
@@ -86,7 +77,7 @@ const parseCSV = (text) => {
 
 const CATEGORIES = ['Food', 'Travelling', 'Entertainment', 'Shopping', 'Bills', 'Other'];
 
-const ImportButton = ({ onImportSuccess }) => {
+const ImportButton = ({ onImportSuccess, existingExpenses }) => {
   const [showModal, setShowModal] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [importing, setImporting] = useState(false);
@@ -101,7 +92,8 @@ const ImportButton = ({ onImportSuccess }) => {
     setError('');
     const reader = new FileReader();
     reader.onload = (ev) => {
-      const parsed = parseCSV(ev.target.result);
+      const classifier = getClassifier(existingExpenses);
+      const parsed = parseCSV(ev.target.result, classifier);
       if (parsed.length === 0) {
         setError('No debit transactions found. Make sure the file is a valid bank statement CSV.');
       } else {
@@ -169,6 +161,9 @@ const ImportButton = ({ onImportSuccess }) => {
                   <div className="import-summary">
                     <span>{transactions.length} debit transactions found</span>
                     <span>{selectedCount} selected for import</span>
+                    {transactions[0]?.mlCategorized && (
+                      <span className="ml-badge">🤖 ML categorized from your history</span>
+                    )}
                     <button className="btn-reupload" onClick={() => { setTransactions([]); setFileName(''); setError(''); }}>
                       Upload different file
                     </button>
