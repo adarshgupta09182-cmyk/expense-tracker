@@ -6,9 +6,12 @@ export default defineConfig({
   server: {
     port: 5173
   },
+  optimizeDeps: {
+    exclude: ['pdfjs-dist']
+  },
   build: {
     outDir: 'dist',
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 1500,
     rollupOptions: {
       output: {
         manualChunks: undefined

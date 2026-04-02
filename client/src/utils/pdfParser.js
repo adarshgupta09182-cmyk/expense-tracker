@@ -1,13 +1,11 @@
-import * as pdfjsLib from 'pdfjs-dist';
-
-// Vite-compatible worker setup
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
-
 /**
  * Extract text items WITH their X positions from a PDF.
  * Returns rows grouped by Y coordinate.
  */
 export async function extractTextFromPDF(arrayBuffer) {
+  // Dynamic import so pdfjs-dist is not bundled by Rollup
+  const pdfjsLib = await import('pdfjs-dist');
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
   const allRows = []; // array of { y, items: [{x, text}] }
 
