@@ -147,12 +147,13 @@
 }
 
 .import-table th {
-  background: rgba(102, 126, 234, 0.1);
+  background: var(--bg-secondary, #1a2332);
   padding: 10px 12px;
   text-align: left;
   color: var(--text-secondary);
   font-weight: 600;
   white-space: nowrap;
+  border-bottom: 2px solid rgba(102, 126, 234, 0.2);
 }
 
 .import-table td {
@@ -232,6 +233,7 @@
 
 [data-theme="light"] .import-table th {
   background: #f1f5f9;
+  color: #374151;
 }
 
 [data-theme="light"] .import-table select {

@@ -102,7 +102,9 @@ const ImportButton = ({ onImportSuccess, existingExpenses }) => {
         const arrayBuffer = await file.arrayBuffer();
         const lines = await extractTextFromPDF(arrayBuffer);
         const rawTxns = parsePDFLines(lines);
-        parsed = rawTxns.map(t => ({
+        parsed = rawTxns
+          .filter(t => t.description && t.description.trim().length > 2)
+          .map(t => ({
           ...t,
           category: classifier ? classifier.classify(t.description) : 'Other',
           mlCategorized: classifier?.trained,
