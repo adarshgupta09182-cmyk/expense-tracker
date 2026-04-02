@@ -33,20 +33,27 @@ const parseCSV = (text, classifier) => {
 
     // Parse amount — prefer debit column, fall back to amount column
     const rawDebit = debitIdx >= 0 ? cols[debitIdx] : '';
+    const rawCredit = creditIdx >= 0 ? cols[creditIdx] : '';
     const rawAmt = amtIdx >= 0 ? cols[amtIdx] : '';
     const debitVal = parseFloat(rawDebit.replace(/[^0-9.]/g, ''));
+    const creditVal = parseFloat(rawCredit.replace(/[^0-9.]/g, ''));
     const amtVal = parseFloat(rawAmt.replace(/[^0-9.]/g, ''));
+
+    // If credit column has a value and debit is empty/zero → it's income, skip
+    if (creditIdx >= 0 && !isNaN(creditVal) && creditVal > 0 && (isNaN(debitVal) || debitVal === 0)) continue;
 
     if (debitIdx >= 0 && !isNaN(debitVal) && debitVal > 0) {
       amount = debitVal;
       isDebit = true;
     } else if (amtIdx >= 0 && !isNaN(amtVal) && amtVal > 0) {
       amount = amtVal;
-      // Check if there's a Dr/Cr indicator
-      const typeCol = cols.find(c => /^dr$/i.test(c.trim()));
-      isDebit = !!typeCol || true;
+      // Check for Dr/Cr indicator column
+      const drCol = cols.find(c => /^dr$/i.test(c.trim()));
+      const crCol = cols.find(c => /^cr$/i.test(c.trim()));
+      if (crCol && !drCol) continue; // it's a credit, skip
+      isDebit = true;
     } else {
-      continue; // skip rows with no parseable amount
+      continue;
     }
 
     if (!isDebit || amount <= 0 || !description) continue;
