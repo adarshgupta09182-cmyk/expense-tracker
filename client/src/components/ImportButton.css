@@ -162,6 +162,14 @@
   color: var(--text-primary);
 }
 
+[data-theme="dark"] .import-table tbody tr:hover td {
+  background: rgba(102, 126, 234, 0.08);
+}
+
+[data-theme="light"] .import-table tbody tr:hover td {
+  background: #f1f5f9;
+}
+
 .import-table tr.row-deselected td {
   opacity: 0.4;
 }
