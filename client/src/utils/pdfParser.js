@@ -1,35 +1,36 @@
-const amountRe = /^[\d,]+\.\d{2}$/;
-const isAmount = (s) => amountRe.test(s.replace(/\s/g, ''));
-const parseAmt = (s) => parseFloat(s.replace(/,/g, ''));
+var amountRe = /^[\d,]+\.\d{2}$/;
+function isAmount(s) { return amountRe.test(s.replace(/\s/g, '')); }
+function parseAmt(s) { return parseFloat(s.replace(/,/g, '')); }
 
 /**
  * Extract text items WITH their X positions from a PDF.
  * Uses dynamic import so pdfjs-dist is not bundled by Rollup.
  */
 export async function extractTextFromPDF(arrayBuffer) {
-  const pdfjsLib = await import('pdfjs-dist');
+  var pdfjsLib = await import('pdfjs-dist');
   pdfjsLib.GlobalWorkerOptions.workerSrc =
     'https://unpkg.com/pdfjs-dist@' + pdfjsLib.version + '/build/pdf.worker.min.mjs';
 
-  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-  const allRows = [];
+  var pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  var allRows = [];
 
-  for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-    const page = await pdf.getPage(pageNum);
-    const content = await page.getTextContent();
+  for (var pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+    var page = await pdf.getPage(pageNum);
+    var content = await page.getTextContent();
 
-    const byY = {};
-    for (const item of content.items) {
+    var byY = {};
+    for (var ii = 0; ii < content.items.length; ii++) {
+      var item = content.items[ii];
       if (!item.str.trim()) continue;
-      const y = Math.round(item.transform[5]);
+      var y = Math.round(item.transform[5]);
       if (!byY[y]) byY[y] = [];
       byY[y].push({ x: item.transform[4], text: item.str.trim() });
     }
 
-    const sortedYs = Object.keys(byY).map(Number).sort((a, b) => b - a);
-    for (const y of sortedYs) {
-      const items = byY[y].sort((a, b) => a.x - b.x);
-      allRows.push({ y, items, text: items.map(function(i) { return i.text; }).join(' ') });
+    var sortedYs = Object.keys(byY).map(Number).sort(function(a, b) { return b - a; });
+    for (var yi = 0; yi < sortedYs.length; yi++) {
+      var rowItems = byY[sortedYs[yi]].sort(function(a, b) { return a.x - b.x; });
+      allRows.push({ y: sortedYs[yi], items: rowItems, text: rowItems.map(function(i) { return i.text; }).join(' ') });
     }
   }
 
@@ -37,34 +38,19 @@ export async function extractTextFromPDF(arrayBuffer) {
 }
 
 /**
- * Parse the standard Indian bank statement format:
+ * Parse Kotak (and similar Indian bank) statement format:
  * # | Date | Description | Chq/Ref | Withdrawal(Dr.) | Deposit(Cr.) | Balance
  *
- * Detects column X positions from the header row to classify debit vs credit.
+ * Strategy: use balance changes to determine debit vs credit.
+ * If balance goes DOWN → debit (withdrawal). If balance goes UP → credit (deposit).
+ * Only return debits (withdrawals) as expenses.
  */
 export function parsePDFLines(rows) {
   var transactions = [];
-
-  // Find header row to get column X positions
-  var withdrawalX = null;
-  var depositX = null;
-  var balanceX = null;
-
-  for (var h = 0; h < rows.length; h++) {
-    var rowText = rows[h].text.toLowerCase();
-    if (/withdrawal|debit|dr\./.test(rowText) && /deposit|credit|cr\./.test(rowText)) {
-      for (var hi = 0; hi < rows[h].items.length; hi++) {
-        var ht = rows[h].items[hi].text.toLowerCase();
-        if (/withdrawal|debit/.test(ht)) withdrawalX = rows[h].items[hi].x;
-        if (/deposit|credit/.test(ht)) depositX = rows[h].items[hi].x;
-        if (/balance/.test(ht)) balanceX = rows[h].items[hi].x;
-      }
-      break;
-    }
-  }
-
   var datePattern = /^(\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4}|\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})$/i;
   var months = { jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12 };
+
+  var prevBalance = null;
 
   for (var r = 0; r < rows.length; r++) {
     var row = rows[r];
@@ -78,41 +64,55 @@ export function parsePDFLines(rows) {
     }
     if (!dateItem) continue;
 
-    // Find amount items
-    var amountItems = items.filter(function(i) { return isAmount(i.text); });
+    // Find all amount items
+    var amountItems = [];
+    for (var ai = 0; ai < items.length; ai++) {
+      if (isAmount(items[ai].text)) amountItems.push(items[ai]);
+    }
     if (amountItems.length === 0) continue;
 
-    var withdrawalAmt = 0;
-    var depositAmt = 0;
+    // The LAST amount in the row is always the Balance (rightmost column)
+    var balanceItem = amountItems[amountItems.length - 1];
+    var currentBalance = parseAmt(balanceItem.text);
 
-    if (withdrawalX !== null && depositX !== null) {
-      for (var ai = 0; ai < amountItems.length; ai++) {
-        var item = amountItems[ai];
-        var dW = Math.abs(item.x - withdrawalX);
-        var dD = Math.abs(item.x - depositX);
-        var dB = balanceX !== null ? Math.abs(item.x - balanceX) : Infinity;
-        var minD = Math.min(dW, dD, dB);
-        if (minD === dW) withdrawalAmt = parseAmt(item.text);
-        else if (minD === dD) depositAmt = parseAmt(item.text);
-      }
-    } else {
-      var lower = row.text.toLowerCase();
-      if (/\bcr\b|\bcredit\b|\bdeposit\b|\brefund\b/.test(lower) &&
-          !/\bdr\b|\bdebit\b|\bwithdrawal\b/.test(lower)) {
-        depositAmt = parseAmt(amountItems[0].text);
-      } else {
-        withdrawalAmt = parseAmt(amountItems[0].text);
-      }
+    // The transaction amount is the first amount (not the balance)
+    // If there's only one amount, it's the balance — skip (no transaction amount)
+    if (amountItems.length < 2) {
+      prevBalance = currentBalance;
+      continue;
     }
 
-    if (withdrawalAmt <= 0 && depositAmt <= 0) continue;
+    var txnAmount = parseAmt(amountItems[0].text);
+    if (txnAmount <= 0) {
+      prevBalance = currentBalance;
+      continue;
+    }
 
-    var type = withdrawalAmt > 0 ? 'debit' : 'credit';
-    var amount = withdrawalAmt > 0 ? withdrawalAmt : depositAmt;
+    // Determine type using balance change
+    var isDebit;
+    if (prevBalance !== null) {
+      // Balance went down → debit (withdrawal)
+      // Balance went up → credit (deposit)
+      isDebit = currentBalance < prevBalance;
+    } else {
+      // No previous balance — fall back to X-position heuristic
+      // Withdrawal column is to the LEFT of Deposit column
+      // If only one txn amount, check if it's closer to left (withdrawal) or right (deposit) side
+      // Use page midpoint as rough separator
+      isDebit = true; // default to debit if we can't tell
+    }
 
-    // Extract description
+    prevBalance = currentBalance;
+
+    // Only keep debits (expenses)
+    if (!isDebit) continue;
+
+    // Extract description: items between date and first amount, skip ref numbers
     var dateIdx = items.indexOf(dateItem);
-    var firstAmtIdx = items.findIndex(function(i) { return isAmount(i.text); });
+    var firstAmtIdx = -1;
+    for (var fi = 0; fi < items.length; fi++) {
+      if (isAmount(items[fi].text)) { firstAmtIdx = fi; break; }
+    }
     var descItems = items.slice(dateIdx + 1, firstAmtIdx > dateIdx ? firstAmtIdx : undefined)
       .filter(function(i) { return !isAmount(i.text) && !/^UPI-\d+$|^NEFT-|^IMPS-/.test(i.text); });
     var description = descItems.map(function(i) { return i.text; }).join(' ').trim();
@@ -142,8 +142,8 @@ export function parsePDFLines(rows) {
     transactions.push({
       date: parsedDate.toISOString().split('T')[0],
       description: description,
-      amount: amount,
-      type: type,
+      amount: txnAmount,
+      type: 'debit',
       rawLine: row.text
     });
   }
