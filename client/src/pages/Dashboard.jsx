@@ -7,6 +7,7 @@ import SummaryCards from '../components/SummaryCards';
 import BudgetCard from '../components/BudgetCard';
 import BudgetSettings from '../components/BudgetSettings';
 import ExportButton from '../components/ExportButton';
+import ImportButton from '../components/ImportButton';
 import ExpenseForm from '../components/ExpenseForm';
 import ExpenseTable from '../components/ExpenseTable';
 import ChartsSection from '../components/ChartsSection';
@@ -219,6 +220,9 @@ const Dashboard = () => {
         <div className="dashboard-header">
           <h1>Dashboard</h1>
           <div className="dashboard-actions">
+            <ImportButton onImportSuccess={() => {
+              axios.get('/expenses').then(r => setExpenses(r.data.data || r.data)).catch(() => {});
+            }} />
             <ExportButton filters={filters} />
             <BudgetSettings
               currentBudget={budgetData?.budget}

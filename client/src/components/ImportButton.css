@@ -1,0 +1,239 @@
+.btn-import {
+  padding: 8px 16px;
+  background: rgba(102, 126, 234, 0.15);
+  border: 1px solid rgba(102, 126, 234, 0.4);
+  border-radius: 8px;
+  color: #667EEA;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-import:hover {
+  background: rgba(102, 126, 234, 0.25);
+  border-color: #667EEA;
+}
+
+.import-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.import-modal {
+  background: var(--bg-secondary, #1a2332);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 860px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.import-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(102, 126, 234, 0.15);
+}
+
+.import-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--text-primary);
+}
+
+.import-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 4px;
+}
+
+.import-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.import-upload-area {
+  border: 2px dashed rgba(102, 126, 234, 0.4);
+  border-radius: 10px;
+  padding: 48px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.import-upload-area:hover {
+  border-color: #667EEA;
+}
+
+.upload-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.import-upload-area p {
+  margin: 6px 0;
+  color: var(--text-primary);
+  font-size: 15px;
+}
+
+.upload-hint {
+  color: var(--text-secondary) !important;
+  font-size: 13px !important;
+}
+
+.upload-filename {
+  color: #667EEA !important;
+  font-weight: 600;
+}
+
+.upload-error {
+  color: #EF4444 !important;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.import-summary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+}
+
+.import-summary span {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.btn-reupload {
+  background: none;
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 6px;
+  color: #667EEA;
+  font-size: 13px;
+  padding: 4px 10px;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.import-table-wrapper {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid rgba(102, 126, 234, 0.15);
+}
+
+.import-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.import-table th {
+  background: rgba(102, 126, 234, 0.1);
+  padding: 10px 12px;
+  text-align: left;
+  color: var(--text-secondary);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.import-table td {
+  padding: 8px 12px;
+  border-top: 1px solid rgba(102, 126, 234, 0.08);
+  color: var(--text-primary);
+}
+
+.import-table tr.row-deselected td {
+  opacity: 0.4;
+}
+
+.desc-cell {
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.import-table select {
+  background: rgba(26, 35, 50, 0.8);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  border-radius: 4px;
+  color: var(--text-primary);
+  padding: 3px 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+[data-theme="light"] .import-table select {
+  background: #fff;
+  color: #111;
+}
+
+.import-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid rgba(102, 126, 234, 0.15);
+}
+
+.btn-cancel-import {
+  padding: 10px 20px;
+  background: none;
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-confirm-import {
+  padding: 10px 24px;
+  background: #4F46E5;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-confirm-import:hover:not(:disabled) {
+  background: #4338CA;
+}
+
+.btn-confirm-import:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+[data-theme="light"] .import-modal {
+  background: #fff;
+}
+
+[data-theme="light"] .import-table th {
+  background: #f1f5f9;
+}
+
+[data-theme="light"] .import-table select {
+  background: #f8fafc;
+}
