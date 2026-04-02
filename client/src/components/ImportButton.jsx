@@ -88,6 +88,7 @@ const CATEGORIES = ['Food', 'Travelling', 'Entertainment', 'Shopping', 'Bills', 
 const ImportButton = ({ onImportSuccess, existingExpenses }) => {
   const [showModal, setShowModal] = useState(false);
   const [transactions, setTransactions] = useState([]);
+  const [typeFilter, setTypeFilter] = useState('debit'); // 'all' | 'debit' | 'credit'
   const [importing, setImporting] = useState(false);
   const [parsing, setParsing] = useState(false);
   const [error, setError] = useState('');
@@ -115,7 +116,7 @@ const ImportButton = ({ onImportSuccess, existingExpenses }) => {
           ...t,
           category: classifier ? classifier.classify(t.description) : 'Other',
           mlCategorized: classifier?.trained,
-          selected: true
+          selected: t.type !== 'credit' // pre-deselect credits
         }));
       } else {
         // CSV
@@ -200,11 +201,16 @@ const ImportButton = ({ onImportSuccess, existingExpenses }) => {
               ) : (
                 <>
                   <div className="import-summary">
-                    <span>{transactions.length} debit transactions found</span>
+                    <span>{transactions.length} transactions found</span>
                     <span>{selectedCount} selected for import</span>
                     {transactions[0]?.mlCategorized && (
                       <span className="ml-badge">🤖 ML categorized from your history</span>
                     )}
+                    <div className="type-filter">
+                      <button className={typeFilter === 'debit' ? 'active' : ''} onClick={() => setTypeFilter('debit')}>Debits only</button>
+                      <button className={typeFilter === 'credit' ? 'active' : ''} onClick={() => setTypeFilter('credit')}>Credits only</button>
+                      <button className={typeFilter === 'all' ? 'active' : ''} onClick={() => setTypeFilter('all')}>All</button>
+                    </div>
                     <button className="btn-reupload" onClick={() => { setTransactions([]); setFileName(''); setError(''); }}>
                       Upload different file
                     </button>
@@ -214,7 +220,8 @@ const ImportButton = ({ onImportSuccess, existingExpenses }) => {
                     <table className="import-table">
                       <thead>
                         <tr>
-                          <th><input type="checkbox" checked={selectedCount === transactions.length} onChange={(e) => setTransactions(prev => prev.map(t => ({ ...t, selected: e.target.checked })))} /></th>
+                          <th><input type="checkbox" checked={selectedCount === transactions.filter(t => typeFilter === 'all' || t.type === typeFilter || !t.type).length} onChange={(e) => setTransactions(prev => prev.map(t => (typeFilter === 'all' || t.type === typeFilter || !t.type) ? { ...t, selected: e.target.checked } : t))} /></th>
+                          <th>Type</th>
                           <th>Date</th>
                           <th>Description</th>
                           <th>Amount (₹)</th>
@@ -222,14 +229,17 @@ const ImportButton = ({ onImportSuccess, existingExpenses }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {transactions.map((t, i) => (
+                        {transactions
+                          .filter(t => typeFilter === 'all' || t.type === typeFilter || !t.type)
+                          .map((t, i) => (
                           <tr key={i} className={t.selected ? '' : 'row-deselected'}>
-                            <td><input type="checkbox" checked={t.selected} onChange={() => toggleRow(i)} /></td>
+                            <td><input type="checkbox" checked={t.selected} onChange={() => toggleRow(transactions.indexOf(t))} /></td>
+                            <td><span className={`type-badge type-${t.type || 'debit'}`}>{t.type === 'credit' ? 'CR' : 'DR'}</span></td>
                             <td>{t.date}</td>
                             <td className="desc-cell">{t.description}</td>
                             <td>₹{t.amount.toFixed(2)}</td>
                             <td>
-                              <select value={t.category} onChange={(e) => updateCategory(i, e.target.value)}>
+                              <select value={t.category} onChange={(e) => updateCategory(transactions.indexOf(t), e.target.value)}>
                                 {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                               </select>
                             </td>

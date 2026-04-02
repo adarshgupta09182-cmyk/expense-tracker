@@ -271,3 +271,47 @@
   color: #818CF8;
   font-weight: 600;
 }
+
+.type-filter {
+  display: flex;
+  gap: 4px;
+  background: rgba(102, 126, 234, 0.08);
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.type-filter button {
+  padding: 4px 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  background: none;
+  color: var(--text-secondary);
+  transition: all 0.15s;
+}
+
+.type-filter button.active {
+  background: #4F46E5;
+  color: white;
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.type-badge.type-debit {
+  background: rgba(239, 68, 68, 0.15);
+  color: #EF4444;
+}
+
+.type-badge.type-credit {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10B981;
+}
