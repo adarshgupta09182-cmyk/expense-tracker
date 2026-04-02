@@ -108,8 +108,8 @@ const ImportButton = ({ onImportSuccess, existingExpenses }) => {
 
       if (file.name.toLowerCase().endsWith('.pdf')) {
         const arrayBuffer = await file.arrayBuffer();
-        const lines = await extractTextFromPDF(arrayBuffer);
-        const rawTxns = parsePDFLines(lines);
+        const rows = await extractTextFromPDF(arrayBuffer);
+        const rawTxns = parsePDFLines(rows);
         parsed = rawTxns
           .filter(t => t.description && t.description.trim().length > 2)
           .map(t => ({
