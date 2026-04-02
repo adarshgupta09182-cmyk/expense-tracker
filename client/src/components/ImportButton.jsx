@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import axios from '../utils/axios';
 import { getClassifier } from '../utils/categorizer';
+import { extractTextFromPDF, parsePDFLines } from '../utils/pdfParser';
 import './ImportButton.css';
 
 // Try to parse common Indian bank CSV formats
@@ -81,27 +82,49 @@ const ImportButton = ({ onImportSuccess, existingExpenses }) => {
   const [showModal, setShowModal] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [importing, setImporting] = useState(false);
+  const [parsing, setParsing] = useState(false);
   const [error, setError] = useState('');
   const [fileName, setFileName] = useState('');
   const fileRef = useRef(null);
 
-  const handleFile = useCallback((e) => {
+  const handleFile = useCallback(async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     setFileName(file.name);
     setError('');
-    const reader = new FileReader();
-    reader.onload = (ev) => {
+    setParsing(true);
+
+    try {
       const classifier = getClassifier(existingExpenses);
-      const parsed = parseCSV(ev.target.result, classifier);
+      let parsed = [];
+
+      if (file.name.toLowerCase().endsWith('.pdf')) {
+        const arrayBuffer = await file.arrayBuffer();
+        const lines = await extractTextFromPDF(arrayBuffer);
+        const rawTxns = parsePDFLines(lines);
+        parsed = rawTxns.map(t => ({
+          ...t,
+          category: classifier ? classifier.classify(t.description) : 'Other',
+          mlCategorized: classifier?.trained,
+          selected: true
+        }));
+      } else {
+        // CSV
+        const text = await file.text();
+        parsed = parseCSV(text, classifier);
+      }
+
       if (parsed.length === 0) {
-        setError('No debit transactions found. Make sure the file is a valid bank statement CSV.');
+        setError('No debit transactions found. Make sure the file is a valid bank statement (CSV or PDF).');
       } else {
         setTransactions(parsed);
       }
-    };
-    reader.readAsText(file);
-  }, []);
+    } catch (err) {
+      setError('Failed to parse file: ' + err.message);
+    } finally {
+      setParsing(false);
+    }
+  }, [existingExpenses]);
 
   const toggleRow = useCallback((idx) => {
     setTransactions(prev => prev.map((t, i) => i === idx ? { ...t, selected: !t.selected } : t));
@@ -148,13 +171,22 @@ const ImportButton = ({ onImportSuccess, existingExpenses }) => {
 
             <div className="import-body">
               {transactions.length === 0 ? (
-                <div className="import-upload-area" onClick={() => fileRef.current?.click()}>
-                  <div className="upload-icon">📄</div>
-                  <p>Click to upload a CSV bank statement</p>
-                  <p className="upload-hint">Supports SBI, HDFC, ICICI, Axis and most Indian bank CSV exports</p>
-                  {fileName && <p className="upload-filename">{fileName}</p>}
+                <div className="import-upload-area" onClick={() => !parsing && fileRef.current?.click()}>
+                  {parsing ? (
+                    <>
+                      <div className="upload-icon">⏳</div>
+                      <p>Parsing file, please wait...</p>
+                    </>
+                  ) : (
+                    <>
+                      <div className="upload-icon">📄</div>
+                      <p>Click to upload a bank statement</p>
+                      <p className="upload-hint">Supports CSV and PDF — SBI, HDFC, ICICI, Axis and most Indian banks</p>
+                      {fileName && <p className="upload-filename">{fileName}</p>}
+                    </>
+                  )}
                   {error && <p className="upload-error">{error}</p>}
-                  <input ref={fileRef} type="file" accept=".csv" onChange={handleFile} style={{ display: 'none' }} />
+                  <input ref={fileRef} type="file" accept=".csv,.pdf" onChange={handleFile} style={{ display: 'none' }} />
                 </div>
               ) : (
                 <>
