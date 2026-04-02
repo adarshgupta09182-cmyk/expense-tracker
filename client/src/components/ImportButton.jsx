@@ -219,7 +219,7 @@ const ImportButton = ({ onImportSuccess, existingExpenses }) => {
                           <tr key={i} className={t.selected ? '' : 'row-deselected'}>
                             <td><input type="checkbox" checked={t.selected} onChange={() => toggleRow(i)} /></td>
                             <td>{t.date}</td>
-                            <td className="desc-cell" title={t.description}>{t.description}</td>
+                            <td className="desc-cell">{t.description}</td>
                             <td>₹{t.amount.toFixed(2)}</td>
                             <td>
                               <select value={t.category} onChange={(e) => updateCategory(i, e.target.value)}>
