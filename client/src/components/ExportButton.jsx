@@ -152,16 +152,82 @@ const ExportButton = ({ filters = {} }) => {
       }
 
       if (headers.length > 0 && dataRows.length > 0) {
-        autoTable(doc, {
-          head: [headers],
-          body: dataRows,
-          startY,
-          styles: { fontSize: 9, cellPadding: 3, overflow: 'linebreak', valign: 'middle' },
-          headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: 'bold' },
-          alternateRowStyles: { fillColor: [248, 250, 252] },
-          tableWidth: 'auto',
-          margin: { left: 14, right: 14 },
-        });
+        // For expense report: pivot categories into columns
+        if (exportType === 'expenses' || exportType === 'expenses-with-budget') {
+          const CATS = ['Food', 'Travelling', 'Entertainment', 'Shopping', 'Bills', 'Other'];
+          // Find column indices from header
+          const dateIdx = headers.findIndex(h => /date/i.test(h));
+          const descIdx = headers.findIndex(h => /desc/i.test(h));
+          const catIdx = headers.findIndex(h => /cat/i.test(h));
+          const amtIdx = headers.findIndex(h => /amount/i.test(h));
+
+          // Build pivoted rows
+          const catTotals = {};
+          CATS.forEach(c => { catTotals[c] = 0; });
+          let grandTotal = 0;
+
+          const pivotedRows = dataRows
+            .filter(r => r[dateIdx] && r[amtIdx] && !isNaN(parseFloat(r[amtIdx])))
+            .map(r => {
+              const cat = r[catIdx] || 'Other';
+              const amt = parseFloat(r[amtIdx]) || 0;
+              const normalizedCat = CATS.includes(cat) ? cat : 'Other';
+              if (catTotals[normalizedCat] !== undefined) catTotals[normalizedCat] += amt;
+              grandTotal += amt;
+              const row = [r[dateIdx], r[descIdx] || ''];
+              CATS.forEach(c => row.push(c === normalizedCat ? amt.toFixed(2) : ''));
+              row.push(amt.toFixed(2));
+              return row;
+            });
+
+          // Totals row
+          const totalsRow = ['', 'TOTAL'];
+          CATS.forEach(c => totalsRow.push(catTotals[c] > 0 ? catTotals[c].toFixed(2) : ''));
+          totalsRow.push(grandTotal.toFixed(2));
+
+          const pivotHeaders = ['Date', 'Description', ...CATS, 'Total (Rs)'];
+
+          autoTable(doc, {
+            head: [pivotHeaders],
+            body: [...pivotedRows, totalsRow],
+            startY,
+            styles: { fontSize: 8, cellPadding: 2.5, overflow: 'linebreak', valign: 'middle' },
+            headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: 'bold', fontSize: 8 },
+            alternateRowStyles: { fillColor: [248, 250, 252] },
+            // Highlight totals row
+            didParseCell: (data) => {
+              if (data.row.index === pivotedRows.length) {
+                data.cell.styles.fontStyle = 'bold';
+                data.cell.styles.fillColor = [230, 230, 250];
+                data.cell.styles.textColor = [30, 30, 100];
+              }
+            },
+            columnStyles: {
+              0: { cellWidth: 20 },   // Date
+              1: { cellWidth: 55 },   // Description
+              2: { cellWidth: 18 },   // Food
+              3: { cellWidth: 20 },   // Travelling
+              4: { cellWidth: 24 },   // Entertainment
+              5: { cellWidth: 18 },   // Shopping
+              6: { cellWidth: 14 },   // Bills
+              7: { cellWidth: 14 },   // Other
+              8: { cellWidth: 20 },   // Total
+            },
+            tableWidth: 'auto',
+            margin: { left: 14, right: 14 },
+          });
+        } else {
+          autoTable(doc, {
+            head: [headers],
+            body: dataRows,
+            startY,
+            styles: { fontSize: 9, cellPadding: 3, overflow: 'linebreak', valign: 'middle' },
+            headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: 'bold' },
+            alternateRowStyles: { fillColor: [248, 250, 252] },
+            tableWidth: 'auto',
+            margin: { left: 14, right: 14 },
+          });
+        }
       }
 
       doc.save(exportType + '_' + new Date().toISOString().split('T')[0] + '.pdf');
