@@ -53,7 +53,7 @@
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1000;
-  min-width: 250px;
+  min-width: 320px;
   margin-top: 8px;
   overflow: hidden;
 }
@@ -175,22 +175,59 @@
 /* PDF/CSV format buttons */
 .export-option-group {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px;
+  flex-direction: column;
+  padding: 12px 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  gap: 12px;
+  gap: 8px;
 }
 
 .export-option-group:last-child {
   border-bottom: none;
 }
 
+/* Row 1: icon + label */
 .export-option-label {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+/* Row 2: date pickers + CSV/PDF buttons on same line */
+.export-option-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.export-date-range {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   flex: 1;
+  min-width: 0;
+}
+
+.export-date-input {
+  flex: 1;
+  padding: 5px 7px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.2);
+  color: #e0e8ff;
+  font-size: 11px;
+  min-width: 0;
+  color-scheme: dark;
+}
+
+.export-date-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.date-sep {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 11px;
+  flex-shrink: 0;
 }
 
 .export-format-btns {
@@ -200,7 +237,7 @@
 }
 
 .fmt-btn {
-  padding: 5px 12px;
+  padding: 5px 14px;
   border: none;
   border-radius: 5px;
   font-size: 12px;
@@ -208,15 +245,16 @@
   cursor: pointer;
   transition: all 0.15s;
   letter-spacing: 0.3px;
+  white-space: nowrap;
 }
 
 .fmt-csv {
-  background: rgba(255,255,255,0.15);
+  background: rgba(255, 255, 255, 0.15);
   color: #e0e8ff;
 }
 
 .fmt-csv:hover:not(:disabled) {
-  background: rgba(255,255,255,0.28);
+  background: rgba(255, 255, 255, 0.28);
 }
 
 .fmt-pdf {
@@ -231,53 +269,4 @@
 .fmt-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-/* Date range filter inside export menu */
-.export-date-range {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 6px 0 2px;
-  width: 100%;
-}
-
-.export-date-input {
-  flex: 1;
-  padding: 4px 6px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.1);
-  color: #e0e8ff;
-  font-size: 11px;
-  min-width: 0;
-  color-scheme: dark;
-}
-
-.export-date-input:focus {
-  outline: none;
-  border-color: rgba(255, 255, 255, 0.4);
-}
-
-.date-sep {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 12px;
-  flex-shrink: 0;
-}
-
-/* Stack layout for options with date filter */
-.export-option-group {
-  flex-wrap: wrap;
-}
-
-.export-option-group .export-date-range {
-  order: 2;
-  flex-basis: 100%;
-  padding: 4px 0;
-}
-
-.export-option-group .export-format-btns {
-  order: 3;
-  margin-left: auto;
-  padding-top: 4px;
 }

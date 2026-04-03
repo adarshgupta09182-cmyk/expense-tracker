@@ -189,29 +189,35 @@ const ExportButton = ({ filters = {} }) => {
               </div>
 
               {opt.hasDateFilter && (
-                <div className="export-date-range">
-                  <input
-                    type="date"
-                    value={dateRanges[opt.key]?.start || ''}
-                    onChange={e => setDate(opt.key, 'start', e.target.value)}
-                    className="export-date-input"
-                    placeholder="From"
-                  />
-                  <span className="date-sep">→</span>
-                  <input
-                    type="date"
-                    value={dateRanges[opt.key]?.end || ''}
-                    onChange={e => setDate(opt.key, 'end', e.target.value)}
-                    className="export-date-input"
-                    placeholder="To"
-                  />
+                <div className="export-option-controls">
+                  <div className="export-date-range">
+                    <input
+                      type="date"
+                      value={dateRanges[opt.key]?.start || ''}
+                      onChange={e => setDate(opt.key, 'start', e.target.value)}
+                      className="export-date-input"
+                    />
+                    <span className="date-sep">→</span>
+                    <input
+                      type="date"
+                      value={dateRanges[opt.key]?.end || ''}
+                      onChange={e => setDate(opt.key, 'end', e.target.value)}
+                      className="export-date-input"
+                    />
+                  </div>
+                  <div className="export-format-btns">
+                    <button className="fmt-btn fmt-csv" onClick={() => downloadCSV(opt.key)} disabled={loading}>CSV</button>
+                    <button className="fmt-btn fmt-pdf" onClick={() => downloadPDF(opt.key)} disabled={loading}>PDF</button>
+                  </div>
                 </div>
               )}
 
-              <div className="export-format-btns">
-                <button className="fmt-btn fmt-csv" onClick={() => downloadCSV(opt.key)} disabled={loading}>CSV</button>
-                <button className="fmt-btn fmt-pdf" onClick={() => downloadPDF(opt.key)} disabled={loading}>PDF</button>
-              </div>
+              {!opt.hasDateFilter && (
+                <div className="export-format-btns">
+                  <button className="fmt-btn fmt-csv" onClick={() => downloadCSV(opt.key)} disabled={loading}>CSV</button>
+                  <button className="fmt-btn fmt-pdf" onClick={() => downloadPDF(opt.key)} disabled={loading}>PDF</button>
+                </div>
+              )}
             </div>
           ))}
         </div>
