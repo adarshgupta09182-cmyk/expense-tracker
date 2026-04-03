@@ -8,7 +8,6 @@ const ExportButton = ({ filters = {} }) => {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
 
-  // Close menu on outside click
   useEffect(() => {
     const handler = (e) => { if (menuRef.current && !menuRef.current.contains(e.target)) setShowMenu(false); };
     document.addEventListener('mousedown', handler);
@@ -54,62 +53,63 @@ const ExportButton = ({ filters = {} }) => {
       const response = await axios.get(url, { responseType: 'text' });
       const csvText = response.data;
 
-      // Parse CSV into rows
-      const lines = csvText.split('\n').filter(l => l.trim());
-      const rows = lines.map(l => l.split(',').map(c => c.replace(/^"|"$/g, '').trim()));
+      // Parse CSV — handle quoted fields with commas inside
+      const parseCSVLine = (line) => {
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+          if (line[i] === '"') { inQuotes = !inQuotes; }
+          else if (line[i] === ',' && !inQuotes) { result.push(current.trim()); current = ''; }
+          else { current += line[i]; }
+        }
+        result.push(current.trim());
+        return result;
+      };
 
-      // Dynamic import jsPDF to avoid bundling issues
+      const lines = csvText.split('\n').filter(l => l.trim());
+      const rows = lines.map(parseCSVLine);
+
       const { jsPDF } = await import('jspdf');
+      const autoTable = (await import('jspdf-autotable')).default;
+
       const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
 
-      const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
       const title = exportType === 'monthly-summary' ? 'Monthly Summary' :
                     exportType === 'expenses-with-budget' ? 'Expenses with Budget' : 'Expense Report';
+      const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
 
-      // Title
       doc.setFontSize(18);
       doc.setTextColor(79, 70, 229);
       doc.text(title, 14, 18);
-
       doc.setFontSize(10);
-      doc.setTextColor(100, 100, 100);
+      doc.setTextColor(120, 120, 120);
       doc.text('Generated on ' + date, 14, 26);
 
-      // Table
       if (rows.length > 1) {
         const headers = rows[0];
         const dataRows = rows.slice(1).filter(r => r.some(c => c));
 
-        const colWidth = (doc.internal.pageSize.width - 28) / headers.length;
-        let y = 34;
-
-        // Header row
-        doc.setFillColor(79, 70, 229);
-        doc.rect(14, y, doc.internal.pageSize.width - 28, 8, 'F');
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(9);
-        doc.setFont(undefined, 'bold');
-        headers.forEach((h, i) => {
-          doc.text(h.slice(0, 20), 16 + i * colWidth, y + 5.5);
-        });
-        y += 8;
-
-        // Data rows
-        doc.setFont(undefined, 'normal');
-        dataRows.forEach((row, ri) => {
-          if (y > doc.internal.pageSize.height - 20) {
-            doc.addPage();
-            y = 20;
-          }
-          if (ri % 2 === 0) {
-            doc.setFillColor(248, 250, 252);
-            doc.rect(14, y, doc.internal.pageSize.width - 28, 7, 'F');
-          }
-          doc.setTextColor(30, 30, 30);
-          row.forEach((cell, i) => {
-            doc.text(String(cell).slice(0, 22), 16 + i * colWidth, y + 5);
-          });
-          y += 7;
+        autoTable(doc, {
+          head: [headers],
+          body: dataRows,
+          startY: 32,
+          styles: {
+            fontSize: 9,
+            cellPadding: 3,
+            overflow: 'linebreak',
+            valign: 'middle',
+          },
+          headStyles: {
+            fillColor: [79, 70, 229],
+            textColor: 255,
+            fontStyle: 'bold',
+          },
+          alternateRowStyles: {
+            fillColor: [248, 250, 252],
+          },
+          tableWidth: 'auto',
+          margin: { left: 14, right: 14 },
         });
       }
 
@@ -147,12 +147,8 @@ const ExportButton = ({ filters = {} }) => {
                 </span>
               </div>
               <div className="export-format-btns">
-                <button className="fmt-btn fmt-csv" onClick={() => downloadCSV(opt.key)} disabled={loading}>
-                  CSV
-                </button>
-                <button className="fmt-btn fmt-pdf" onClick={() => downloadPDF(opt.key)} disabled={loading}>
-                  PDF
-                </button>
+                <button className="fmt-btn fmt-csv" onClick={() => downloadCSV(opt.key)} disabled={loading}>CSV</button>
+                <button className="fmt-btn fmt-pdf" onClick={() => downloadPDF(opt.key)} disabled={loading}>PDF</button>
               </div>
             </div>
           ))}
