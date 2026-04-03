@@ -85,8 +85,8 @@
 }
 [data-theme="light"] .period-chip:hover { background: #e5e7eb; }
 [data-theme="light"] .period-chip.active {
-  background: #4F46E5 !important;
-  border-color: #4F46E5 !important;
+  background: #111827 !important;
+  border-color: #111827 !important;
   color: #ffffff !important;
 }
 [data-theme="light"] .fmt-csv {
