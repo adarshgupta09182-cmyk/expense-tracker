@@ -101,11 +101,43 @@ const ExportButton = ({ filters = {} }) => {
       doc.setTextColor(120, 120, 120);
       doc.text('Generated on ' + date, 14, 26);
 
+      let startY = 32;
+
+      // For expenses-with-budget: render budget summary section first
+      if (exportType === 'expenses-with-budget') {
+        const budgetRows = [];
+        for (let i = 0; i < tableStartIdx; i++) {
+          const row = rows[i];
+          if (!row || !row[0] || !row[0].trim()) continue;
+          const label = row[0].trim();
+          const value = row[1] ? row[1].trim() : '';
+          // Only include meaningful key-value pairs
+          if (value && label !== 'EXPENSE REPORT' && label !== 'BUDGET SUMMARY' && label !== 'EXPENSES') {
+            budgetRows.push([label, value]);
+          }
+        }
+
+        if (budgetRows.length > 0) {
+          autoTable(doc, {
+            head: [['Budget Summary', '']],
+            body: budgetRows,
+            startY: startY,
+            styles: { fontSize: 9, cellPadding: 3 },
+            headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: 'bold' },
+            alternateRowStyles: { fillColor: [248, 250, 252] },
+            columnStyles: { 0: { fontStyle: 'bold', cellWidth: 60 }, 1: { cellWidth: 60 } },
+            tableWidth: 'wrap',
+            margin: { left: 14, right: 14 },
+          });
+          startY = doc.lastAutoTable.finalY + 8;
+        }
+      }
+
       if (headers.length > 0 && dataRows.length > 0) {
         autoTable(doc, {
           head: [headers],
           body: dataRows,
-          startY: 32,
+          startY: startY,
           styles: { fontSize: 9, cellPadding: 3, overflow: 'linebreak', valign: 'middle' },
           headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: 'bold' },
           alternateRowStyles: { fillColor: [248, 250, 252] },
