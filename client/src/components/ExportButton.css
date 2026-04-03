@@ -232,3 +232,52 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* Date range filter inside export menu */
+.export-date-range {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 0 2px;
+  width: 100%;
+}
+
+.export-date-input {
+  flex: 1;
+  padding: 4px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #e0e8ff;
+  font-size: 11px;
+  min-width: 0;
+  color-scheme: dark;
+}
+
+.export-date-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.date-sep {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* Stack layout for options with date filter */
+.export-option-group {
+  flex-wrap: wrap;
+}
+
+.export-option-group .export-date-range {
+  order: 2;
+  flex-basis: 100%;
+  padding: 4px 0;
+}
+
+.export-option-group .export-format-btns {
+  order: 3;
+  margin-left: auto;
+  padding-top: 4px;
+}
