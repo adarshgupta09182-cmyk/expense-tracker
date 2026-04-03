@@ -2,6 +2,19 @@ import { useCallback, useState, useRef, useEffect } from 'react';
 import axios from '../utils/axios';
 import './ExportButton.css';
 
+const parseCSVLine = (line) => {
+  const result = [];
+  let current = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    if (line[i] === '"') { inQuotes = !inQuotes; }
+    else if (line[i] === ',' && !inQuotes) { result.push(current.trim()); current = ''; }
+    else { current += line[i]; }
+  }
+  result.push(current.trim());
+  return result;
+};
+
 const ExportButton = ({ filters = {} }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -53,22 +66,24 @@ const ExportButton = ({ filters = {} }) => {
       const response = await axios.get(url, { responseType: 'text' });
       const csvText = response.data;
 
-      // Parse CSV — handle quoted fields with commas inside
-      const parseCSVLine = (line) => {
-        const result = [];
-        let current = '';
-        let inQuotes = false;
-        for (let i = 0; i < line.length; i++) {
-          if (line[i] === '"') { inQuotes = !inQuotes; }
-          else if (line[i] === ',' && !inQuotes) { result.push(current.trim()); current = ''; }
-          else { current += line[i]; }
-        }
-        result.push(current.trim());
-        return result;
-      };
-
+      // Parse all lines
       const lines = csvText.split('\n').filter(l => l.trim());
       const rows = lines.map(parseCSVLine);
+
+      // The CSV has metadata rows before the actual table.
+      // Find the real header row: the one whose first cell is 'Date' or 'Month'
+      let tableStartIdx = 0;
+      for (let i = 0; i < rows.length; i++) {
+        const firstCell = (rows[i][0] || '').toLowerCase().trim();
+        if (firstCell === 'date' || firstCell === 'month') {
+          tableStartIdx = i;
+          break;
+        }
+      }
+
+      const tableRows = rows.slice(tableStartIdx);
+      const headers = tableRows[0] || [];
+      const dataRows = tableRows.slice(1).filter(r => r.some(c => c && c.trim()));
 
       const { jsPDF } = await import('jspdf');
       const autoTable = (await import('jspdf-autotable')).default;
@@ -86,28 +101,14 @@ const ExportButton = ({ filters = {} }) => {
       doc.setTextColor(120, 120, 120);
       doc.text('Generated on ' + date, 14, 26);
 
-      if (rows.length > 1) {
-        const headers = rows[0];
-        const dataRows = rows.slice(1).filter(r => r.some(c => c));
-
+      if (headers.length > 0 && dataRows.length > 0) {
         autoTable(doc, {
           head: [headers],
           body: dataRows,
           startY: 32,
-          styles: {
-            fontSize: 9,
-            cellPadding: 3,
-            overflow: 'linebreak',
-            valign: 'middle',
-          },
-          headStyles: {
-            fillColor: [79, 70, 229],
-            textColor: 255,
-            fontStyle: 'bold',
-          },
-          alternateRowStyles: {
-            fillColor: [248, 250, 252],
-          },
+          styles: { fontSize: 9, cellPadding: 3, overflow: 'linebreak', valign: 'middle' },
+          headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: 'bold' },
+          alternateRowStyles: { fillColor: [248, 250, 252] },
           tableWidth: 'auto',
           margin: { left: 14, right: 14 },
         });
