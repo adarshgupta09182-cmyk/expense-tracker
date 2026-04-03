@@ -19,6 +19,7 @@ const ExportButton = ({ filters = {} }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showMenu, setShowMenu] = useState(false);
+  const [monthlySummaryPeriod, setMonthlySummaryPeriod] = useState(0); // 0=all, else N months back
   // Per-option date state: { 'expenses': {start,end}, 'expenses-with-budget': {start,end} }
   const [dateRanges, setDateRanges] = useState({
     expenses: { start: filters.startDate || '', end: filters.endDate || '' },
@@ -34,17 +35,25 @@ const ExportButton = ({ filters = {} }) => {
 
   const buildParams = useCallback((exportType) => {
     const params = new URLSearchParams();
-    const range = dateRanges[exportType];
-    if (range) {
-      if (range.start) params.append('startDate', range.start);
-      if (range.end) params.append('endDate', range.end);
+    if (exportType === 'monthly-summary' && monthlySummaryPeriod > 0) {
+      const end = new Date();
+      const start = new Date();
+      start.setMonth(start.getMonth() - monthlySummaryPeriod);
+      params.append('startDate', start.toISOString().split('T')[0]);
+      params.append('endDate', end.toISOString().split('T')[0]);
     } else {
-      if (filters.startDate) params.append('startDate', filters.startDate);
-      if (filters.endDate) params.append('endDate', filters.endDate);
+      const range = dateRanges[exportType];
+      if (range) {
+        if (range.start) params.append('startDate', range.start);
+        if (range.end) params.append('endDate', range.end);
+      } else {
+        if (filters.startDate) params.append('startDate', filters.startDate);
+        if (filters.endDate) params.append('endDate', filters.endDate);
+      }
     }
     if (filters.category) params.append('category', filters.category);
     return params.toString();
-  }, [dateRanges, filters]);
+  }, [dateRanges, filters, monthlySummaryPeriod]);
 
   const setDate = (exportType, field, value) => {
     setDateRanges(prev => ({ ...prev, [exportType]: { ...prev[exportType], [field]: value } }));
@@ -213,9 +222,20 @@ const ExportButton = ({ filters = {} }) => {
               )}
 
               {!opt.hasDateFilter && (
-                <div className="export-format-btns">
-                  <button className="fmt-btn fmt-csv" onClick={() => downloadCSV(opt.key)} disabled={loading}>CSV</button>
-                  <button className="fmt-btn fmt-pdf" onClick={() => downloadPDF(opt.key)} disabled={loading}>PDF</button>
+                <div className="export-option-controls">
+                  <div className="period-chips">
+                    {[{label:'3M',val:3},{label:'6M',val:6},{label:'9M',val:9},{label:'1Y',val:12},{label:'All',val:0}].map(p => (
+                      <button
+                        key={p.val}
+                        className={`period-chip${monthlySummaryPeriod === p.val ? ' active' : ''}`}
+                        onClick={() => setMonthlySummaryPeriod(p.val)}
+                      >{p.label}</button>
+                    ))}
+                  </div>
+                  <div className="export-format-btns">
+                    <button className="fmt-btn fmt-csv" onClick={() => downloadCSV(opt.key)} disabled={loading}>CSV</button>
+                    <button className="fmt-btn fmt-pdf" onClick={() => downloadPDF(opt.key)} disabled={loading}>PDF</button>
+                  </div>
                 </div>
               )}
             </div>

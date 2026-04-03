@@ -270,3 +270,34 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* Monthly summary period chips */
+.period-chips {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+
+.period-chip {
+  padding: 4px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(224, 232, 255, 0.7);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.period-chip:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #e0e8ff;
+}
+
+.period-chip.active {
+  background: #4F46E5;
+  border-color: #4F46E5;
+  color: white;
+}
